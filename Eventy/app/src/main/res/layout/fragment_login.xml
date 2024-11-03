@@ -11,5 +11,76 @@
     android:background="@color/background_color"
     tools:context="login.LoginFragment">
 
+    <!-- Login Label -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:text="Login"
+        android:textColor="@color/title_color"
+        android:textSize="34sp"
+        android:fontFamily="@font/albert_sans"/>
 
+    <!-- Email Text Field -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:endIconMode="clear_text">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:background="@color/input_color" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Password Text Field -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        app:endIconMode="password_toggle">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:background="@color/input_color" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Login Button -->
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="LOGIN"
+        app:backgroundTint="@color/button_color"
+        style="@style/Widget.MaterialComponents.Button"
+        android:onClick="onLoginButtonClick"
+        app:cornerRadius="7dp"
+        android:fontFamily="@font/roboto"
+        android:textStyle="bold"
+        android:layout_marginBottom="128dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="Don't have an account?"
+        android:textColor="#222222"
+        android:textSize="17sp"
+        android:fontFamily="@font/albert_sans"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="REGISTER HERE"
+        app:backgroundTint="@color/button_color"
+        style="@style/Widget.MaterialComponents.Button"
+        android:onClick="onRegisterHereButtonClick"
+        app:cornerRadius="7dp"
+        android:fontFamily="@font/roboto"
+        android:textStyle="bold" />
 </LinearLayout>
