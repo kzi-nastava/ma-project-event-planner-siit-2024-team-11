@@ -74,12 +74,12 @@
         android:fontFamily="@font/albert_sans"/>
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/register_here_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="REGISTER HERE"
         app:backgroundTint="@color/button_color"
         style="@style/Widget.MaterialComponents.Button"
-        android:onClick="onRegisterHereButtonClick"
         app:cornerRadius="7dp"
         android:fontFamily="@font/roboto"
         android:textStyle="bold" />
