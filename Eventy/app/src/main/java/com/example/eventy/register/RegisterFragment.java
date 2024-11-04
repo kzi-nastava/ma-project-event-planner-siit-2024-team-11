@@ -8,6 +8,8 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentRegisterBinding;
@@ -37,6 +39,17 @@ public class RegisterFragment extends Fragment {
             isOrganiser = !isOrganiser;
             binding.switchFragmentButton.setText(isOrganiser ? "Register as Product/Service Provider" : "Register as Event Organiser");
             binding.registerLabel.setText(isOrganiser ? "Register as Event Organiser" : "Register as Product/Service Provider");
+        });
+
+        binding.loginHereButton.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(v);
+
+            // Potential problem with back button?
+            // Clear any existing stack to avoid looping behavior
+            navController.popBackStack();
+
+            // Navigate to the register screen
+            navController.navigate(R.id.nav_login);
         });
 
         return root;
