@@ -95,9 +95,7 @@ public class RegisterOrganiserFragment extends Fragment {
         });
 
         textInputEditText.setOnFocusChangeListener((v, hasFocus) -> {
-            if(!hasFocus) {
-                validateRequired(String.valueOf(textInputEditText.getText()), textInputLayout);
-            }
+            action.accept(String.valueOf(textInputEditText.getText()), textInputLayout);
         });
     }
 
@@ -132,7 +130,7 @@ public class RegisterOrganiserFragment extends Fragment {
     private void validateConfirmPassword(String inputText, TextInputLayout textInputLayout) {
         if (inputText.trim().isEmpty()) {
             textInputLayout.setError("This field is required");
-        } else if (binding.passwordInput.getText() != binding.confirmPasswordInput.getText()) {
+        } else if (!binding.passwordInput.getText().toString().equals(binding.confirmPasswordInput.getText().toString())) {
             textInputLayout.setError("Passwords don't match!");
         } else {
             textInputLayout.setError(null); // Clear error if valid
