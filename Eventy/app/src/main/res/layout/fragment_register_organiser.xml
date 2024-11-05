@@ -1,14 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".register.RegisterOrganiserFragment">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+tools:context=".register.RegisterOrganiserFragment"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+android:gravity="center"
+android:padding="16dp">
 
-    <!-- TODO: Update blank fragment layout -->
+<!-- Profile Picture Input -->
+    <!-- Be a circle for custom photo? Also fixed height and width? -->
+<ImageView
+    android:id="@+id/profile_picture"
+    android:layout_width="100dp"
+    android:layout_height="100dp"
+    android:layout_gravity="center"
+    android:src="@mipmap/profile_picture_round"
+    android:contentDescription="Profile picture"
+    android:clickable="true"
+    android:focusable="true" />
+
+    <!-- Is this necessary -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Register Organiser" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose Profile Picture" />
 
-</FrameLayout>
+<!-- Email Field -->
+<com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/email_input_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    app:hintEnabled="true"
+    android:hint="Email"
+    app:endIconMode="clear_text"
+    app:endIconDrawable="@drawable/clear_icon">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/email_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress" />
+</com.google.android.material.textfield.TextInputLayout>
+
+<!-- Password Field -->
+<com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/password_input_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:hint="Password"
+    app:endIconMode="clear_text"
+    app:endIconDrawable="@drawable/clear_icon">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/password_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword" />
+</com.google.android.material.textfield.TextInputLayout>
+
+<!-- Confirm Password Field -->
+<com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/confirm_password_input_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:hint="Confirm Password"
+    app:endIconMode="clear_text"
+    app:endIconDrawable="@drawable/clear_icon">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/confirm_password_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword" />
+</com.google.android.material.textfield.TextInputLayout>
+
+<!-- First Name Field -->
+<com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/first_name_input_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:hint="First Name"
+    app:endIconMode="clear_text"
+    app:endIconDrawable="@drawable/clear_icon">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/first_name_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName" />
+</com.google.android.material.textfield.TextInputLayout>
+
+<!-- Last Name Field -->
+<com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/last_name_input_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:hint="Last Name"
+    app:endIconMode="clear_text"
+    app:endIconDrawable="@drawable/clear_icon">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/last_name_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName" />
+</com.google.android.material.textfield.TextInputLayout>
+
+<!-- Address Field -->
+<com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/address_input_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:hint="Address"
+    app:endIconMode="clear_text"
+    app:endIconDrawable="@drawable/clear_icon">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/address_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPostalAddress" />
+</com.google.android.material.textfield.TextInputLayout>
+
+<!-- Phone Number Field -->
+<com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/phone_number_input_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:hint="Phone Number"
+    app:endIconMode="clear_text"
+    app:endIconDrawable="@drawable/clear_icon">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/phone_number_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="phone" />
+</com.google.android.material.textfield.TextInputLayout>
+
+</LinearLayout>

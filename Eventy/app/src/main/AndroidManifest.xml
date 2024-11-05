@@ -27,5 +27,4 @@
             android:theme="@style/Theme.Eventy.NoActionBar">
         </activity>
     </application>
-
 </manifest>
