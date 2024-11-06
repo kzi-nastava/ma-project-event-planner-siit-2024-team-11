@@ -26,10 +26,10 @@
             android:layout_gravity="center_horizontal"
             android:textAlignment="center"/>
 
-        <!-- Switch Fragment Button -->
+        <!-- Switch Register Type Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/switchFragmentButton"
-            android:layout_width="wrap_content"
+            android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:text="Register as Product/Service Provider"
             app:backgroundTint="@color/button_color"
@@ -37,8 +37,7 @@
             android:onClick="onLoginButtonClick"
             app:cornerRadius="7dp"
             android:fontFamily="@font/roboto"
-            android:textStyle="bold"
-            android:layout_marginBottom="32dp"/>
+            android:layout_marginBottom="32dp" />
 
         <FrameLayout
             android:id="@+id/fragment_container"

@@ -6,8 +6,7 @@ tools:context=".register.RegisterOrganiserFragment"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:orientation="vertical"
-android:gravity="center"
-android:padding="16dp">
+android:gravity="center">
 
 <!-- Profile Picture Input -->
     <!-- Be a circle for custom photo? Also fixed height and width? -->
@@ -32,7 +31,7 @@ android:padding="16dp">
     android:id="@+id/email_input_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="16dp"
+    android:layout_marginTop="20dp"
     app:hintEnabled="true"
     android:hint="Email"
     app:endIconMode="clear_text"
@@ -42,7 +41,8 @@ android:padding="16dp">
         android:id="@+id/email_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textEmailAddress" />
+        android:inputType="textEmailAddress"
+        android:background="@color/input_color"/>
 </com.google.android.material.textfield.TextInputLayout>
 
 <!-- Password Field -->
@@ -50,16 +50,16 @@ android:padding="16dp">
     android:id="@+id/password_input_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
+    android:layout_marginTop="12dp"
     android:hint="Password"
-    app:endIconMode="clear_text"
-    app:endIconDrawable="@drawable/clear_icon">
+    app:endIconMode="password_toggle">
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/password_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:background="@color/input_color"/>
 </com.google.android.material.textfield.TextInputLayout>
 
 <!-- Confirm Password Field -->
@@ -67,16 +67,16 @@ android:padding="16dp">
     android:id="@+id/confirm_password_input_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
+    android:layout_marginTop="12dp"
     android:hint="Confirm Password"
-    app:endIconMode="clear_text"
-    app:endIconDrawable="@drawable/clear_icon">
+    app:endIconMode="password_toggle">
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/confirm_password_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:background="@color/input_color"/>
 </com.google.android.material.textfield.TextInputLayout>
 
 <!-- First Name Field -->
@@ -84,7 +84,7 @@ android:padding="16dp">
     android:id="@+id/first_name_input_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
+    android:layout_marginTop="12dp"
     android:hint="First Name"
     app:endIconMode="clear_text"
     app:endIconDrawable="@drawable/clear_icon">
@@ -93,7 +93,8 @@ android:padding="16dp">
         android:id="@+id/first_name_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        android:background="@color/input_color"/>
 </com.google.android.material.textfield.TextInputLayout>
 
 <!-- Last Name Field -->
@@ -101,7 +102,7 @@ android:padding="16dp">
     android:id="@+id/last_name_input_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
+    android:layout_marginTop="12dp"
     android:hint="Last Name"
     app:endIconMode="clear_text"
     app:endIconDrawable="@drawable/clear_icon">
@@ -110,7 +111,8 @@ android:padding="16dp">
         android:id="@+id/last_name_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        android:background="@color/input_color"/>
 </com.google.android.material.textfield.TextInputLayout>
 
 <!-- Address Field -->
@@ -118,7 +120,7 @@ android:padding="16dp">
     android:id="@+id/address_input_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
+    android:layout_marginTop="12dp"
     android:hint="Address"
     app:endIconMode="clear_text"
     app:endIconDrawable="@drawable/clear_icon">
@@ -127,7 +129,8 @@ android:padding="16dp">
         android:id="@+id/address_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPostalAddress" />
+        android:inputType="textPostalAddress"
+        android:background="@color/input_color"/>
 </com.google.android.material.textfield.TextInputLayout>
 
 <!-- Phone Number Field -->
@@ -135,7 +138,7 @@ android:padding="16dp">
     android:id="@+id/phone_number_input_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
+    android:layout_marginTop="12dp"
     android:hint="Phone Number"
     app:endIconMode="clear_text"
     app:endIconDrawable="@drawable/clear_icon">
@@ -144,7 +147,22 @@ android:padding="16dp">
         android:id="@+id/phone_number_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="phone" />
+        android:inputType="phone"
+        android:background="@color/input_color"/>
 </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Register Button -->
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="REGISTER"
+        app:backgroundTint="@color/button_color"
+        style="@style/Widget.MaterialComponents.Button"
+        app:cornerRadius="7dp"
+        android:fontFamily="@font/roboto"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:padding="10dp"/>
 
 </LinearLayout>
