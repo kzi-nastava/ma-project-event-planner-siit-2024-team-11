@@ -43,7 +43,7 @@
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="32dp" />
+            android:layout_marginBottom="64dp" />
 
         <TextView
             android:layout_width="wrap_content"
