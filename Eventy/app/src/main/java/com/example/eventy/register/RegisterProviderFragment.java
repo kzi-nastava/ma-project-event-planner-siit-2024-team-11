@@ -1,66 +1,160 @@
 package com.example.eventy.register;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.app.Activity;
+import android.content.ClipData;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.ViewPager2;
 
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.eventy.R;
+import com.example.eventy.databinding.FragmentRegisterProviderBinding;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link RegisterProviderFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.BiConsumer;
+
 public class RegisterProviderFragment extends Fragment {
+    private FragmentRegisterProviderBinding binding;
+    private CarouselAdapter carouselAdapter;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private List<Uri> images = Arrays.asList(
+            Uri.parse("android.resource://com.example.eventy/" + R.mipmap.logo)
+    );
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public RegisterProviderFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment RegisterProviderFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static RegisterProviderFragment newInstance(String param1, String param2) {
-        RegisterProviderFragment fragment = new RegisterProviderFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    private  ActivityResultLauncher<Intent> imagePickerLauncher;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register_provider, container, false);
+        binding = FragmentRegisterProviderBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
+
+        addValidation(binding.emailInputLayout, binding.emailInput, this::validateEmail);
+        addValidation(binding.passwordInputLayout, binding.passwordInput, this::validateRequired);
+        addValidation(binding.confirmPasswordInputLayout, binding.confirmPasswordInput, this::validateConfirmPassword);
+        addValidation(binding.nameInputLayout, binding.nameInput, this::validateRequired);
+        addValidation(binding.descriptionInputLayout, binding.descriptionInput, this::validateRequired);
+        addValidation(binding.addressInputLayout, binding.addressInput, this::validateRequired);
+        addValidation(binding.phoneNumberInputLayout, binding.phoneNumberInput, this::validatePhoneNumber);
+
+        ViewPager2 viewPager = binding.viewPager;
+
+        carouselAdapter = new CarouselAdapter(images);
+        viewPager.setAdapter(carouselAdapter);
+
+        imagePickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    List<Uri> newImages = new ArrayList<>();
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        if (result.getData().getClipData() != null) {
+                            // Multiple images selected
+                            ClipData clipData = result.getData().getClipData();
+                            for (int i = 0; i < clipData.getItemCount(); i++) {
+                                Uri imageUri = clipData.getItemAt(i).getUri();
+                                newImages.add(imageUri);
+                            }
+                        }
+
+                        carouselAdapter.updateImages(newImages);
+                        images = newImages;
+                    }
+                }
+        );
+
+        binding.addPhotosButton.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);  // Allow multiple selection
+            imagePickerLauncher.launch(intent);
+        });
+
+        return root;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
+    private void addValidation(TextInputLayout textInputLayout, TextInputEditText textInputEditText, BiConsumer<String, TextInputLayout> action) {
+        // real time field validation
+        textInputEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // No action needed here
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Validate input as the user types
+                action.accept(s.toString(), textInputLayout);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // No action needed here
+            }
+        });
+
+        textInputEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            action.accept(String.valueOf(textInputEditText.getText()), textInputLayout);
+        });
+    }
+
+    private void validateRequired(String inputText, TextInputLayout textInputLayout) {
+        if (inputText.trim().isEmpty()) {
+            textInputLayout.setError("This field is required"); // Set error message
+        } else {
+            textInputLayout.setError(null); // Clear error if valid
+        }
+    }
+
+    private void validateEmail(String inputText, TextInputLayout textInputLayout) {
+        if (inputText.trim().isEmpty()) {
+            textInputLayout.setError("This field is required");
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(inputText).matches()) {
+            textInputLayout.setError("Invalid email format");
+        } else {
+            textInputLayout.setError(null); // Clear error if valid
+        }
+    }
+
+    private void validatePhoneNumber(String inputText, TextInputLayout textInputLayout) {
+        if (inputText.trim().isEmpty()) {
+            textInputLayout.setError("This field is required");
+        } else if (!Patterns.PHONE.matcher(inputText).matches()) {
+            textInputLayout.setError("Invalid phone number format");
+        } else {
+            textInputLayout.setError(null); // Clear error if valid
+        }
+    }
+
+    private void validateConfirmPassword(String inputText, TextInputLayout textInputLayout) {
+        if (inputText.trim().isEmpty()) {
+            textInputLayout.setError("This field is required");
+        } else if (!binding.passwordInput.getText().toString().equals(binding.confirmPasswordInput.getText().toString())) {
+            textInputLayout.setError("Passwords don't match!");
+        } else {
+            textInputLayout.setError(null); // Clear error if valid
+        }
     }
 }
