@@ -17,7 +17,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/eventy_color"
             app:popupTheme="@style/Theme.Eventy.PopupOverlay"
-            app:logo="@mipmap/logo" />
+            app:logo="@drawable/navbar_logo" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
