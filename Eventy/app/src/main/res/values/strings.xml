@@ -13,4 +13,7 @@
     <string name="profile">Profile</string>
     <string name="messages">Messages</string>
     <string name="notifications">Notifications</string>
+    <string name="service_and_products"><![CDATA[Service & Products]]></string>
+    <string name="events">Events</string>
+
 </resources>

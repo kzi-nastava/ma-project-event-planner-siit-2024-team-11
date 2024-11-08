@@ -13,4 +13,9 @@
     <color name="title_color">#7A7575</color>
     <color name="background_color">#F1F1F1</color>
     <color name="input_color">#e0e2ec</color>
+
+    <!-- Home -->
+    <color name="home_tab_background_color">#F7F7F7</color>
+    <color name="tab_inactive_text_color">#806E717B</color>
+    <color name="tab_active_text_color">#6E717B</color>
 </resources>
