@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         app:endIconMode="clear_text"
-        app:endIconDrawable="@drawable/clear_icon">
+        app:endIconDrawable="@drawable/icon_remove">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
