@@ -23,11 +23,14 @@
     <string name="event_card_see_more">SEE MORE</string>
     <string name="event_description">Description:</string>
     <string name="favorite">favorite</string>
-    <string name="event_name"><![CDATA[“Marksssssssssss & Mia’s Wedding”]]></string>
+    <string name="event_name"><![CDATA[“Mark & Mia’s Wedding”]]></string>
     <string name="event_description_text">Welcome to Mirko and Jana’s wedding. The wedding will be in our fancy vineyard. All you need to bring is a positive mood! We encourage you…</string>
     <string name="event_type">Type: wedding</string>
     <string name="event_max_participants">Max participans: 530</string>
     <string name="event_date">24.10.2024.</string>
     <string name="event_location">Belgrade, Serbia</string>
+
+    <!-- /home/events/featured(top 5) -->
+    <string name="browse_all_events_text">Don’t see anything you like? Browse all events down below!</string>
 
 </resources>
