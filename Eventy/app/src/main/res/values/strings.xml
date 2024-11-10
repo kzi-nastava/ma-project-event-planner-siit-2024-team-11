@@ -13,7 +13,21 @@
     <string name="profile">Profile</string>
     <string name="messages">Messages</string>
     <string name="notifications">Notifications</string>
-    <string name="service_and_products"><![CDATA[Service & Products]]></string>
+
+    <!-- /home -->
+    <string name="service_and_products">Solutions</string>
     <string name="events">Events</string>
+
+    <!-- /home/events{event_card} -->
+    <string name="open_event">OPEN EVENT!</string>
+    <string name="event_card_see_more">SEE MORE</string>
+    <string name="event_description">Description:</string>
+    <string name="favorite">favorite</string>
+    <string name="event_name"><![CDATA[“Marksssssssssss & Mia’s Wedding”]]></string>
+    <string name="event_description_text">Welcome to Mirko and Jana’s wedding. The wedding will be in our fancy vineyard. All you need to bring is a positive mood! We encourage you…</string>
+    <string name="event_type">Type: wedding</string>
+    <string name="event_max_participants">Max participans: 530</string>
+    <string name="event_date">24.10.2024.</string>
+    <string name="event_location">Belgrade, Serbia</string>
 
 </resources>

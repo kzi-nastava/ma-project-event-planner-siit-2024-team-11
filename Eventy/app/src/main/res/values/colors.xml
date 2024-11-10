@@ -14,8 +14,19 @@
     <color name="background_color">#F1F1F1</color>
     <color name="input_color">#e0e2ec</color>
 
-    <!-- Home -->
+    <!-- home -->
     <color name="home_tab_background_color">#F7F7F7</color>
     <color name="tab_inactive_text_color">#806E717B</color>
     <color name="tab_active_text_color">#6E717B</color>
+
+    <!-- home/events -->
+    <color name="home_events_featured_background_color">#B5BEDF</color>
+
+    <!-- home/events{event_card} -->
+    <color name="home_event_card_open_event">#3ED34F</color>
+    <color name="home_event_card_full_event">#E91A1A</color>
+    <color name="home_event_card_see_more">#929AB7</color>
+    <color name="home_event_card_label">#BFBABA</color>
+    <color name="home_event_card_text">#5B5B5B</color>
+
 </resources>
