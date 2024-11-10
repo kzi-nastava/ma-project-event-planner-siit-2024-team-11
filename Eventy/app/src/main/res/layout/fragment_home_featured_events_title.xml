@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/home_events_featured_background_color"
+    tools:context=".home.events.featured_events.FeaturedEventsTitleFragment">
+
+    <!-- Featured Events Text Container -->
+    <LinearLayout
+        android:id="@+id/featured_events_title_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="20dp"
+        android:paddingBottom="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- "FEATURED" text -->
+        <TextView
+            android:id="@+id/featured_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/albert_sans"
+            android:letterSpacing="0.1"
+            android:shadowColor="@color/white"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:text="FEATURED"
+            android:textColor="@color/white"
+            android:textFontWeight="900"
+            android:textSize="28sp" />
+
+        <!-- "EVENTS" text -->
+        <TextView
+            android:id="@+id/events_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:background="@drawable/home_events_title_background_color"
+            android:fontFamily="@font/albert_sans"
+            android:letterSpacing="0.1"
+            android:paddingLeft="1dp"
+            android:paddingRight="1dp"
+            android:shadowColor="@color/white"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:text="EVENTS"
+            android:textColor="@color/white"
+            android:textFontWeight="900"
+            android:textSize="28sp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
