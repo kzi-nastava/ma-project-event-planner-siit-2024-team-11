@@ -80,7 +80,7 @@
         </LinearLayout>
 
         <!-- event card (smaller version) inserted -->
-        <include layout="@layout/fragment_home_event_card_smaller"
+        <include layout="@layout/fragment_home_featured_event_card"
             android:layout_width="match_parent"
             android:layout_marginStart="36dp"
             android:layout_marginEnd="9dp"
