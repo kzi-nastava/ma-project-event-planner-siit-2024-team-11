@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentHomeBinding;
+import com.example.eventy.home.events.EventsFragment;
 import com.example.eventy.home.events.featured_events.FeaturedEventsFragment;
 import com.example.eventy.home.events.featured_events.FeaturedEventsTitleFragment;
 import com.example.eventy.register.RegisterOrganiserFragment;
@@ -34,6 +35,11 @@ public class HomeFragment extends Fragment {
                 .replace(R.id.tab_view, new FeaturedEventsFragment())
                 .commit();
 
+        // Load All Events container
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.all_events, new EventsFragment())
+                .commit();
+
         binding.tabEvent.setOnClickListener(v -> {
             binding.tabEvent.setTextColor(ContextCompat.getColor(v.getContext(), R.color.tab_active_text_color));
             binding.tabEvent.setBackground(ContextCompat.getDrawable(v.getContext(), R.drawable.home_tab_active_background));
@@ -50,6 +56,12 @@ public class HomeFragment extends Fragment {
             Fragment fragmentFeaturedEvents = new FeaturedEventsFragment();
             getChildFragmentManager().beginTransaction()
                     .replace(R.id.tab_view, fragmentFeaturedEvents)
+                    .addToBackStack(null)
+                    .commit();
+
+            Fragment fragmentEvents = new EventsFragment();
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.all_events, fragmentEvents)
                     .addToBackStack(null)
                     .commit();
         });
