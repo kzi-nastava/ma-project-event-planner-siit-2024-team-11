@@ -33,4 +33,8 @@
     <!-- /home/events/featured(top 5) -->
     <string name="browse_all_events_text">Don’t see anything you like? Browse all events down below!</string>
 
+    <!-- /home/events -->
+    <string name="filter">FILTER</string>
+    <string name="sort">Sort</string>
+
 </resources>
