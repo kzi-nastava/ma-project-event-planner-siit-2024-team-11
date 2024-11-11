@@ -1,6 +1,7 @@
 package com.example.eventy.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.View;
@@ -76,9 +77,9 @@ public class FeaturedEventsAdapter extends RecyclerView.Adapter<FeaturedEventsAd
 
             holder.eventLocation.setText(event.getLocation().getName());
 
-            String openOrFullString = event.getPrivacyType() == PrivacyType.PRIVATE ? "PRIVATE EVENT" : "OPEN EVENT";
-            openOrFullString += "!";
+            String openOrFullString = (event.getPrivacyType() == PrivacyType.PRIVATE ? "FULL EVENT" : "OPEN EVENT") + "!";
             holder.openOrFull.setText(openOrFullString);
+            holder.openOrFull.setTextColor(event.getPrivacyType() == PrivacyType.PRIVATE ? Color.parseColor("#E91A1A") : Color.parseColor("#3ED34F"));
 
             holder.description.setText(event.getDescription());
 
