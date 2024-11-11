@@ -54,18 +54,49 @@
             android:textSize="15sp" />
     </LinearLayout>
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/featured_events"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/home_events_featured_background_color">
+
+            <FrameLayout
+                android:id="@+id/tab_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <!-- here we dynamically insert top 5 featured events/solutions
+                 depending on the selected tab -->
+            <FrameLayout
+                android:id="@+id/tab_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/browse_all_events_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/albert_sans"
+                android:letterSpacing="0.03"
+                android:textAlignment="center"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="13dp"
+                android:layout_marginLeft="13dp"
+                android:layout_marginRight="13dp"
+                android:text="@string/browse_all_events_text"
+                android:textColor="@color/white"
+                android:textFontWeight="900"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
     <!-- here we dynamically insert the title (e.g. "FEATURED EVENTS")
          depending on the selected tab -->
-    <FrameLayout
-        android:id="@+id/tab_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
 
-    <!-- here we dynamically insert top 5 featured events/solutions
-         depending on the selected tab -->
-    <FrameLayout
-        android:id="@+id/tab_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
 
 </LinearLayout>
