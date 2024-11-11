@@ -1,4 +1,4 @@
-package com.example.eventy.home.events;
+package com.example.eventy.home.events.event_card;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
