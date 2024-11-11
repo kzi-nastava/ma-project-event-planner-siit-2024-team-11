@@ -57,7 +57,7 @@ public class FeaturedEventsFragment extends Fragment {
         Location meetingLocation = new Location("Boardroom", "200 Corporate Rd, Business Park", 42.3601, -71.0589);
 
         // Create Event instances
-        featuredEvents.add(new Event("Mirkoooooooooo & Jana's Wedding", "An elegant wedding celebration", 200, PrivacyType.PUBLIC, new Date(), weddingLocation, weddingType));
+        featuredEvents.add(new Event("Mark & Jana's Wedding", "An elegant wedding celebration", 200, PrivacyType.PUBLIC, new Date(), weddingLocation, weddingType));
         featuredEvents.add(new Event("Tech Conference", "A tech conference with industry leaders", 500, PrivacyType.PRIVATE, new Date(), conferenceLocation, conferenceType));
         featuredEvents.add(new Event("Summer Music Concert", "Enjoy the best live music performances", 1000, PrivacyType.PUBLIC, new Date(), concertLocation, concertType));
         featuredEvents.add(new Event("VIP PartyLounge", "An exclusive party for select guests", 100, PrivacyType.PRIVATE, new Date(), partyLocation, partyType));

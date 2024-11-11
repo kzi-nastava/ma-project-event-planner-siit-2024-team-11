@@ -4,7 +4,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
@@ -79,6 +81,18 @@ public class FeaturedEventsAdapter extends RecyclerView.Adapter<FeaturedEventsAd
             holder.openOrFull.setText(openOrFullString);
 
             holder.description.setText(event.getDescription());
+
+            Button seeMoreButton = holder.itemView.findViewById(R.id.see_more_button);
+            seeMoreButton.setOnClickListener(v -> {
+                // Show a Toast with the event name
+                Toast.makeText(holder.itemView.getContext(), "See more: Event: " + event.getName(), Toast.LENGTH_SHORT).show();
+            });
+
+            Button favoriteButton = holder.itemView.findViewById(R.id.favorite_button);
+            favoriteButton.setOnClickListener(v -> {
+                // Show a Toast with the event name
+                Toast.makeText(holder.itemView.getContext(), "Favorite: Event: " + event.getName(), Toast.LENGTH_SHORT).show();
+            });
         }
     }
 
