@@ -60,7 +60,6 @@
                 android:id="@+id/minimum_duration_input_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 app:hintEnabled="true"
                 android:hint="Minimum duration (minutes)"
                 app:endIconMode="clear_text"
