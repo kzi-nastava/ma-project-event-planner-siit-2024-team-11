@@ -20,7 +20,7 @@ import com.example.eventy.model.utils.Location;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class EventsFragment  extends Fragment {
+public class EventsFragment extends Fragment {
     private FragmentHomeEventsBinding binding;
     private EventsAdapter eventsAdapter;
 

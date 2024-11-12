@@ -63,14 +63,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 
             Button seeMoreButton = holder.itemView.findViewById(R.id.see_more_button);
             seeMoreButton.setOnClickListener(v -> {
-                // Show a Toast with the event name
-                Toast.makeText(holder.itemView.getContext(), "See more: Event: " + event.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(holder.itemView.getContext(), "See more: " + event.getName(), Toast.LENGTH_SHORT).show();
             });
 
             Button favoriteButton = holder.itemView.findViewById(R.id.favorite_button);
             favoriteButton.setOnClickListener(v -> {
-                // Show a Toast with the event name
-                Toast.makeText(holder.itemView.getContext(), "Favorite: Event: " + event.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(holder.itemView.getContext(), "Favorite: " + event.getName(), Toast.LENGTH_SHORT).show();
             });
         }
     }
