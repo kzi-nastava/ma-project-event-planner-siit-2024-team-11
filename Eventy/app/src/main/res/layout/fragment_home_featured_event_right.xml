@@ -13,7 +13,7 @@
         app:layout_constraintTop_toBottomOf="@+id/featured_events_title_container"
         android:paddingTop="3dp"
         android:paddingBottom="0dp"
-        android:background="@color/home_events_featured_background_color">
+        android:background="@color/home_featured_items_background_color">
 
         <!-- dark blue circle -->
         <View

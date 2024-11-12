@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/home_events_featured_background_color">
+        android:background="@color/home_featured_items_background_color">
 
         <!-- Top 5 events dynamically inserted with RecyclerView -->
         <androidx.recyclerview.widget.RecyclerView
