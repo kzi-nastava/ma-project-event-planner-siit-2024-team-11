@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/home_events_featured_background_color"
+    tools:context=".home.events.featured_events.FeaturedEventsTitleFragment">
+
+    <!-- Featured Text Container -->
+    <LinearLayout
+        android:id="@+id/featured_title_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:paddingTop="22dp"
+        android:paddingBottom="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- "FEATURED" text -->
+        <TextView
+            android:id="@+id/featured_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/albert_sans"
+            android:letterSpacing="0.1"
+            android:shadowColor="@color/white"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:text="@string/featured"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:textFontWeight="900"
+            android:textSize="27sp" />
+
+        <!-- Featured Events Text Container -->
+        <LinearLayout
+            android:id="@+id/featured_solutions_title_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="14dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!-- "SERVICES" text -->
+            <TextView
+                android:id="@+id/services_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/albert_sans"
+                android:letterSpacing="0.1"
+                android:background="@drawable/home_featured_services_title_background_color"
+                android:shadowColor="@color/white"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                android:text="@string/services"
+                android:textColor="@color/white"
+                android:textFontWeight="900"
+                android:textSize="27sp" />
+
+            <!-- "&" text -->
+            <TextView
+                android:id="@+id/and_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="9dp"
+                android:fontFamily="@font/albert_sans"
+                android:letterSpacing="0.1"
+                android:paddingLeft="1dp"
+                android:paddingRight="1dp"
+                android:shadowColor="@color/white"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                android:text="&amp;"
+                android:textColor="@color/white"
+                android:textFontWeight="900"
+                android:textSize="27sp" />
+
+            <!-- "PRODUCTS" text -->
+            <TextView
+                android:id="@+id/products_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="9dp"
+                android:background="@drawable/home_featured_products_title_background_color"
+                android:fontFamily="@font/albert_sans"
+                android:letterSpacing="0.1"
+                android:paddingLeft="1dp"
+                android:paddingRight="1dp"
+                android:shadowColor="@color/white"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                android:text="@string/products"
+                android:textColor="@color/white"
+                android:textFontWeight="900"
+                android:textSize="27sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
