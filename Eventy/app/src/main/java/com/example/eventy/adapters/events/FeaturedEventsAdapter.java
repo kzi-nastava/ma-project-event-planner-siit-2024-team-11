@@ -1,47 +1,69 @@
-package com.example.eventy.adapters;
+package com.example.eventy.adapters.events;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 
 import com.example.eventy.R;
 import com.example.eventy.model.enums.PrivacyType;
 import com.example.eventy.model.event.Event;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-
-public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewHolder> {
-    private ArrayList<Event> events;
+public class FeaturedEventsAdapter extends RecyclerView.Adapter<FeaturedEventsAdapter.EventViewHolder> {
+    private ArrayList<Event> featuredEvents;
     private LayoutInflater layoutInflater;
 
-    public EventsAdapter(Context context, ArrayList<Event> events) {
-        this.events = events;
+    public FeaturedEventsAdapter(Context context, ArrayList<Event> featuredEvents) {
+        this.featuredEvents = featuredEvents;
         this.layoutInflater = LayoutInflater.from(context);
     }
 
     @NonNull
     @Override
-    public EventsAdapter.EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
-        view = layoutInflater.inflate(R.layout.fragment_event_card, parent, false);
 
-        return new EventsAdapter.EventViewHolder(view);
+        // Choose layout based on position
+        if (viewType % 2 == 0) {
+            view = layoutInflater.inflate(R.layout.fragment_home_featured_event_left, parent, false);
+
+        } else {
+            view = layoutInflater.inflate(R.layout.fragment_home_featured_event_right, parent, false);
+        }
+
+        return new EventViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull EventsAdapter.EventViewHolder holder, int position) {
-        Event event = events.get(position);
+    public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
+        Event event = featuredEvents.get(position);
         if (event != null) {
             holder.eventName.setText(event.getName());
+
+            // Calculate height based on text length
+            holder.eventName.post(() -> {
+                int lineCount = holder.eventName.getLineCount();
+                ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+
+                if (lineCount > 1) {
+                    layoutParams.height = convertDpToPx(200, holder.itemView); // Height for 2 lines
+                } else {
+                    layoutParams.height = convertDpToPx(185, holder.itemView); // Default height
+                }
+
+                holder.itemView.setLayoutParams(layoutParams);
+            });
 
             String eventTypeString = "Type: " + event.getEventType().getName();
             holder.eventType.setText(eventTypeString);
@@ -75,9 +97,19 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         }
     }
 
+    private int convertDpToPx(int dp, View itemView) {
+        return (int) (dp * itemView.getResources().getDisplayMetrics().density);
+    }
+
     @Override
     public int getItemCount() {
-        return events.size();
+        return featuredEvents.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        // Return 0 or 1 based on position to alternate the layout
+        return position % 2;
     }
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {

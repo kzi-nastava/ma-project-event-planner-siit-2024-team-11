@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.eventy.adapters.EventsAdapter;
+import com.example.eventy.adapters.events.EventsAdapter;
 import com.example.eventy.databinding.FragmentHomeEventsBinding;
 import com.example.eventy.model.enums.PrivacyType;
 import com.example.eventy.model.event.Event;

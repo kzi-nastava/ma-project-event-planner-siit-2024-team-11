@@ -1,4 +1,4 @@
-package com.example.eventy.home.events.featured_solutions;
+package com.example.eventy.home.solutions.featured_solutions;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
