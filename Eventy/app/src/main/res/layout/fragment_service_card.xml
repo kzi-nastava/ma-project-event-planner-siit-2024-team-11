@@ -51,7 +51,7 @@
 
                 <!-- service name -->
                 <TextView
-                    android:id="@+id/service_name"
+                    android:id="@+id/name"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:fontFamily="@font/albert_sans"
@@ -65,7 +65,7 @@
 
             <!-- service category -->
             <TextView
-                android:id="@+id/service_category"
+                android:id="@+id/category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -73,6 +73,7 @@
                 android:layout_marginRight="2dp"
                 android:fontFamily="@font/albert_sans"
                 android:text="@string/service_category"
+                android:maxLines="1"
                 android:textColor="@color/home_event_card_label"
                 android:textFontWeight="600"
                 android:textSize="12sp"
@@ -93,7 +94,7 @@
                 android:textColor="@color/home_event_card_text"
                 android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/service_category" />
+                app:layout_constraintTop_toBottomOf="@+id/category" />
 
             <!-- service reservation type text -->
             <TextView
@@ -236,20 +237,20 @@
 
                 <!-- price before discount container -->
                 <FrameLayout
-                    android:id="@+id/relative"
+                    android:id="@+id/discount_container"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="15dp">
+                        android:layout_height="16dp">
 
                         <LinearLayout
                             android:id="@+id/price_before_container"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_marginTop="2.1dp"
-                            android:layout_marginEnd="8dp"
+                            android:layout_marginTop="1.5dp"
+                            android:layout_marginEnd="5dp"
                             android:orientation="horizontal">
 
                             <!-- price before discount -->
@@ -275,7 +276,7 @@
                                 android:textFontWeight="900"
                                 android:text="@string/euro_symbol"
                                 android:textColor="@color/home_solution_card_before_price"
-                                android:textSize="9.5sp"
+                                android:textSize="9sp"
                                 tools:ignore="SmallSp" />
                         </LinearLayout>
 
@@ -284,13 +285,14 @@
                             android:id="@+id/crossed_out_container"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_marginTop="2.1dp"
-                            android:layout_marginEnd="8dp"
+                            android:layout_marginTop="1.5dp"
+                            android:layout_marginEnd="5dp"
                             android:background="@drawable/solution_card_price_crossed_out"
                             android:orientation="horizontal">
 
                             <!-- crossed out price before discount -->
                             <TextView
+                                android:id="@+id/crossed_out_price"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/albert_sans"
@@ -310,7 +312,7 @@
                                 android:textFontWeight="900"
                                 android:text="@string/euro_symbol"
                                 android:textColor="@color/home_solution_card_before_price_crossed_out"
-                                android:textSize="9.5sp"
+                                android:textSize="9sp"
                                 tools:ignore="SmallSp" />
                         </LinearLayout>
                     </RelativeLayout>
@@ -332,7 +334,7 @@
                         android:text="@string/solution_current_price"
                         android:textColor="@color/home_event_card_text"
                         android:textFontWeight="900"
-                        android:textSize="15sp" />
+                        android:textSize="14sp" />
 
                     <!-- euro symbol -->
                     <TextView
@@ -375,9 +377,9 @@
                     android:id="@+id/favorite_button"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="6dp"
+                    android:layout_marginStart="5dp"
                     android:layout_marginEnd="10dp"
-                    android:layout_weight="1.1"
+                    android:layout_weight="0.93"
                     android:background="@drawable/icon_favorite_smaller"
                     android:text="@string/favorite" />
 
@@ -386,7 +388,7 @@
                     android:id="@+id/see_more_button"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginEnd="13dp"
+                    android:layout_marginEnd="12dp"
                     android:layout_weight="3.4"
                     android:background="@drawable/event_card_see_more_border_smaller"
                     android:fontFamily="@font/albert_sans"
@@ -405,9 +407,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:orientation="vertical"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="3dp"
                 android:layout_marginEnd="11dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="13dp"
                 android:layout_marginBottom="12dp"
                 android:elevation="1dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -415,7 +417,7 @@
 
                 <!-- service image -->
                 <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/service_image"
+                    android:id="@+id/image"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/bon_jovi"

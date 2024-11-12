@@ -185,7 +185,7 @@
 
             <!-- all events/solutions container -->
             <FrameLayout
-                android:id="@+id/all_events"
+                android:id="@+id/all_items"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/background_color"/>
