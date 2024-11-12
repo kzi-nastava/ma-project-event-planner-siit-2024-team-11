@@ -37,4 +37,21 @@
     <string name="filter">FILTER</string>
     <string name="sort">Sort</string>
 
+    <!-- /home/products{product_card} -->
+    <string name="product_name">Sweet 16 - cake</string>
+    <string name="product_category">Category: cakes</string>
+    <string name="product_description_text">Best cake in town! Buy and see! ONLY LEGIT! BEST QULAITY, COME AND SEE!!</string>
+    <string name="event_types_label">Event types:</string>
+    <string name="event_type1">Birthday</string>
+    <string name="event_type2">Wedding</string>
+    <string name="three_dots">...</string>
+    <string name="product_price_before_discount">339</string>
+    <string name="product_current_price">309</string>
+
+    <!-- /home/services{service_card} -->
+    <string name="service_name">Bon Jovi</string>
+
+    <!-- utils -->
+    <string name="euro_symbol">€</string>
+
 </resources>
