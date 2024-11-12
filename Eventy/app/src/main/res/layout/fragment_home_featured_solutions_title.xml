@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/albert_sans"
-            android:letterSpacing="0.1"
+            android:letterSpacing="0.05"
             android:shadowColor="@color/white"
             android:shadowDx="1"
             android:shadowDy="1"
@@ -57,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/albert_sans"
-                android:letterSpacing="0.1"
+                android:letterSpacing="0.05"
                 android:background="@drawable/home_featured_services_title_background_color"
                 android:shadowColor="@color/white"
                 android:shadowDx="1"
@@ -66,7 +66,7 @@
                 android:text="@string/services"
                 android:textColor="@color/white"
                 android:textFontWeight="900"
-                android:textSize="27sp" />
+                android:textSize="25sp" />
 
             <!-- "&" text -->
             <TextView
@@ -75,17 +75,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="9dp"
                 android:fontFamily="@font/albert_sans"
-                android:letterSpacing="0.1"
-                android:paddingLeft="1dp"
-                android:paddingRight="1dp"
                 android:shadowColor="@color/white"
                 android:shadowDx="1"
                 android:shadowDy="1"
                 android:shadowRadius="2"
-                android:text="&amp;"
+                android:text="@string/amp"
                 android:textColor="@color/white"
                 android:textFontWeight="900"
-                android:textSize="27sp" />
+                android:textSize="18sp" />
 
             <!-- "PRODUCTS" text -->
             <TextView
@@ -95,7 +92,7 @@
                 android:layout_marginStart="9dp"
                 android:background="@drawable/home_featured_products_title_background_color"
                 android:fontFamily="@font/albert_sans"
-                android:letterSpacing="0.1"
+                android:letterSpacing="0.05"
                 android:paddingLeft="1dp"
                 android:paddingRight="1dp"
                 android:shadowColor="@color/white"
@@ -105,7 +102,7 @@
                 android:text="@string/products"
                 android:textColor="@color/white"
                 android:textFontWeight="900"
-                android:textSize="27sp" />
+                android:textSize="25sp" />
 
         </LinearLayout>
 
