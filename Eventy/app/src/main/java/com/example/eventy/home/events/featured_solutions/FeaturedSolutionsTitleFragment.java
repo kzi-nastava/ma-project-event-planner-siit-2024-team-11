@@ -1,26 +1,28 @@
-package com.example.eventy.home.events.featured_events;
+package com.example.eventy.home.events.featured_solutions;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.eventy.databinding.FragmentHomeFeaturedEventsTitleBinding;
+import com.example.eventy.databinding.FragmentHomeFeaturedSolutionsTitleBinding;
 
-public class FeaturedEventsTitleFragment extends Fragment {
-    private FragmentHomeFeaturedEventsTitleBinding binding;
+public class FeaturedSolutionsTitleFragment extends Fragment {
+    private FragmentHomeFeaturedSolutionsTitleBinding binding;
 
-    public FeaturedEventsTitleFragment() {
+    public FeaturedSolutionsTitleFragment() {
         // Required empty public constructor
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentHomeFeaturedEventsTitleBinding.inflate(inflater, container, false);
+        binding = FragmentHomeFeaturedSolutionsTitleBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         // custom code

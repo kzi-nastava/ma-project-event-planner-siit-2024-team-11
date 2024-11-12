@@ -27,6 +27,7 @@ import com.example.eventy.home.events.EventsFragment;
 import com.example.eventy.home.events.EventsViewModel;
 import com.example.eventy.home.events.featured_events.FeaturedEventsFragment;
 import com.example.eventy.home.events.featured_events.FeaturedEventsTitleFragment;
+import com.example.eventy.home.events.featured_solutions.FeaturedSolutionsTitleFragment;
 import com.example.eventy.register.RegisterOrganiserFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
@@ -89,10 +90,21 @@ public class HomeFragment extends Fragment {
             binding.tabSolutions.setTextColor(ContextCompat.getColor(v.getContext(), R.color.tab_active_text_color));
             binding.tabSolutions.setBackground(ContextCompat.getDrawable(v.getContext(), R.drawable.home_tab_active_background));
 
-            Fragment fragment = new RegisterOrganiserFragment();
-
+            Fragment featuredSolutionsTitleFragment = new FeaturedSolutionsTitleFragment();
             getChildFragmentManager().beginTransaction()
-                    .replace(R.id.tab_view, fragment)
+                    .replace(R.id.tab_title, featuredSolutionsTitleFragment)
+                    .addToBackStack(null)
+                    .commit();
+
+            Fragment fragmentFeaturedEvents = new FeaturedEventsFragment();
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.tab_view, fragmentFeaturedEvents)
+                    .addToBackStack(null)
+                    .commit();
+
+            Fragment fragmentEvents = new EventsFragment();
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.all_events, fragmentEvents)
                     .addToBackStack(null)
                     .commit();
         });
