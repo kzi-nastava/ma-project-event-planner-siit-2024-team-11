@@ -22,6 +22,7 @@ import com.example.eventy.home.events.EventsFragment;
 import com.example.eventy.home.events.EventsViewModel;
 import com.example.eventy.home.events.featured_events.FeaturedEventsFragment;
 import com.example.eventy.home.events.featured_events.FeaturedEventsTitleFragment;
+import com.example.eventy.home.solutions.featured_solutions.FeaturedSolutionsFragment;
 import com.example.eventy.home.solutions.featured_solutions.FeaturedSolutionsTitleFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
@@ -90,9 +91,9 @@ public class HomeFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();
 
-            Fragment fragmentFeaturedEvents = new FeaturedEventsFragment();
+            Fragment fragmentFeaturedSolutions = new FeaturedSolutionsFragment();
             getChildFragmentManager().beginTransaction()
-                    .replace(R.id.tab_view, fragmentFeaturedEvents)
+                    .replace(R.id.tab_view, fragmentFeaturedSolutions)
                     .addToBackStack(null)
                     .commit();
 
