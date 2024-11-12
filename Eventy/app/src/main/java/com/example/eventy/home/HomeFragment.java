@@ -22,6 +22,7 @@ import com.example.eventy.home.events.EventsFragment;
 import com.example.eventy.home.events.EventsViewModel;
 import com.example.eventy.home.events.featured_events.FeaturedEventsFragment;
 import com.example.eventy.home.events.featured_events.FeaturedEventsTitleFragment;
+import com.example.eventy.home.solutions.SolutionsFragment;
 import com.example.eventy.home.solutions.featured_solutions.FeaturedSolutionsFragment;
 import com.example.eventy.home.solutions.featured_solutions.FeaturedSolutionsTitleFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -49,7 +50,7 @@ public class HomeFragment extends Fragment {
 
         // Load All Events container
         getChildFragmentManager().beginTransaction()
-                .replace(R.id.all_events, new EventsFragment())
+                .replace(R.id.all_items, new EventsFragment())
                 .commit();
 
         binding.tabEvent.setOnClickListener(v -> {
@@ -73,7 +74,7 @@ public class HomeFragment extends Fragment {
 
             Fragment fragmentEvents = new EventsFragment();
             getChildFragmentManager().beginTransaction()
-                    .replace(R.id.all_events, fragmentEvents)
+                    .replace(R.id.all_items, fragmentEvents)
                     .addToBackStack(null)
                     .commit();
         });
@@ -97,9 +98,9 @@ public class HomeFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();
 
-            Fragment fragmentEvents = new EventsFragment();
+            Fragment fragmentSolutions = new SolutionsFragment();
             getChildFragmentManager().beginTransaction()
-                    .replace(R.id.all_events, fragmentEvents)
+                    .replace(R.id.all_items, fragmentSolutions)
                     .addToBackStack(null)
                     .commit();
         });
