@@ -25,8 +25,6 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <!-- left side of card -->
-
-        <!-- right side of card -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/left_side"
             android:layout_width="match_parent"
@@ -171,6 +169,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/location_container" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <!-- right side of card -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/right_side"
             android:layout_width="match_parent"
