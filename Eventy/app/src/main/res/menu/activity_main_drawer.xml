@@ -16,5 +16,9 @@
             android:id="@+id/nav_register"
             android:icon="@drawable/register_icon"
             android:title="@string/menu_register" />
+        <item
+            android:id="@+id/nav_add_service"
+            android:icon="@drawable/service_add_icon"
+            android:title="@string/menu_add_service" />
     </group>
 </menu>
