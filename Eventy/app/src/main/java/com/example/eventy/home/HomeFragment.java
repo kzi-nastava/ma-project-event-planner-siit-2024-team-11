@@ -134,7 +134,8 @@ public class HomeFragment extends Fragment {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // Provera da li je ovo prvi poziv
+                //((TextView) parent.getChildAt(0)).setTextColor(Color.MAGENTA);
+                /*// Provera da li je ovo prvi poziv
                 if (isFirstSelection) {
                     isFirstSelection = false;
                     return; // Izlazak iz metode bez prikazivanja dijaloga
@@ -145,7 +146,7 @@ public class HomeFragment extends Fragment {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 Log.v("ShopApp", (String) parent.getItemAtPosition(position));
-                                ((TextView) parent.getChildAt(0)).setTextColor(Color.MAGENTA);
+
                             }
                         })
                         .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -154,7 +155,7 @@ public class HomeFragment extends Fragment {
                             }
                         });
                 AlertDialog alert = dialog.create();
-                alert.show();
+                alert.show();*/
             }
 
 
