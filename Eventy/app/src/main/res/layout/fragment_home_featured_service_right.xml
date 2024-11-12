@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/event_card"
+    android:layout_width="match_parent"
+    android:layout_height="205dp">
+
+    <!-- whole background (card + shapes behind) -->
+    <RelativeLayout
+        android:id="@+id/relative_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toBottomOf="@+id/featured_events_title_container"
+        android:paddingTop="3dp"
+        android:paddingBottom="0dp"
+        android:background="@color/home_featured_items_background_color">
+
+        <!-- dark blue circle -->
+        <View
+            android:id="@+id/circle1"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="11dp"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/icon_circle_71788f" />
+
+        <!-- light blue circle -->
+        <View
+            android:id="@+id/circle2"
+            android:layout_width="27dp"
+            android:layout_height="27dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="0dp"
+            android:layout_marginStart="-7dp"
+            android:background="@drawable/icon_circle_929ab7" />
+
+        <!-- white circle -->
+        <View
+            android:id="@+id/circle3"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="-1dp"
+            android:background="@drawable/icon_circle_fffdfd" />
+
+        <!-- light gray background behind the stripes -->
+        <View
+            android:id="@+id/line_background"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginTop="68dp"
+            android:layout_marginStart="7dp"
+            android:background="@drawable/home_events_card_right_lines_background" />
+
+        <!-- stripe/line shapes container -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!-- upper stripe/line -->
+            <View
+                android:id="@+id/line1"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:layout_marginTop="79dp"
+                android:layout_marginStart="24dp"
+                android:background="@drawable/home_events_card_right_lines" />
+
+            <!-- lower stripe/line -->
+            <View
+                android:id="@+id/line2"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="15dp"
+                android:background="@drawable/home_events_card_right_lines" />
+        </LinearLayout>
+
+        <!-- event card (smaller version) inserted -->
+        <include layout="@layout/fragment_home_featured_service_card"
+            android:layout_width="match_parent"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="10dp"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
