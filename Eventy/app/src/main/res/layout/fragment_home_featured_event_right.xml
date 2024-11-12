@@ -82,8 +82,8 @@
         <!-- event card (smaller version) inserted -->
         <include layout="@layout/fragment_home_featured_event_card"
             android:layout_width="match_parent"
-            android:layout_marginStart="36dp"
-            android:layout_marginEnd="9dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="10dp"
             android:layout_height="wrap_content"/>
 
     </RelativeLayout>
