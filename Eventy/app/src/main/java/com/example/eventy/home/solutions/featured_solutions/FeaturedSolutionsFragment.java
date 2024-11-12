@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.eventy.adapters.solutions.FeaturedSolutionsAdapter;
 import com.example.eventy.databinding.FragmentHomeFeaturedSolutionsBinding;
 import com.example.eventy.model.enums.ReservationConfirmationType;
+import com.example.eventy.model.enums.Status;
+import com.example.eventy.model.solution.Category;
 import com.example.eventy.model.solution.Product;
 import com.example.eventy.model.solution.Service;
 import com.example.eventy.model.solution.Solution;
@@ -53,7 +55,9 @@ public class FeaturedSolutionsFragment extends Fragment {
 
         // Creating 3 Service objects
         Service service1 = new Service();
-        service1.setName("Wedding Photography");
+        service1.setName("Photography");
+        Category category1 = new Category("photography", "Neki description", Status.ACCEPTED);
+        service1.setCategory(category1);
         service1.setDescription("Professional wedding photography service.");
         service1.setPrice(1500.0);
         service1.setDiscount(10);
@@ -69,8 +73,10 @@ public class FeaturedSolutionsFragment extends Fragment {
         service1.setReservationConfirmationType(ReservationConfirmationType.AUTOMATIC);
 
         Service service2 = new Service();
-        service2.setName("DJ Service");
-        service2.setDescription("High-quality DJ service for your events.");
+        service2.setName("Bon Jovi");
+        Category category2 = new Category("music", "Neki description", Status.ACCEPTED);
+        service2.setCategory(category2);
+        service2.setDescription("Best band ever!");
         service2.setPrice(800.0);
         service2.setDiscount(5);
         service2.setImageUrls(new ArrayList<>(Arrays.asList("dj1.jpg", "dj2.jpg")));
@@ -85,7 +91,9 @@ public class FeaturedSolutionsFragment extends Fragment {
         service2.setReservationConfirmationType(ReservationConfirmationType.MANUAL);
 
         Service service3 = new Service();
-        service3.setName("Event Catering");
+        service3.setName("Event Catering - The best");
+        Category category3 = new Category("catering", "Neki description", Status.ACCEPTED);
+        service3.setCategory(category3);
         service3.setDescription("Delicious catering service for all types of events.");
         service3.setPrice(1200.0);
         service3.setDiscount(15);
@@ -102,7 +110,9 @@ public class FeaturedSolutionsFragment extends Fragment {
 
         // Creating 2 Product objects
         Product product1 = new Product();
-        product1.setName("Floral Centerpiece");
+        product1.setName("Sweet 16 - cake");
+        Category category4 = new Category("cake", "Neki description", Status.ACCEPTED);
+        product1.setCategory(category4);
         product1.setDescription("Elegant floral centerpiece for your event.");
         product1.setPrice(50.0);
         product1.setDiscount(0);
@@ -112,7 +122,9 @@ public class FeaturedSolutionsFragment extends Fragment {
         product1.setIsAvailable(true);
 
         Product product2 = new Product();
-        product2.setName("Custom Gift Basket");
+        product2.setName("Custom Gift Candy Basket");
+        Category category5 = new Category("gifts", "Neki description", Status.ACCEPTED);
+        product2.setCategory(category5);
         product2.setDescription("Personalized gift basket for special occasions.");
         product2.setPrice(75.0);
         product2.setDiscount(5);
