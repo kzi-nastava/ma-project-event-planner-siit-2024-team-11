@@ -34,10 +34,8 @@ public class FeaturedEventsAdapter extends RecyclerView.Adapter<FeaturedEventsAd
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
 
-        // Choose layout based on position
         if (viewType % 2 == 0) {
             view = layoutInflater.inflate(R.layout.fragment_home_featured_event_left, parent, false);
-
         } else {
             view = layoutInflater.inflate(R.layout.fragment_home_featured_event_right, parent, false);
         }
@@ -51,19 +49,27 @@ public class FeaturedEventsAdapter extends RecyclerView.Adapter<FeaturedEventsAd
         if (event != null) {
             holder.eventName.setText(event.getName());
 
-            // Calculate height based on text length
-            holder.eventName.post(() -> {
-                int lineCount = holder.eventName.getLineCount();
-                ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+            if (position % 2 == 0) {
+                View eventCardLeft = holder.itemView.findViewById(R.id.event_card_left);
+                eventCardLeft.post(() -> {
+                    int height = eventCardLeft.getHeight();
 
-                if (lineCount > 1) {
-                    layoutParams.height = convertDpToPx(200, holder.itemView); // Height for 2 lines
-                } else {
-                    layoutParams.height = convertDpToPx(185, holder.itemView); // Default height
-                }
+                    ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+                    layoutParams.height = height + convertDpToPx(15, holder.itemView);
 
-                holder.itemView.setLayoutParams(layoutParams);
-            });
+                    holder.itemView.setLayoutParams(layoutParams);
+                });
+            } else {
+                View eventCardRight = holder.itemView.findViewById(R.id.event_card_right);
+                eventCardRight.post(() -> {
+                    int height = eventCardRight.getHeight();
+
+                    ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+                    layoutParams.height = height + convertDpToPx(15, holder.itemView);
+
+                    holder.itemView.setLayoutParams(layoutParams);
+                });
+            }
 
             String eventTypeString = "Type: " + event.getEventType().getName();
             holder.eventType.setText(eventTypeString);
@@ -85,14 +91,12 @@ public class FeaturedEventsAdapter extends RecyclerView.Adapter<FeaturedEventsAd
 
             Button seeMoreButton = holder.itemView.findViewById(R.id.see_more_button);
             seeMoreButton.setOnClickListener(v -> {
-                // Show a Toast with the event name
-                Toast.makeText(holder.itemView.getContext(), "See more: Event: " + event.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(holder.itemView.getContext(), "See more: " + event.getName(), Toast.LENGTH_SHORT).show();
             });
 
             Button favoriteButton = holder.itemView.findViewById(R.id.favorite_button);
             favoriteButton.setOnClickListener(v -> {
-                // Show a Toast with the event name
-                Toast.makeText(holder.itemView.getContext(), "Favorite: Event: " + event.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(holder.itemView.getContext(), "Favorite: " + event.getName(), Toast.LENGTH_SHORT).show();
             });
         }
     }

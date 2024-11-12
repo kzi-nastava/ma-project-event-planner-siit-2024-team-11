@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventy.R;
+import com.example.eventy.model.solution.Product;
 import com.example.eventy.model.solution.Service;
 import com.example.eventy.model.solution.Solution;
 
@@ -31,9 +32,8 @@ public class FeaturedSolutionsAdapter extends RecyclerView.Adapter<FeaturedSolut
     @Override
     public FeaturedSolutionsAdapter.SolutionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
-        Log.wtf("Ovo je inflate: ", featuredSolutions.get(viewType).toString());
+        //Log.wtf("Ovo je inflate: ", featuredSolutions.get(viewType).toString());
 
-        // Choose layout based on Solution type (Product or Service) and position
         if (featuredSolutions.get(viewType) instanceof Service) {
             if (viewType % 2 == 0) {
                 view = layoutInflater.inflate(R.layout.fragment_home_featured_service_left, parent, false);
@@ -58,31 +58,51 @@ public class FeaturedSolutionsAdapter extends RecyclerView.Adapter<FeaturedSolut
         if (solution != null) {
             holder.name.setText(solution.getName());
 
-            // Calculate height based on text length
-            holder.name.post(() -> {
-                int lineCount = holder.name.getLineCount();
-                ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+            if (position % 2 == 0) {
+                if (solution instanceof Product) {
+                    View productCardLeft = holder.itemView.findViewById(R.id.product_card_left);
+                    productCardLeft.post(() -> {
+                        int height = productCardLeft.getHeight();
 
-                if (solution instanceof Service) {
-                    if (lineCount > 1) {
-                        layoutParams.height = convertDpToPx(220, holder.itemView); // Height for 2 lines
+                        ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+                        layoutParams.height = height + convertDpToPx(15, holder.itemView);
 
-                    } else {
-                        layoutParams.height = convertDpToPx(205, holder.itemView); // Default height
-                    }
+                        holder.itemView.setLayoutParams(layoutParams);
+                    });
                 } else {
-                    if (lineCount > 1) {
-                        layoutParams.height = convertDpToPx(222, holder.itemView); // Height for 2 lines
-                    } else {
-                        layoutParams.height = convertDpToPx(207, holder.itemView); // Default height
-                    }
+                    View serviceCardLeft = holder.itemView.findViewById(R.id.service_card_left);
+                    serviceCardLeft.post(() -> {
+                        int height = serviceCardLeft.getHeight();
+
+                        ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+                        layoutParams.height = height + convertDpToPx(15, holder.itemView);
+
+                        holder.itemView.setLayoutParams(layoutParams);
+                    });
                 }
+            } else {
+                if (solution instanceof Product) {
+                    View productCardRight = holder.itemView.findViewById(R.id.product_card_right);
+                    productCardRight.post(() -> {
+                        int height = productCardRight.getHeight();
 
+                        ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+                        layoutParams.height = height + convertDpToPx(15, holder.itemView);
 
-                holder.itemView.setLayoutParams(layoutParams);
-            });
+                        holder.itemView.setLayoutParams(layoutParams);
+                    });
+                } else {
+                    View serviceCardRight = holder.itemView.findViewById(R.id.service_card_right);
+                    serviceCardRight.post(() -> {
+                        int height = serviceCardRight.getHeight();
 
-            //Log.wtf("ovde", solution.toString());
+                        ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+                        layoutParams.height = height + convertDpToPx(15, holder.itemView);
+
+                        holder.itemView.setLayoutParams(layoutParams);
+                    });
+                }
+            }
 
             String categoryString = "Type: " + solution.getCategory().getName();
             holder.category.setText(categoryString);
@@ -104,14 +124,12 @@ public class FeaturedSolutionsAdapter extends RecyclerView.Adapter<FeaturedSolut
 
             Button seeMoreButton = holder.itemView.findViewById(R.id.see_more_button);
             seeMoreButton.setOnClickListener(v -> {
-                // Show a Toast with the event name
-                Toast.makeText(holder.itemView.getContext(), "See more: Solution: " + solution.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(holder.itemView.getContext(), "See more: " + solution.getName(), Toast.LENGTH_SHORT).show();
             });
 
             Button favoriteButton = holder.itemView.findViewById(R.id.favorite_button);
             favoriteButton.setOnClickListener(v -> {
-                // Show a Toast with the event name
-                Toast.makeText(holder.itemView.getContext(), "Favorite: Solution: " + solution.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(holder.itemView.getContext(), "Favorite: " + solution.getName(), Toast.LENGTH_SHORT).show();
             });
         }
     }
