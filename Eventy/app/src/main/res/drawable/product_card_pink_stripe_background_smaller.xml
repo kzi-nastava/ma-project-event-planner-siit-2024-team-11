@@ -9,7 +9,7 @@
     <item android:width="8.5dp">
         <shape android:shape="rectangle" android:elevation="1dp"
             android:outlineProvider="paddedBounds">
-            <solid android:color="#808AAC"/>
+            <solid android:color="#DD79AE"/>
             <corners android:topLeftRadius="12dp" android:bottomLeftRadius="12dp"></corners>
         </shape>
     </item>
