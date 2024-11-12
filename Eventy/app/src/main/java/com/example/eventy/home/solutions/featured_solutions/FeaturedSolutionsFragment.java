@@ -53,87 +53,55 @@ public class FeaturedSolutionsFragment extends Fragment {
     private static ArrayList<Solution> getFeaturedSolutions() {
         ArrayList<Solution> featuredSolutions = new ArrayList<>();
 
-        // Creating 3 Service objects
-        Service service1 = new Service();
-        service1.setName("Photography");
-        Category category1 = new Category("photography", "Neki description", Status.ACCEPTED);
-        service1.setCategory(category1);
-        service1.setDescription("Professional wedding photography service.");
-        service1.setPrice(1500.0);
-        service1.setDiscount(10);
-        service1.setImageUrls(new ArrayList<>(Arrays.asList("image1.jpg", "image2.jpg")));
-        service1.setIsDeleted(false);
-        service1.setIsVisible(true);
-        service1.setIsAvailable(true);
-        service1.setSpecifics("Full-day photography");
-        service1.setMinReservationTime(30);
-        service1.setMaxReservationTime(180);
-        service1.setReservationDeadline(7);
-        service1.setCancellationDeadline(3);
-        service1.setReservationConfirmationType(ReservationConfirmationType.AUTOMATIC);
+        Service service1 = new Service(
+            "Photography",
+            new Category("photography", "Neki description", Status.ACCEPTED),
+            "Professional wedding photography service.",
+            1500.0, 10,
+            new ArrayList<>(Arrays.asList("image1.jpg", "image2.jpg")),
+            false, true, true, "Full-day photography",
+            30, 180, 7, 3,
+            ReservationConfirmationType.AUTOMATIC
+        );
 
-        Service service2 = new Service();
-        service2.setName("Bon Jovi");
-        Category category2 = new Category("music", "Neki description", Status.ACCEPTED);
-        service2.setCategory(category2);
-        service2.setDescription("Best band ever!");
-        service2.setPrice(800.0);
-        service2.setDiscount(5);
-        service2.setImageUrls(new ArrayList<>(Arrays.asList("dj1.jpg", "dj2.jpg")));
-        service2.setIsDeleted(false);
-        service2.setIsVisible(true);
-        service2.setIsAvailable(true);
-        service2.setSpecifics("Includes sound and lighting equipment");
-        service2.setMinReservationTime(60);
-        service2.setMaxReservationTime(120);
-        service2.setReservationDeadline(14);
-        service2.setCancellationDeadline(7);
-        service2.setReservationConfirmationType(ReservationConfirmationType.MANUAL);
+        Service service2 = new Service(
+            "Bon Jovi",
+            new Category("music", "Neki description", Status.ACCEPTED),
+            "Best band ever!", 800.0, 5,
+            new ArrayList<>(Arrays.asList("dj1.jpg", "dj2.jpg")),
+            false, true, true, "Includes sound and lighting equipment",
+            60, 120, 14, 7,
+            ReservationConfirmationType.MANUAL
+        );
 
-        Service service3 = new Service();
-        service3.setName("Event Catering - The best");
-        Category category3 = new Category("catering", "Neki description", Status.ACCEPTED);
-        service3.setCategory(category3);
-        service3.setDescription("Delicious catering service for all types of events.");
-        service3.setPrice(1200.0);
-        service3.setDiscount(15);
-        service3.setImageUrls(new ArrayList<>(Arrays.asList("catering1.jpg", "catering2.jpg")));
-        service3.setIsDeleted(false);
-        service3.setIsVisible(true);
-        service3.setIsAvailable(true);
-        service3.setSpecifics("Custom menu available");
-        service3.setMinReservationTime(30);
-        service3.setMaxReservationTime(150);
-        service3.setReservationDeadline(10);
-        service3.setCancellationDeadline(5);
-        service3.setReservationConfirmationType(ReservationConfirmationType.AUTOMATIC);
+        Service service3 = new Service(
+            "Event Catering - The best",
+            new Category("catering", "Neki description", Status.ACCEPTED),
+            "Delicious catering service for all types of events.",
+            1200.0, 15,
+            new ArrayList<>(Arrays.asList("catering1.jpg", "catering2.jpg")),
+            false, true, true, "Custom menu available",
+            30, 150, 10, 5,
+            ReservationConfirmationType.AUTOMATIC
+        );
 
-        // Creating 2 Product objects
-        Product product1 = new Product();
-        product1.setName("Sweet 16 - cake");
-        Category category4 = new Category("cake", "Neki description", Status.ACCEPTED);
-        product1.setCategory(category4);
-        product1.setDescription("Elegant floral centerpiece for your event.");
-        product1.setPrice(50.0);
-        product1.setDiscount(0);
-        product1.setImageUrls(new ArrayList<>(Arrays.asList("floral1.jpg", "floral2.jpg")));
-        product1.setIsDeleted(false);
-        product1.setIsVisible(true);
-        product1.setIsAvailable(true);
+        Product product1 = new Product(
+            "Sweet 16 - cake",
+            new Category("cake", "Neki description", Status.ACCEPTED),
+            "Elegant floral centerpiece for your event.",
+            50.0, 0,
+            new ArrayList<>(Arrays.asList("floral1.jpg", "floral2.jpg")),
+            false, true, true
+        );
 
-        Product product2 = new Product();
-        product2.setName("Custom Gift Candy Basket");
-        Category category5 = new Category("gifts", "Neki description", Status.ACCEPTED);
-        product2.setCategory(category5);
-        product2.setDescription("Personalized gift basket for special occasions.");
-        product2.setPrice(75.0);
-        product2.setDiscount(5);
-        product2.setImageUrls(new ArrayList<>(Arrays.asList("gift1.jpg", "gift2.jpg")));
-        product2.setIsDeleted(false);
-        product2.setIsVisible(true);
-        product2.setIsAvailable(true);
+        Product product2 = new Product(
+            "Custom Gift Candy Basket",
+            new Category("gifts", "Neki description", Status.ACCEPTED),
+            "Personalized gift basket for special occasions.", 75.0, 5,
+            new ArrayList<>(Arrays.asList("gift1.jpg", "gift2.jpg")),
+            false, true, true
+        );
 
-        // Adding all objects to the featuredSolutions list
         featuredSolutions.add(service1);
         featuredSolutions.add(product1);
         featuredSolutions.add(service2);
