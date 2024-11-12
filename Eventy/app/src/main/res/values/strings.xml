@@ -16,7 +16,10 @@
 
     <!-- /home -->
     <string name="service_and_products">Solutions</string>
+    <string name="featured">FEATURED</string>
     <string name="events">Events</string>
+    <string name="services">SERVICES</string>
+    <string name="products">PRODUCTS</string>
 
     <!-- /home/events{event_card} -->
     <string name="open_event">OPEN EVENT!</string>
@@ -53,5 +56,6 @@
 
     <!-- utils -->
     <string name="euro_symbol">€</string>
+
 
 </resources>
