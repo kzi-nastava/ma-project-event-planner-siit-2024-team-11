@@ -20,7 +20,7 @@
     <color name="tab_active_text_color">#6E717B</color>
 
     <!-- home/events -->
-    <color name="home_events_featured_background_color">#B5BEDF</color>
+    <color name="home_featured_items_background_color">#B5BEDF</color>
 
     <!-- home/events{event_card} -->
     <color name="home_event_card_open_event">#3ED34F</color>
@@ -30,7 +30,7 @@
     <color name="home_event_card_text">#5B5B5B</color>
 
     <!-- home/products{product_card} -->
-    <color name="home_product_card_before_price">#F40F0F</color>
-    <color name="home_product_card_before_price_crossed_out">#00F40F0F</color>
+    <color name="home_solution_card_before_price">#F40F0F</color>
+    <color name="home_solution_card_before_price_crossed_out">#00F40F0F</color>
 
 </resources>

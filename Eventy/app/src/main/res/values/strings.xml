@@ -20,6 +20,7 @@
     <string name="events">Events</string>
     <string name="services">SERVICES</string>
     <string name="products">PRODUCTS</string>
+    <string name="amp"><![CDATA[&]]></string>
 
     <!-- /home/events{event_card} -->
     <string name="open_event">OPEN EVENT!</string>
@@ -40,22 +41,24 @@
     <string name="filter">FILTER</string>
     <string name="sort">Sort</string>
 
-    <!-- /home/products{product_card} -->
-    <string name="product_name">Sweet 16 - cake</string>
-    <string name="product_category">Category: cakes</string>
-    <string name="product_description_text">Best cake in town! Buy and see! ONLY LEGIT! BEST QULAITY, COME AND SEE!!</string>
+    <!-- /home/solutions{solution_card} -->
+    <string name="solution_price_before_discount">339</string>
+    <string name="solution_current_price">309</string>
     <string name="event_types_label">Event types:</string>
     <string name="event_type1">Birthday</string>
     <string name="event_type2">Wedding</string>
     <string name="three_dots">...</string>
-    <string name="product_price_before_discount">339</string>
-    <string name="product_current_price">309</string>
-
-    <!-- /home/services{service_card} -->
-    <string name="service_name">Bon Jovi</string>
-
-    <!-- utils -->
     <string name="euro_symbol">€</string>
 
+    <!-- /home/products{product_card} -->
+    <string name="product_name">Sweet 16 - cake</string>
+    <string name="product_category">Category: cakes</string>
+    <string name="product_description_text">Best cake in town! Buy and see! ONLY LEGIT! BEST QULAITY, COME AND SEE!!</string>
+
+    <!-- /home/services{service_card} -->
+    <string name="service_name">Bon Jovisssssssssssssssssssssssssssssssssss</string>
+    <string name="service_category">Category: music</string>
+    <string name="service_duration">Duration: 1h-5h</string>
+    <string name="service_reservation_type">Reservation: manual</string>
 
 </resources>
