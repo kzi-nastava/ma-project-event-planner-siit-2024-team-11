@@ -5,6 +5,7 @@ import java.util.Objects;
 
 public class Solution {
     private String name;
+    private Category category;
     private String description;
     private double price;
     private Integer discount;
@@ -17,8 +18,9 @@ public class Solution {
 
     }
 
-    public Solution(String name, String description, double price, Integer discount, ArrayList<String> imageUrls, Boolean isDeleted, Boolean isVisible, Boolean isAvailable) {
+    public Solution(String name, Category category, String description, double price, Integer discount, ArrayList<String> imageUrls, Boolean isDeleted, Boolean isVisible, Boolean isAvailable) {
         this.name = name;
+        this.category = category;
         this.description = description;
         this.price = price;
         this.discount = discount;
@@ -34,6 +36,14 @@ public class Solution {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public String getDescription() {
@@ -97,18 +107,19 @@ public class Solution {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Solution solution = (Solution) o;
-        return Double.compare(price, solution.price) == 0 && Objects.equals(name, solution.name) && Objects.equals(description, solution.description) && Objects.equals(discount, solution.discount) && Objects.equals(imageUrls, solution.imageUrls) && Objects.equals(isDeleted, solution.isDeleted) && Objects.equals(isVisible, solution.isVisible) && Objects.equals(isAvailable, solution.isAvailable);
+        return Double.compare(price, solution.price) == 0 && Objects.equals(name, solution.name) && Objects.equals(category, solution.category) && Objects.equals(description, solution.description) && Objects.equals(discount, solution.discount) && Objects.equals(imageUrls, solution.imageUrls) && Objects.equals(isDeleted, solution.isDeleted) && Objects.equals(isVisible, solution.isVisible) && Objects.equals(isAvailable, solution.isAvailable);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, price, discount, imageUrls, isDeleted, isVisible, isAvailable);
+        return Objects.hash(name, category, description, price, discount, imageUrls, isDeleted, isVisible, isAvailable);
     }
 
     @Override
     public String toString() {
         return "Solution{" +
                 "name='" + name + '\'' +
+                ", category=" + category +
                 ", description='" + description + '\'' +
                 ", price=" + price +
                 ", discount=" + discount +

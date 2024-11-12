@@ -17,15 +17,7 @@ public class Service extends Solution {
 
     }
 
-    public Service(String name, String description, double price, Integer discount, ArrayList<String> imageUrls, Boolean isDeleted, Boolean isVisible, Boolean isAvailable, String specifics, Integer minReservationTime, Integer maxReservationTime, Integer reservationDeadline, Integer cancellationDeadline, ReservationConfirmationType reservationConfirmationType) {
-        super(name, description, price, discount, imageUrls, isDeleted, isVisible, isAvailable);
-        this.specifics = specifics;
-        this.minReservationTime = minReservationTime;
-        this.maxReservationTime = maxReservationTime;
-        this.reservationDeadline = reservationDeadline;
-        this.cancellationDeadline = cancellationDeadline;
-        this.reservationConfirmationType = reservationConfirmationType;
-    }
+
 
     public String getSpecifics() {
         return specifics;
@@ -99,6 +91,7 @@ public class Service extends Solution {
     public String toString() {
         return "Service{" +
                 "name='" + getName() + '\'' +
+                ", category='" + getCategory() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", price=" + getPrice() +
                 ", discount=" + getDiscount() +
