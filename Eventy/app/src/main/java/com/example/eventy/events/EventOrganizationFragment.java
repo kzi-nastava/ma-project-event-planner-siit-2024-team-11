@@ -2,65 +2,112 @@ package com.example.eventy.events;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.eventy.R;
+import com.example.eventy.databinding.FragmentEventOrganizationBinding;
+import com.example.eventy.register.RegisterOrganiserFragment;
+import com.example.eventy.register.RegisterProviderFragment;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link EventOrganizationFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+enum EventOrganizationStage {
+    BASIC_INFORMATION,
+    AGENDA_CREATION,
+    INVITATION_SENDING
+}
+
 public class EventOrganizationFragment extends Fragment {
+    private FragmentEventOrganizationBinding binding;
+    private EventOrganizationStage eventOrganizationStage;
+    private boolean isEventPublic;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+        binding = FragmentEventOrganizationBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
 
-    public EventOrganizationFragment() {
-        // Required empty public constructor
-    }
+        eventOrganizationStage = EventOrganizationStage.BASIC_INFORMATION;
+        isEventPublic = true;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment EventOrganizationFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static EventOrganizationFragment newInstance(String param1, String param2) {
-        EventOrganizationFragment fragment = new EventOrganizationFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.formContainer, new EventOrganizationBasicInformationFragment())
+                .commit();
+
+        binding.backButton.setOnClickListener(v -> {
+            Fragment fragment;
+            String title;
+
+            if(eventOrganizationStage == EventOrganizationStage.AGENDA_CREATION) {
+                eventOrganizationStage = EventOrganizationStage.BASIC_INFORMATION;
+                fragment = new EventOrganizationBasicInformationFragment();
+                title = "Organize an Event";
+                binding.backButton.setEnabled(false);
+            } else if(eventOrganizationStage == EventOrganizationStage.INVITATION_SENDING) {
+                eventOrganizationStage = EventOrganizationStage.AGENDA_CREATION;
+                fragment = new EventAgendaCreation();
+                title = "Add Agenda to the Event";
+            } else {
+                return;
+            }
+
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.formContainer, fragment)
+                    .addToBackStack(null)
+                    .commit();
+
+            if(binding.submitButton.getText().equals("ADD EVENT")) {
+                binding.submitButton.setText("NEXT");
+                binding.submitButton.setIconResource(R.drawable.arrow_forward);
+            }
+            binding.titleText.setText(title);
+        });
+
+        binding.submitButton.setOnClickListener(v -> {
+            Fragment fragment;
+            String title;
+            String submitText = "NEXT";
+
+            if(eventOrganizationStage == EventOrganizationStage.BASIC_INFORMATION) {
+                eventOrganizationStage = EventOrganizationStage.AGENDA_CREATION;
+                fragment = new EventAgendaCreation();
+                title = "Add Agenda to the Event";
+                binding.backButton.setEnabled(true);
+            } else if(eventOrganizationStage == EventOrganizationStage.AGENDA_CREATION) {
+                eventOrganizationStage = EventOrganizationStage.INVITATION_SENDING;
+                fragment = new EventInvitationSending();
+                title = "Send Invitations";
+            } else {
+                // here we will create the event or maybe upstairs somewhere
+                return;
+            }
+
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.formContainer, fragment)
+                    .addToBackStack(null)
+                    .commit();
+
+            if(eventOrganizationStage == EventOrganizationStage.INVITATION_SENDING ||
+                    (!isEventPublic && eventOrganizationStage == EventOrganizationStage.AGENDA_CREATION)) {
+                submitText = "ADD EVENT";
+                binding.submitButton.setIconResource(R.drawable.add_icon);
+            }
+            binding.submitButton.setText(submitText);
+            binding.titleText.setText(title);
+        });
+
+        return root;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_event_organization, container, false);
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

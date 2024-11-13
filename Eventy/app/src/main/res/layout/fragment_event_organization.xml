@@ -29,8 +29,9 @@
                 android:layout_margin="8dp"
                 android:src="@drawable/arrow_back"
                 app:fabSize="mini"
-                app:backgroundTint="@color/button_color"
-                app:tint="@color/white" />
+                app:backgroundTint="@color/button_color_state"
+                app:tint="@color/white"
+                android:enabled="false"/>
 
             <!-- Title centered horizontally -->
             <TextView
@@ -38,7 +39,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Organize Event"
+                android:text="Organize an Event"
                 android:gravity="center"
                 android:textColor="@color/title_color"
                 android:textSize="34sp"
@@ -57,7 +58,7 @@
 
         <!-- Centered button at the bottom -->
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/bottomButton"
+            android:id="@+id/submitButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:icon="@drawable/arrow_forward"
