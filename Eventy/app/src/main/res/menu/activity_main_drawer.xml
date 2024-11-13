@@ -20,11 +20,13 @@
             android:id="@+id/nav_add_service"
             android:icon="@drawable/service_add_icon"
             android:title="@string/menu_add_service" />
-
         <item
             android:id="@+id/nav_edit_service"
             android:icon="@drawable/service_add_icon"
             android:title="@string/menu_edit_service" />
-
+        <item
+            android:id="@+id/nav_event_organization"
+            android:icon="@drawable/organize_event_icon"
+            android:title="@string/organize_event" />
     </group>
 </menu>

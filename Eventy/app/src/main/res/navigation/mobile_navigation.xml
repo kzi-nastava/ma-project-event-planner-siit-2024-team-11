@@ -34,4 +34,10 @@
         android:name="com.example.eventy.services.ServiceEditingFragment"
         android:label="Edit service"
         tools:layout="@layout/fragment_service_editing"/>
+
+    <fragment
+        android:id="@+id/nav_event_organization"
+        android:name="com.example.eventy.events.EventOrganizationFragment"
+        android:label="Organize Event"
+        tools:layout="@layout/fragment_event_organization"/>
 </navigation>

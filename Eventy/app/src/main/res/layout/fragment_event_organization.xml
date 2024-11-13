@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".events.EventOrganizationFragment">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <!-- Top bar with back button and title -->
+        <LinearLayout
+            android:id="@+id/topBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/backButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                android:src="@drawable/arrow_back"
+                app:fabSize="mini"
+                app:backgroundTint="@color/button_color"
+                app:tint="@color/white" />
+
+            <!-- Title centered horizontally -->
+            <TextView
+                android:id="@+id/titleText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Organize Event"
+                android:gravity="center"
+                android:textColor="@color/title_color"
+                android:textSize="34sp"
+                android:fontFamily="@font/albert_sans" />
+
+        </LinearLayout>
+
+        <!-- Fragment container in the center -->
+        <FrameLayout
+            android:id="@+id/formContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_weight="1" />
+
+        <!-- Centered button at the bottom -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/bottomButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/arrow_forward"
+            android:text="NEXT"
+            app:backgroundTint="@color/green_button"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_marginBottom="16dp"
+            app:cornerRadius="7dp"
+            android:fontFamily="@font/roboto"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</ScrollView>
