@@ -11,6 +11,7 @@
     <string name="menu_login">Login</string>
     <string name="menu_register">Register</string>
     <string name="menu_add_service">Add service</string>
+    <string name="menu_edit_service">Edit service</string>
     <string name="profile">Profile</string>
     <string name="messages">Messages</string>
     <string name="notifications">Notifications</string>
