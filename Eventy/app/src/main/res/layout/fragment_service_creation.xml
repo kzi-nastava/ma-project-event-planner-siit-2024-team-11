@@ -192,7 +192,14 @@
                 android:background="@color/input_color"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- checkbox for automatic reservation -->
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Automatically accept reservations"
+            app:useMaterialThemeColors="true"
+            android:layout_gravity="left"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/login_here_button"
