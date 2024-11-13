@@ -38,7 +38,7 @@
     <string name="browse_all_events_text">Don’t see anything you like? Browse all events down below!</string>
 
     <!-- /home/events -->
-    <string name="filter">FILTER</string>
+    <string name="filter">Filters</string>
     <string name="sort">Sort</string>
 
     <!-- /home/solutions{solution_card} -->
@@ -61,4 +61,10 @@
     <string name="service_duration">Duration: 1h-5h</string>
     <string name="service_reservation_type">Reservation: manual</string>
 
+    <!-- /home/events[filter] -->
+    <string name="event_filters_text">Event Filters</string>
+    <string name="reset_filter">Reset All</string>
+
+    <string name="select_date">SELECT DATES 🗓️</string>
+    <string name="select_max_participants"><font size="15">Select a number..</font></string>
 </resources>
