@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Header with Filters title and Reset All button -->
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp">
+
+        <TextView
+            android:id="@+id/filter_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/albert_sans"
+            android:gravity="center_vertical"
+            android:text="@string/filter"
+            android:textColor="#8990B1"
+            android:textSize="16sp"
+            android:layout_marginTop="10dp"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/reset_all_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:fontFamily="@font/albert_sans"
+            android:textFontWeight="900"
+            android:text="@string/reset_filter"
+            android:paddingRight="13dp"
+            android:paddingLeft="13dp"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:background="@drawable/clear_filter_background"
+            android:textColor="#FFFFFF"
+            android:layout_alignParentEnd="true"/>
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/search_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:background="@drawable/search_input_background"
+        android:hint="Search..."
+        android:textColorHint="#B8B8B8"/>
+
+    <!-- Divider line -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#BCBCBC"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginBottom="13dp"/>
+
+    <ListView
+        android:id="@+id/items_list_view"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
