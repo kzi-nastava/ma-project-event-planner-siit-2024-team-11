@@ -18,7 +18,7 @@ public class EventsViewModel extends ViewModel {
 
     public EventsViewModel(){
         searchText = new MutableLiveData<>();
-        searchText.setValue("This is search help!");
+        searchText.setValue("Search..");
     }
 
     public LiveData<String> getText(){
