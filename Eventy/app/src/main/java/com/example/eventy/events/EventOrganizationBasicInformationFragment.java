@@ -11,10 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 
 import com.example.eventy.databinding.FragmentEventOrganizationBasicInformationBinding;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -43,22 +43,16 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
             binding.radioPrivate.setChecked(true);
         });
 
-        Spinner spinner = binding.eventTypeSpinner;
-        String[] options = {"Wedding", "Graduation", "Conference"};
+        MaterialAutoCompleteTextView eventTypeAutoCompleteTextView = binding.eventTypeAutoCompleteTextView;
+        String[] eventTypes = {"Wedding", "Graduation", "Conference"};
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, options);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, eventTypes);
+        eventTypeAutoCompleteTextView.setAdapter(adapter);
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                String selectedItem = (String) parentView.getItemAtPosition(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // Handle no selection
+        // Ensure the dropdown appears when the view is tapped
+        eventTypeAutoCompleteTextView.setOnClickListener(v -> {
+            if (!eventTypeAutoCompleteTextView.isPopupShowing()) {
+                eventTypeAutoCompleteTextView.showDropDown();
             }
         });
 

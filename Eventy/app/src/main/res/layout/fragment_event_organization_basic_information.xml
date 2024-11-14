@@ -105,9 +105,14 @@
         android:layout_marginTop="12dp"
         android:hint="Select Event Type">
 
-        <android.widget.Spinner
-            android:id="@+id/event_type_spinner"
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/event_type_autoCompleteTextView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:background="@color/input_color"
+            android:paddingTop="24dp"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="8dp" />
     </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>
