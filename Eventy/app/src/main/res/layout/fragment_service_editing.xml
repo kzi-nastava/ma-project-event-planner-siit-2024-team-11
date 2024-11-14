@@ -231,7 +231,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
-            android:text="Create Service"
+            android:text="Edit Service"
             app:backgroundTint="@color/button_color"
             style="@style/Widget.MaterialComponents.Button"
             app:cornerRadius="7dp"
