@@ -12,5 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
+        android:paddingTop="65dp"
+        android:paddingEnd="7dp"
+        android:paddingStart="0dp"
+        android:paddingBottom="22dp"
         android:src="@drawable/navbar_logo" />
 </LinearLayout>

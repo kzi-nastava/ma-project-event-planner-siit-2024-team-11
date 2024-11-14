@@ -36,8 +36,15 @@
         tools:layout="@layout/fragment_service_editing"/>
 
     <fragment
+        feature/event-organization
         android:id="@+id/nav_event_organization"
         android:name="com.example.eventy.events.EventOrganizationFragment"
         android:label="Organize Event"
         tools:layout="@layout/fragment_event_organization"/>
+
+  <fragment
+        android:id="@+id/nav_own_services_test"
+        android:name="com.example.eventy.users.pup.PUPOwnServicesFragment"
+        android:label="test"
+        tools:layout="@layout/fragment_pup_own_services"/>
 </navigation>

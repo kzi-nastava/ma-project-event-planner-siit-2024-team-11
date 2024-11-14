@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="event_sort_options">
+        <item>Event Type</item>
+        <item>Name</item>
+        <item>Max Participants ASC</item>
+        <item>Max Participants DESC</item>
+        <item>Location</item>
+        <item>Date ASC</item>
+        <item>Date DESC</item>
+    </string-array>
+</resources>

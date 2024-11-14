@@ -10,11 +10,11 @@
             android:title="@string/menu_home" />
         <item
             android:id="@+id/nav_login"
-            android:icon="@drawable/logo_icon"
+            android:icon="@drawable/icon_event_photo"
             android:title="@string/menu_login" />
         <item
             android:id="@+id/nav_register"
-            android:icon="@drawable/register_icon"
+            android:icon="@drawable/icon_register"
             android:title="@string/menu_register" />
         <item
             android:id="@+id/nav_add_service"
@@ -28,5 +28,8 @@
             android:id="@+id/nav_event_organization"
             android:icon="@drawable/organize_event_icon"
             android:title="@string/organize_event" />
+        <item android:id="@+id/nav_own_services_test"
+            android:icon="@drawable/service_add_icon"
+            android:title="My services"/>
     </group>
 </menu>
