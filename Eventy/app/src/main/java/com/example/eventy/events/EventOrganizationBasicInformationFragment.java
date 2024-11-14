@@ -3,21 +3,28 @@ package com.example.eventy.events;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import com.example.eventy.databinding.FragmentEventOrganizationBasicInformationBinding;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointForward;
+import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.function.BiConsumer;
 
 public class EventOrganizationBasicInformationFragment extends Fragment {
@@ -55,6 +62,8 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
                 eventTypeAutoCompleteTextView.showDropDown();
             }
         });
+
+        binding.dateRangeInput.setOnClickListener(v -> showDateRangePicker());
 
         return root;
     }
@@ -107,5 +116,50 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
         } else {
             textInputLayout.setError(null); // Clear error if valid
         }
+    }
+
+    public void showDateRangePicker() {
+        // Configure date range picker constraints
+        CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder()
+                .setValidator(DateValidatorPointForward.now()); // Optional: Limits to future dates only
+
+        // Build the date range picker
+        MaterialDatePicker.Builder<androidx.core.util.Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
+        builder.setTitleText("Select Date Range");
+        builder.setCalendarConstraints(constraintsBuilder.build());
+
+        // Create the picker
+        final MaterialDatePicker<Pair<Long, Long>> dateRangePicker = builder.build();
+
+        // Show the picker
+        dateRangePicker.show(getParentFragmentManager(), "date_range_picker");
+
+        dateRangePicker.addOnNegativeButtonClickListener(selection -> {
+            if(!binding.dateRangeInput.getText().toString().contains("-")) {
+                binding.dateRangeInputLayout.setError("You have to enter full range!");
+            }
+        });
+
+        // Handle the result when dates are selected
+        dateRangePicker.addOnPositiveButtonClickListener(selection -> {
+            Long startDate = selection.first;
+            Long endDate = selection.second;
+
+            // Check that the selection is not null
+            if (startDate != null && endDate != null) {
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                String formattedStart = formatter.format(new Date(startDate));
+                String formattedEnd = formatter.format(new Date(endDate));
+
+                // Display the selected date range in the TextInputEditText
+                binding.dateRangeInput.setText(formattedStart + " - " + formattedEnd);
+                binding.dateRangeInputLayout.setError(null);
+            }
+            else {
+                if(!binding.dateRangeInput.getText().toString().contains("-")) {
+                    binding.dateRangeInputLayout.setError("You have to enter full range!");
+                }
+            }
+        });
     }
 }
