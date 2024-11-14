@@ -26,5 +26,9 @@
             android:icon="@drawable/service_add_icon"
             android:title="@string/menu_edit_service" />
 
+        <item android:id="@+id/nav_own_services_test"
+            android:icon="@drawable/service_add_icon"
+            android:title="My services"/>
+
     </group>
 </menu>
