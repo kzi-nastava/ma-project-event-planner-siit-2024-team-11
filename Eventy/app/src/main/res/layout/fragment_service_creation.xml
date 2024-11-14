@@ -50,7 +50,7 @@
             app:hintEnabled="true"
             android:hint="Category"
             app:endIconMode="clear_text"
-            app:endIconDrawable="@drawable/clear_icon">
+            app:endIconDrawable="@drawable/icon_remove">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/service_category_input"
@@ -68,7 +68,7 @@
             app:hintEnabled="true"
             android:hint="Name"
             app:endIconMode="clear_text"
-            app:endIconDrawable="@drawable/clear_icon">
+            app:endIconDrawable="@drawable/icon_remove">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/service_name_input"
@@ -86,7 +86,7 @@
             app:hintEnabled="true"
             android:hint="Price"
             app:endIconMode="clear_text"
-            app:endIconDrawable="@drawable/clear_icon">
+            app:endIconDrawable="@drawable/icon_remove">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/service_price_input"
@@ -104,7 +104,7 @@
             app:hintEnabled="true"
             android:hint="Discount (%)"
             app:endIconMode="clear_text"
-            app:endIconDrawable="@drawable/clear_icon">
+            app:endIconDrawable="@drawable/icon_remove">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/service_discount_input"
@@ -122,7 +122,7 @@
             app:hintEnabled="true"
             android:hint="Description"
             app:endIconMode="clear_text"
-            app:endIconDrawable="@drawable/clear_icon">
+            app:endIconDrawable="@drawable/icon_remove">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/service_description_input"
@@ -140,7 +140,7 @@
             app:hintEnabled="true"
             android:hint="Specifics"
             app:endIconMode="clear_text"
-            app:endIconDrawable="@drawable/clear_icon">
+            app:endIconDrawable="@drawable/icon_remove">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/service_specifics_input"
@@ -164,7 +164,7 @@
             app:hintEnabled="true"
             android:hint="Related event types"
             app:endIconMode="clear_text"
-            app:endIconDrawable="@drawable/clear_icon">
+            app:endIconDrawable="@drawable/icon_remove">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/service_related_event_type_input"
@@ -182,7 +182,7 @@
             app:hintEnabled="true"
             android:hint="Days notice for reservation"
             app:endIconMode="clear_text"
-            app:endIconDrawable="@drawable/clear_icon">
+            app:endIconDrawable="@drawable/icon_remove">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/service_days_notice_input"

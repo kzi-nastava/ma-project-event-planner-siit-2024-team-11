@@ -45,7 +45,7 @@
                 app:hintEnabled="true"
                 android:hint="Duration (minutes)"
                 app:endIconMode="clear_text"
-                app:endIconDrawable="@drawable/clear_icon"
+                app:endIconDrawable="@drawable/icon_remove"
                 android:visibility="gone">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -63,7 +63,7 @@
                 app:hintEnabled="true"
                 android:hint="Minimum duration (minutes)"
                 app:endIconMode="clear_text"
-                app:endIconDrawable="@drawable/clear_icon"
+                app:endIconDrawable="@drawable/icon_remove"
                 android:visibility="gone">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -82,7 +82,7 @@
                 app:hintEnabled="true"
                 android:hint="Maximum duration (minutes)"
                 app:endIconMode="clear_text"
-                app:endIconDrawable="@drawable/clear_icon"
+                app:endIconDrawable="@drawable/icon_remove"
                 android:visibility="gone">
 
                 <com.google.android.material.textfield.TextInputEditText
