@@ -22,4 +22,16 @@
         android:name="com.example.eventy.register.RegisterFragment"
         android:label="Register"
         tools:layout="@layout/fragment_register" />
+
+    <fragment
+        android:id="@+id/nav_add_service"
+        android:name="com.example.eventy.services.ServiceCreationFragment"
+        android:label="Add service"
+        tools:layout="@layout/fragment_service_creation"/>
+
+    <fragment
+        android:id="@+id/nav_edit_service"
+        android:name="com.example.eventy.services.ServiceEditingFragment"
+        android:label="Edit service"
+        tools:layout="@layout/fragment_service_editing"/>
 </navigation>

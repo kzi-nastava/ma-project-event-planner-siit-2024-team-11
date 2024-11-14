@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="40dp"
+        android:background="@color/background_color"
+        tools:context="register.RegisterFragment">
+
+        <TextView
+            android:id="@+id/edit_service_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:textColor="@color/title_color"
+            android:textSize="34sp"
+            android:fontFamily="@font/albert_sans"
+            android:layout_gravity="center_horizontal"
+            android:textAlignment="center"
+            android:text="Edit selected Service"/>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/service_photos"
+            android:layout_width="200dp"
+            android:layout_height="200dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/edit_service_photos_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Photos"
+            app:backgroundTint="@color/button_color"
+            style="@style/Widget.MaterialComponents.Button"
+            app:cornerRadius="7dp"
+            android:fontFamily="@font/roboto"
+            android:textSize="13sp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/service_category_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:hintEnabled="true"
+            android:hint="Category"
+            app:endIconMode="clear_text"
+            app:endIconDrawable="@drawable/clear_icon">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/service_category_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textAutoComplete"
+                android:background="@color/input_color"
+                android:enabled="false"
+                android:focusable="false"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/service_name_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:hintEnabled="true"
+            android:hint="Name"
+            app:endIconMode="clear_text"
+            app:endIconDrawable="@drawable/clear_icon">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/service_name_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:background="@color/input_color"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/service_price_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:hintEnabled="true"
+            android:hint="Price"
+            app:endIconMode="clear_text"
+            app:endIconDrawable="@drawable/clear_icon">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/service_price_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:background="@color/input_color"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/service_discount_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:hintEnabled="true"
+            android:hint="Discount (%)"
+            app:endIconMode="clear_text"
+            app:endIconDrawable="@drawable/clear_icon">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/service_discount_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:background="@color/input_color"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/service_description_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:hintEnabled="true"
+            android:hint="Description"
+            app:endIconMode="clear_text"
+            app:endIconDrawable="@drawable/clear_icon">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/service_description_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:background="@color/input_color"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/service_specifics_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:hintEnabled="true"
+            android:hint="Specifics"
+            app:endIconMode="clear_text"
+            app:endIconDrawable="@drawable/clear_icon">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/service_specifics_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:background="@color/input_color"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <FrameLayout
+            android:id="@+id/time_duration_fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/service_related_event_type_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:hintEnabled="true"
+            android:hint="Related event types"
+            app:endIconMode="clear_text"
+            app:endIconDrawable="@drawable/clear_icon">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/service_related_event_type_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textAutoComplete"
+                android:background="@color/input_color"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/service_days_notice_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:hintEnabled="true"
+            android:hint="Days notice for reservation"
+            app:endIconMode="clear_text"
+            app:endIconDrawable="@drawable/clear_icon">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/service_days_notice_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:background="@color/input_color"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:id="@+id/checkboxes_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="left"
+            android:layout_marginTop="20dp">
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/service_automatic_acceptance_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Automatically accept reservations"
+                android:checked="false"/>
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/service_is_visible_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Make service visible"
+                android:checked="false"/>
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/service_is_available_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Make service available"
+                android:checked="false"/>
+
+        </LinearLayout>
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/login_here_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:text="Create Service"
+            app:backgroundTint="@color/button_color"
+            style="@style/Widget.MaterialComponents.Button"
+            app:cornerRadius="7dp"
+            android:fontFamily="@font/roboto"
+            android:textStyle="bold" />
+    </LinearLayout>
+</ScrollView>
