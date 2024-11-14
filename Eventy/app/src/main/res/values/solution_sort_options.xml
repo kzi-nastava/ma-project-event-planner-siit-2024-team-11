@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="solution_sort_options">
+        <item>Category</item>
+        <item>Name</item>
+        <item>Price ASC</item>
+        <item>Price DESC</item>
+        <item>Duration ASC</item>
+        <item>Duration DESC</item>
+    </string-array>
+</resources>

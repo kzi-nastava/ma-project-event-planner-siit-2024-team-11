@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    tools:context=".home.events.filters.EventFilterBottomSheetFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp"
+        android:background="@drawable/event_card_description_background"
+        tools:ignore="ScrollViewCount">
+
+        <!-- Header with Filters title and Reset All button -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/albert_sans"
+                android:gravity="center_vertical"
+                android:text="@string/filter"
+                android:textColor="#8990B1"
+                android:textSize="21sp"
+                android:layout_marginTop="9dp"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/reset_all_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:fontFamily="@font/albert_sans"
+                android:textFontWeight="900"
+                android:text="@string/reset_filter"
+                android:paddingRight="13dp"
+                android:paddingLeft="13dp"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:background="@drawable/clear_filter_background"
+                android:textColor="#FFFFFF"
+                android:layout_alignParentEnd="true"/>
+        </RelativeLayout>
+
+        <!-- Divider line -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#BCBCBC"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginBottom="13dp"/>
+
+        <!-- Event Type Spinner -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Event Types:"
+            android:fontFamily="@font/albert_sans"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:textSize="16sp"
+            android:textColor="@color/home_event_card_label"
+            android:layout_marginBottom="6dp"/>
+
+        <com.example.eventy.custom.MultiSpinner
+            android:id="@+id/event_type_filter"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/input_form_background"
+            android:padding="3dp"
+            android:elevation="1.5dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginBottom="18dp"/>
+
+        <!-- Max Participants -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Max Participants (≤):"
+            android:textSize="16sp"
+            android:layout_marginLeft="2dp"
+            android:fontFamily="@font/albert_sans"
+            android:layout_marginRight="2dp"
+            android:textColor="@color/home_event_card_label"
+            android:layout_marginBottom="6dp"/>
+
+        <EditText
+            android:id="@+id/max_participants_filter"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:inputType="number"
+            android:elevation="1.5dp"
+            android:textColorHint="#D7D5D5"
+            android:background="@drawable/input_form_background"
+            android:paddingLeft="11dp"
+            android:paddingRight="11dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginBottom="18dp"/>
+
+        <!-- Location Spinner -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Locations:"
+            android:textSize="16sp"
+            android:fontFamily="@font/albert_sans"
+            android:textColor="@color/home_event_card_label"
+            android:layout_marginBottom="6dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"/>
+
+        <com.example.eventy.custom.MultiSpinner
+            android:id="@+id/location_filter"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/input_form_background"
+            android:padding="3dp"
+            android:elevation="1.5dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginBottom="18dp"/>
+
+
+        <!-- divider line container -->
+        <FrameLayout
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/line_background">
+
+            <!-- date Label -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Availability"
+                android:layout_gravity="center"
+                android:textSize="16sp"
+                android:background="@color/white"
+                android:paddingLeft="7dp"
+                android:paddingRight="7dp"
+                android:textColor="@color/home_event_card_label"
+                android:layout_marginLeft="2dp"
+                android:fontFamily="@font/albert_sans"
+                android:layout_marginRight="2dp"/>
+        </FrameLayout>
+
+        <!-- Category Spinner -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Day:"
+            android:fontFamily="@font/albert_sans"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:textSize="16sp"
+            android:textColor="@color/home_event_card_label"
+            android:layout_marginBottom="6dp"/>
+
+        <Spinner
+            android:id="@+id/event_day_filter"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/input_form_background"
+            android:padding="3dp"
+            android:elevation="1.5dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginBottom="18dp"/>
+
+        <!-- From Date Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Date range:"
+                android:layout_marginLeft="1dp"
+                android:fontFamily="@font/albert_sans"
+                android:textSize="16sp"
+                android:layout_marginBottom="6dp"
+                android:textColor="@color/home_event_card_label"/>
+
+            <Button
+                android:id="@+id/date_range_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="43dp"
+                android:layout_margin="1dp"
+                android:background="@drawable/filter_button_background"
+                android:fontFamily="@font/albert_sans"
+                android:letterSpacing="0.05"
+                android:text="@string/select_date"
+                android:textAllCaps="false"
+                android:textFontWeight="900"
+                android:textSize="15.5sp" />
+        </LinearLayout>
+
+        <!--simple text view to show the selected date by the user-->
+        <TextView
+            android:id="@+id/event_show_selected_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:textColor="@color/home_event_card_label"
+            android:fontFamily="@font/albert_sans"
+            android:layout_marginRight="2dp"
+            android:layout_marginTop="7dp"
+            android:text="No date selected"
+            android:textSize="14sp" />
+
+        <!-- Divider line -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#BCBCBC"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginBottom="5dp"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/events_confirm_button"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="5dp"
+            android:textColor="@color/white"
+            android:background="@drawable/filter_done_button_background"
+            android:fontFamily="@font/albert_sans"
+            android:letterSpacing="0.05"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="CONFIRM"
+            android:textAllCaps="false"
+            android:textFontWeight="900"
+            android:textSize="17sp" />
+
+    </LinearLayout>
+
+
+
+</ScrollView>

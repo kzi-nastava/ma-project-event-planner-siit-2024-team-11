@@ -5,18 +5,18 @@
         android:id="@+id/action_profile"
         android:orderInCategory="100"
         android:title="@string/profile"
-        android:icon="@drawable/profile_icon"
+        android:icon="@drawable/icon_profile"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_messages"
         android:orderInCategory="100"
         android:title="@string/messages"
-        android:icon="@drawable/messages_icon"
+        android:icon="@drawable/icon_messages"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_notifications"
         android:orderInCategory="100"
         android:title="@string/notifications"
-        android:icon="@drawable/notifications_icon"
+        android:icon="@drawable/icon_notifications"
         app:showAsAction="always" />
 </menu>
