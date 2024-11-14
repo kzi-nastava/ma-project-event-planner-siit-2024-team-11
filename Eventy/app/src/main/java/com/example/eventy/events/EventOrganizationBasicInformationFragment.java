@@ -1,5 +1,7 @@
 package com.example.eventy.events;
 
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,10 +9,11 @@ import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -25,14 +28,20 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import org.osmdroid.api.IMapController;
+import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.util.MapTileIndex;
+import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.BiConsumer;
 
 public class EventOrganizationBasicInformationFragment extends Fragment {
@@ -65,68 +74,84 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, eventTypes);
         eventTypeAutoCompleteTextView.setAdapter(adapter);
 
-        // Ensure the dropdown appears when the view is tapped
         eventTypeAutoCompleteTextView.setOnClickListener(v -> {
             if (!eventTypeAutoCompleteTextView.isPopupShowing()) {
                 eventTypeAutoCompleteTextView.showDropDown();
             }
         });
 
-        /* OnlineTileSourceBase cartoTileSource = new OnlineTileSourceBase(
+        OnlineTileSourceBase cartoTileSource = new OnlineTileSourceBase(
                 "CartoDB",
-                0, // min zoom level
-                19, // max zoom level
-                256, // tile size
-                ".png", // file extension
+                0,
+                19,
+                256,
+                ".png",
                 new String[]{
-                        "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png" // CartoDB Light All (Positron)
+                        "https://a.basemaps.cartocdn.com/light_all/",
+                        "https://b.basemaps.cartocdn.com/light_all/",
+                        "https://c.basemaps.cartocdn.com/light_all/",
+                        "https://d.basemaps.cartocdn.com/light_all/"
                 }) {
 
             @Override
             public String getTileURLString(long pMapTileIndex) {
-                // Extract the zoom level, x, and y from the pMapTileIndex
-                int zoomLevel = (int) (pMapTileIndex >> 38); // Zoom level is stored in the higher bits
-                int xTile = (int) ((pMapTileIndex >> 19) & 511); // x coordinate (bits 19-28)
-                int yTile = (int) (pMapTileIndex & 511); // y coordinate (lower 19 bits)
+                int zoomLevel = MapTileIndex.getZoom(pMapTileIndex);
+                int xTile = MapTileIndex.getX(pMapTileIndex);
+                int yTile = MapTileIndex.getY(pMapTileIndex);
 
-                // Construct the URL for CartoDB tiles
-                return String.format("https://{s}.basemaps.cartocdn.com/light_all/%d/%d/%d.png", zoomLevel, xTile, yTile);
+                String[] subdomains = {"a", "b", "c", "d"};
+                String subdomain = subdomains[(int) (Math.random() * subdomains.length)];
+
+                return String.format("https://%s.basemaps.cartocdn.com/light_all/%d/%d/%d.png", subdomain, zoomLevel, xTile, yTile);
             }
-        }; */
+        };
 
-        binding.mapview.setTileSource(TileSourceFactory.OpenTopo);
+        binding.mapview.setTileSource(cartoTileSource);
+        binding.mapview.invalidate(); // Refresh the map to load tiles
         binding.mapview.setMultiTouchControls(true);
 
-        // Set initial zoom level and center
-        IMapController mapController = binding.mapview.getController();
-        mapController.setCenter(new GeoPoint(45.2445, 19.8484));  // Set to a default location
-        mapController.setZoom(15.0);
-        // Set the click listener for the map
-        binding.mapview.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_UP) {
-                // Convert the touch coordinates into GeoPoint
-                GeoPoint tappedPoint = (GeoPoint) binding.mapview.getProjection().fromPixels((int) event.getX(), (int) event.getY());
 
-                // Remove existing pin if it exists
+        IMapController mapController = binding.mapview.getController();
+        mapController.setCenter(new GeoPoint(45.2445, 19.8484));  // Default location: FTN
+        mapController.setZoom(15.0);
+
+        // so that I can move on the map nicely
+        binding.mapview.setOnTouchListener((v, event) -> {
+            v.getParent().requestDisallowInterceptTouchEvent(true);
+
+            return false;
+        });
+
+        MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {
+            @Override
+            public boolean singleTapConfirmedHelper(GeoPoint tappedPoint) {
                 if (pinMarker != null) {
                     binding.mapview.getOverlays().remove(pinMarker);
                 }
 
-                // Add new pin at the tapped location
                 pinMarker = new Marker(binding.mapview);
                 pinMarker.setPosition(tappedPoint);
                 pinMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
-                // Set the marker icon using ContextCompat for newer versions
                 pinMarker.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.location_pin_icon));
 
                 binding.mapview.getOverlays().add(pinMarker);
 
-                // Show location as a Toast or do something with it
-                binding.mapLocationText.setText("Pinned Location: " + tappedPoint.getLatitude() + ", " + tappedPoint.getLongitude());
+                getAddressFromCoordinates(tappedPoint.getLatitude(), tappedPoint.getLongitude());
+
+                binding.mapview.invalidate();
+
+                return true;
             }
-            return true;  // Return true to indicate that the touch event is handled
-        });
+
+            @Override
+            public boolean longPressHelper(GeoPoint geoPoint) {
+                return false;
+            }
+        };
+
+        MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(mapEventsReceiver);
+        binding.mapview.getOverlays().add(mapEventsOverlay);
 
         binding.dateRangeInput.setOnClickListener(v -> showDateRangePicker());
 
@@ -140,22 +165,20 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
     }
 
     private void addValidation(TextInputLayout textInputLayout, TextInputEditText textInputEditText, BiConsumer<String, TextInputLayout> action) {
-        // real time field validation
         textInputEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // No action needed here
+
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Validate input as the user types
                 action.accept(s.toString(), textInputLayout);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                // No action needed here
+
             }
         });
 
@@ -166,37 +189,33 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
 
     private void validateRequired(String inputText, TextInputLayout textInputLayout) {
         if (inputText.trim().isEmpty()) {
-            textInputLayout.setError("This field is required"); // Set error message
+            textInputLayout.setError("This field is required");
         } else {
-            textInputLayout.setError(null); // Clear error if valid
+            textInputLayout.setError(null);
         }
     }
 
     private void validateNumber(String inputText, TextInputLayout textInputLayout) {
         if (inputText.trim().isEmpty()) {
-            textInputLayout.setError("This field is required"); // Set error message
+            textInputLayout.setError("This field is required");
         }
         else if(!inputText.matches("^[1-9][0-9]*$")) {
-            textInputLayout.setError("The value should be a positive integer"); // Set error message
+            textInputLayout.setError("The value should be a positive integer");
         } else {
-            textInputLayout.setError(null); // Clear error if valid
+            textInputLayout.setError(null);
         }
     }
 
     public void showDateRangePicker() {
-        // Configure date range picker constraints
         CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder()
-                .setValidator(DateValidatorPointForward.now()); // Optional: Limits to future dates only
+                .setValidator(DateValidatorPointForward.now());
 
-        // Build the date range picker
         MaterialDatePicker.Builder<androidx.core.util.Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
         builder.setTitleText("Select Date Range");
         builder.setCalendarConstraints(constraintsBuilder.build());
 
-        // Create the picker
         final MaterialDatePicker<Pair<Long, Long>> dateRangePicker = builder.build();
 
-        // Show the picker
         dateRangePicker.show(getParentFragmentManager(), "date_range_picker");
 
         dateRangePicker.addOnNegativeButtonClickListener(selection -> {
@@ -205,18 +224,15 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
             }
         });
 
-        // Handle the result when dates are selected
         dateRangePicker.addOnPositiveButtonClickListener(selection -> {
             Long startDate = selection.first;
             Long endDate = selection.second;
 
-            // Check that the selection is not null
             if (startDate != null && endDate != null) {
                 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                 String formattedStart = formatter.format(new Date(startDate));
                 String formattedEnd = formatter.format(new Date(endDate));
 
-                // Display the selected date range in the TextInputEditText
                 binding.dateRangeInput.setText(formattedStart + " - " + formattedEnd);
                 binding.dateRangeInputLayout.setError(null);
             }
@@ -225,6 +241,35 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
                     binding.dateRangeInputLayout.setError("You have to enter full range!");
                 }
             }
+        });
+    }
+
+    private void getAddressFromCoordinates(double latitude, double longitude) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        executor.execute(() -> {
+            Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());
+            String addressText = "Address not found";
+
+            try {
+                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                if (addresses != null && !addresses.isEmpty()) {
+                    Address address = addresses.get(0);
+                    StringBuilder addressString = new StringBuilder();
+                    for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
+                        addressString.append(address.getAddressLine(i)).append("\n");
+                    }
+                    addressText = addressString.toString().trim();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            String finalAddressText = addressText;
+            handler.post(() -> {
+                binding.mapLocationText.setText("Address: " + finalAddressText);
+            });
         });
     }
 }
