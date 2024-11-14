@@ -113,7 +113,7 @@
                     android:orientation="horizontal"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
-                    android:layout_marginTop="18dp"
+                    android:layout_marginTop="20dp"
                     android:layout_marginBottom="5dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -147,9 +147,9 @@
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/filter_button"
                         android:layout_width="0dp"
-                        android:layout_height="47dp"
+                        android:layout_height="45dp"
                         android:layout_marginStart="15dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="25dp"
                         android:layout_marginBottom="15dp"
                         android:layout_marginEnd="40dp"
                         android:layout_weight="0.85"
@@ -162,24 +162,39 @@
                         android:textSize="15sp"
                         />
 
-                    <!-- sort button -->
-                    <Spinner
-                        android:id="@+id/sort_button"
+                    <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_weight="1.4"
                         android:layout_marginStart="40dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="4dp"
                         android:layout_marginBottom="13dp"
                         android:layout_marginEnd="15dp"
-                        android:layout_weight="1.4"
-                        android:paddingLeft="6dp"
-                        android:paddingRight="6dp"
-                        android:paddingTop="2dp"
-                        android:paddingBottom="2dp"
-                        android:background="@drawable/sort_input_background"
-                        android:contentDescription="@string/sort"
-                        android:text="@string/sort"
-                        android:tooltipText="@string/sort" />
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Sort by:"
+                            android:layout_marginBottom="3dp"
+                            android:layout_marginLeft="5dp"
+                            android:textColor="@color/home_event_card_label"/>
+
+                        <!-- sort button -->
+                        <Spinner
+                            android:id="@+id/sort_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:paddingLeft="6dp"
+                            android:paddingRight="6dp"
+                            android:paddingTop="2dp"
+                            android:paddingBottom="2dp"
+                            android:background="@drawable/sort_input_background"
+                            android:contentDescription="@string/sort"
+                            android:text="@string/sort"
+                            android:tooltipText="@string/sort" />
+                    </LinearLayout>
+
                 </LinearLayout>
             </LinearLayout>
 
