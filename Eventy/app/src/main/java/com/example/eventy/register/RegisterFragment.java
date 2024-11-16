@@ -24,7 +24,6 @@ public class RegisterFragment extends Fragment {
         binding = FragmentRegisterBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        // Load ChildFragmentA initially
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new RegisterOrganiserFragment())
                 .commit();
@@ -44,11 +43,9 @@ public class RegisterFragment extends Fragment {
         binding.loginHereButton.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(v);
 
-            // Potential problem with back button?
-            // Clear any existing stack to avoid looping behavior
+            // Problem with back button so we clear the backstack
             navController.popBackStack();
 
-            // Navigate to the register screen
             navController.navigate(R.id.nav_login);
         });
 

@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         // so the title in the navbar doesn't show up
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (getSupportActionBar() != null) {
-                getSupportActionBar().setTitle(""); // Clear the title
+                getSupportActionBar().setTitle("");
             }
         });
     }

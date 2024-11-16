@@ -49,6 +49,6 @@ public class CarouselAdapter extends RecyclerView.Adapter<CarouselAdapter.Carous
 
     public void updateImages(List<Uri> newImages) {
         this.images = newImages;
-        notifyDataSetChanged();  // Notify the adapter that the data has changed
+        notifyDataSetChanged();
     }
 }

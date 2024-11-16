@@ -24,7 +24,7 @@ import java.util.function.BiConsumer;
 
 public class RegisterOrganiserFragment extends Fragment {
     private FragmentRegisterOrganiserBinding binding;
-    private ActivityResultLauncher<Intent> imagePickerLauncher;
+    private ActivityResultLauncher<Intent> galleryPickerLauncher;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,8 +32,7 @@ public class RegisterOrganiserFragment extends Fragment {
         binding = FragmentRegisterOrganiserBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        // Register the ActivityResultLauncher for picking images
-        imagePickerLauncher = registerForActivityResult(
+        galleryPickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
@@ -46,9 +45,7 @@ public class RegisterOrganiserFragment extends Fragment {
                 }
         );
 
-        binding.profilePicture.setOnClickListener(v -> {
-            openImagePicker(); // Directly open the image picker
-        });
+        binding.profilePicture.setOnClickListener(v -> openGalleryPicker());
 
         addValidation(binding.emailInputLayout, binding.emailInput, this::validateEmail);
         addValidation(binding.passwordInputLayout, binding.passwordInput, this::validateRequired);
@@ -67,31 +64,22 @@ public class RegisterOrganiserFragment extends Fragment {
         binding = null;
     }
 
-    private void openImagePicker() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT); // Use ACTION_OPEN_DOCUMENT
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("image/*"); // Specify the type of files to pick
-        imagePickerLauncher.launch(intent); // Launch the image picker
+    private void openGalleryPicker() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        galleryPickerLauncher.launch(intent);
     }
 
     private void addValidation(TextInputLayout textInputLayout, TextInputEditText textInputEditText, BiConsumer<String, TextInputLayout> action) {
-        // real time field validation
         textInputEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // No action needed here
-            }
-
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Validate input as the user types
                 action.accept(s.toString(), textInputLayout);
             }
-
             @Override
-            public void afterTextChanged(Editable s) {
-                // No action needed here
-            }
+            public void afterTextChanged(Editable s) { }
         });
 
         textInputEditText.setOnFocusChangeListener((v, hasFocus) -> {
@@ -101,9 +89,9 @@ public class RegisterOrganiserFragment extends Fragment {
 
     private void validateRequired(String inputText, TextInputLayout textInputLayout) {
         if (inputText.trim().isEmpty()) {
-            textInputLayout.setError("This field is required"); // Set error message
+            textInputLayout.setError("This field is required");
         } else {
-            textInputLayout.setError(null); // Clear error if valid
+            textInputLayout.setError(null);
         }
     }
 
@@ -113,7 +101,7 @@ public class RegisterOrganiserFragment extends Fragment {
         } else if (!Patterns.EMAIL_ADDRESS.matcher(inputText).matches()) {
             textInputLayout.setError("Invalid email format");
         } else {
-            textInputLayout.setError(null); // Clear error if valid
+            textInputLayout.setError(null);
         }
     }
 
@@ -123,17 +111,17 @@ public class RegisterOrganiserFragment extends Fragment {
         } else if (!Patterns.PHONE.matcher(inputText).matches()) {
             textInputLayout.setError("Invalid phone number format");
         } else {
-            textInputLayout.setError(null); // Clear error if valid
+            textInputLayout.setError(null);
         }
     }
-    
+
     private void validateConfirmPassword(String inputText, TextInputLayout textInputLayout) {
         if (inputText.trim().isEmpty()) {
             textInputLayout.setError("This field is required");
         } else if (!binding.passwordInput.getText().toString().equals(binding.confirmPasswordInput.getText().toString())) {
             textInputLayout.setError("Passwords don't match!");
         } else {
-            textInputLayout.setError(null); // Clear error if valid
+            textInputLayout.setError(null);
         }
     }
 }

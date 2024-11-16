@@ -23,18 +23,13 @@ public class LoginFragment extends Fragment {
         binding = FragmentLoginBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        binding.registerHereButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NavController navController = Navigation.findNavController(v);
+        binding.registerHereButton.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(v);
 
-                // Potential problem with back button?
-                // Clear any existing stack to avoid looping behavior
-                navController.popBackStack();
+            // Problem with back button so we clear the backstack
+            navController.popBackStack();
 
-                // Navigate to the register screen
-                navController.navigate(R.id.nav_register);
-            }
+            navController.navigate(R.id.nav_register);
         });
 
         return root;

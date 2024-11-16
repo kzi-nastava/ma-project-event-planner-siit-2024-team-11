@@ -2,7 +2,6 @@ package com.example.eventy.register;
 
 import static android.app.Activity.RESULT_OK;
 
-import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
@@ -38,7 +37,7 @@ public class RegisterProviderFragment extends Fragment {
             Uri.parse("android.resource://com.example.eventy/" + R.mipmap.logo)
     );
 
-    private  ActivityResultLauncher<Intent> imagePickerLauncher;
+    private ActivityResultLauncher<Intent> imagePickerLauncher;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,12 +64,14 @@ public class RegisterProviderFragment extends Fragment {
                     List<Uri> newImages = new ArrayList<>();
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         if (result.getData().getClipData() != null) {
-                            // Multiple images selected
                             ClipData clipData = result.getData().getClipData();
                             for (int i = 0; i < clipData.getItemCount(); i++) {
                                 Uri imageUri = clipData.getItemAt(i).getUri();
                                 newImages.add(imageUri);
                             }
+                        } else if (result.getData().getData() != null) {
+                            Uri imageUri = result.getData().getData();
+                            newImages.add(imageUri);
                         }
 
                         carouselAdapter.updateImages(newImages);
@@ -80,9 +81,9 @@ public class RegisterProviderFragment extends Fragment {
         );
 
         binding.addPhotosButton.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);  // Allow multiple selection
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             imagePickerLauncher.launch(intent);
         });
 
@@ -96,7 +97,7 @@ public class RegisterProviderFragment extends Fragment {
     }
 
     private void addValidation(TextInputLayout textInputLayout, TextInputEditText textInputEditText, BiConsumer<String, TextInputLayout> action) {
-        // real time field validation
+        // Real-time field validation
         textInputEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -122,9 +123,9 @@ public class RegisterProviderFragment extends Fragment {
 
     private void validateRequired(String inputText, TextInputLayout textInputLayout) {
         if (inputText.trim().isEmpty()) {
-            textInputLayout.setError("This field is required"); // Set error message
+            textInputLayout.setError("This field is required");
         } else {
-            textInputLayout.setError(null); // Clear error if valid
+            textInputLayout.setError(null);
         }
     }
 
@@ -134,7 +135,7 @@ public class RegisterProviderFragment extends Fragment {
         } else if (!Patterns.EMAIL_ADDRESS.matcher(inputText).matches()) {
             textInputLayout.setError("Invalid email format");
         } else {
-            textInputLayout.setError(null); // Clear error if valid
+            textInputLayout.setError(null);
         }
     }
 
@@ -144,7 +145,7 @@ public class RegisterProviderFragment extends Fragment {
         } else if (!Patterns.PHONE.matcher(inputText).matches()) {
             textInputLayout.setError("Invalid phone number format");
         } else {
-            textInputLayout.setError(null); // Clear error if valid
+            textInputLayout.setError(null);
         }
     }
 
@@ -154,7 +155,7 @@ public class RegisterProviderFragment extends Fragment {
         } else if (!binding.passwordInput.getText().toString().equals(binding.confirmPasswordInput.getText().toString())) {
             textInputLayout.setError("Passwords don't match!");
         } else {
-            textInputLayout.setError(null); // Clear error if valid
+            textInputLayout.setError(null);
         }
     }
 }
