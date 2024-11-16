@@ -12,6 +12,7 @@ import androidx.navigation.Navigation;
 
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentLoginBinding;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class LoginFragment extends Fragment {
 
@@ -30,6 +31,24 @@ public class LoginFragment extends Fragment {
             navController.popBackStack();
 
             navController.navigate(R.id.nav_register);
+        });
+
+        binding.loginButton.setOnClickListener(v -> {
+            if(binding.emailInput.getText().toString().equals("good@email.com") &&
+            binding.passwordInput.getText().toString().equals("pass1234")) {
+                NavController navController = Navigation.findNavController(v);
+
+                navController.popBackStack();
+
+                navController.navigate(R.id.nav_home);
+            } else {
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Invalid input")
+                        .setMessage("Email and password don't match!")
+                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                        .setIcon(R.drawable.icon_error)
+                        .show();
+            }
         });
 
         return root;

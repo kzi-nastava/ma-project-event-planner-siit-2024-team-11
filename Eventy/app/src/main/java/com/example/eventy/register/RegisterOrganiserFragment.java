@@ -8,6 +8,8 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,7 +18,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentRegisterOrganiserBinding;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -54,6 +58,37 @@ public class RegisterOrganiserFragment extends Fragment {
         addValidation(binding.lastNameInputLayout, binding.lastNameInput, this::validateRequired);
         addValidation(binding.addressInputLayout, binding.addressInput, this::validateRequired);
         addValidation(binding.phoneNumberInputLayout, binding.phoneNumberInput, this::validatePhoneNumber);
+
+        binding.registerButton.setOnClickListener(v -> {
+            binding.emailInput.setText(binding.emailInput.getText());
+            binding.passwordInput.setText(binding.passwordInput.getText());
+            binding.confirmPasswordInput.setText(binding.confirmPasswordInput.getText());
+            binding.firstNameInput.setText(binding.firstNameInput.getText());
+            binding.lastNameInput.setText(binding.lastNameInput.getText());
+            binding.addressInput.setText(binding.addressInput.getText());
+            binding.phoneNumberInput.setText(binding.phoneNumberInput.getText());
+
+            if(binding.emailInputLayout.getError() == null &&
+                    binding.passwordInputLayout.getError() == null &&
+                binding.confirmPasswordInputLayout.getError() == null &&
+                binding.firstNameInputLayout.getError() == null &&
+                binding.lastNameInputLayout.getError() == null &&
+                binding.addressInputLayout.getError() == null &&
+                binding.phoneNumberInputLayout.getError() == null) {
+                NavController navController = Navigation.findNavController(v);
+
+                navController.popBackStack();
+
+                navController.navigate(R.id.nav_home);
+            } else {
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Invalid input")
+                        .setMessage("Invalid input data!")
+                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                        .setIcon(R.drawable.icon_error)
+                        .show();
+            }
+        });
 
         return root;
     }

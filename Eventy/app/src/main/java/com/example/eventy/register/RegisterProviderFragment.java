@@ -10,6 +10,8 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.text.Editable;
@@ -21,6 +23,7 @@ import android.view.ViewGroup;
 
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentRegisterProviderBinding;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -86,6 +89,38 @@ public class RegisterProviderFragment extends Fragment {
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             imagePickerLauncher.launch(intent);
         });
+
+        binding.registerButton.setOnClickListener(v -> {
+            binding.emailInput.setText(binding.emailInput.getText());
+            binding.passwordInput.setText(binding.passwordInput.getText());
+            binding.confirmPasswordInput.setText(binding.confirmPasswordInput.getText());
+            binding.nameInput.setText(binding.nameInput.getText());
+            binding.descriptionInput.setText(binding.descriptionInput.getText());
+            binding.addressInput.setText(binding.addressInput.getText());
+            binding.phoneNumberInput.setText(binding.phoneNumberInput.getText());
+
+            if(binding.emailInputLayout.getError() == null &&
+                    binding.passwordInputLayout.getError() == null &&
+                    binding.confirmPasswordInputLayout.getError() == null &&
+                    binding.nameInputLayout.getError() == null &&
+                    binding.descriptionInputLayout.getError() == null &&
+                    binding.addressInputLayout.getError() == null &&
+                    binding.phoneNumberInputLayout.getError() == null) {
+                NavController navController = Navigation.findNavController(v);
+
+                navController.popBackStack();
+
+                navController.navigate(R.id.nav_home);
+            } else {
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Invalid input")
+                        .setMessage("Invalid input data!")
+                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                        .setIcon(R.drawable.icon_error)
+                        .show();
+            }
+        });
+
 
         return root;
     }
