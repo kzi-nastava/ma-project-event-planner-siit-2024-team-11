@@ -1,3 +1,77 @@
 <resources>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+  
     <string name="app_name">Eventy</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_login">Login</string>
+    <string name="menu_register">Register</string>
+    <string name="menu_add_service">Add service</string>
+    <string name="menu_edit_service">Edit service</string>
+    <string name="profile">Profile</string>
+    <string name="messages">Messages</string>
+    <string name="notifications">Notifications</string>
+  
+    <!-- /home -->
+    <string name="service_and_products">Solutions</string>
+    <string name="featured">FEATURED</string>
+    <string name="events">Events</string>
+    <string name="services">SERVICES</string>
+    <string name="products">PRODUCTS</string>
+    <string name="amp"><![CDATA[&]]></string>
+
+    <!-- /home/events{event_card} -->
+    <string name="open_event">OPEN EVENT!</string>
+    <string name="event_card_see_more">SEE MORE</string>
+    <string name="event_description">Description:</string>
+    <string name="favorite">favorite</string>
+    <string name="event_name"><![CDATA[“Mark & Mia’s Wedding”]]></string>
+    <string name="event_description_text">Welcome to Mirko and Jana’s wedding. The wedding will be in our fancy vineyard. All you need to bring is a positive mood! We encourage you…</string>
+    <string name="event_type">Type: wedding</string>
+    <string name="event_max_participants">Max participans: 530</string>
+    <string name="event_date">24.10.2024.</string>
+    <string name="event_location">Belgrade, Serbia</string>
+
+    <!-- /home/events/featured(top 5) -->
+    <string name="browse_all_events_text">Don’t see anything you like? Browse all events down below!</string>
+
+    <!-- /home/events -->
+    <string name="filter">Filters</string>
+    <string name="sort">Sort</string>
+
+    <!-- /home/solutions{solution_card} -->
+    <string name="solution_price_before_discount">339</string>
+    <string name="solution_current_price">309</string>
+    <string name="event_types_label">Event types:</string>
+    <string name="event_type1">Birthday</string>
+    <string name="event_type2">Wedding</string>
+    <string name="three_dots">...</string>
+    <string name="euro_symbol">€</string>
+
+    <!-- /home/products{product_card} -->
+    <string name="product_name">Sweet 16 - cake</string>
+    <string name="product_category">Category: cakes</string>
+    <string name="product_description_text">Best cake in town! Buy and see! ONLY LEGIT! BEST QULAITY, COME AND SEE!!</string>
+
+    <!-- /home/services{service_card} -->
+    <string name="service_name">Bon Jovisssssssssssssssssssssssssssssssssss</string>
+    <string name="service_category">Category: music</string>
+    <string name="service_duration">Duration: 1h-5h</string>
+    <string name="service_reservation_type">Reservation: manual</string>
+
+    <!-- /home/events[filter] -->
+    <string name="event_filters_text">Event Filters</string>
+    <string name="reset_filter">Reset All</string>
+
+    <string name="select_date">SELECT DATES 🗓️</string>
+    <string name="select_max_participants"><font size="15">Select a number..</font></string>
+
+    <string name="add_service_title">Add a new service</string>
 </resources>

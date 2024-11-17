@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/home_icon"
+            android:title="@string/menu_home" />
+        <item
+            android:id="@+id/nav_login"
+            android:icon="@drawable/icon_event_photo"
+            android:title="@string/menu_login" />
+        <item
+            android:id="@+id/nav_register"
+            android:icon="@drawable/icon_register"
+            android:title="@string/menu_register" />
+        <item
+            android:id="@+id/nav_add_service"
+            android:icon="@drawable/service_add_icon"
+            android:title="@string/menu_add_service" />
+
+        <item
+            android:id="@+id/nav_edit_service"
+            android:icon="@drawable/service_add_icon"
+            android:title="@string/menu_edit_service" />
+
+        <item android:id="@+id/nav_own_services_test"
+            android:icon="@drawable/service_add_icon"
+            android:title="My services"/>
+
+    </group>
+</menu>

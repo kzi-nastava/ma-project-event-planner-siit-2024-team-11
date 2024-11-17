@@ -1,5 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources><color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="splash_background_color">#FF929AB7</color>
+    <color name="eventy_color">#929AB7</color>
+    <color name="button_color">#707587</color>
+    <color name="title_color">#7A7575</color>
+    <color name="background_color">#F1F1F1</color>
+    <color name="input_color">#e0e2ec</color>
+
+    <!-- home -->
+    <color name="home_tab_background_color">#F7F7F7</color>
+    <color name="tab_inactive_text_color">#806E717B</color>
+    <color name="tab_active_text_color">#6E717B</color>
+
+    <!-- home/events -->
+    <color name="home_featured_items_background_color">#B5BEDF</color>
+
+    <!-- home/events{event_card} -->
+    <color name="home_event_card_open_event">#3ED34F</color>
+    <color name="home_event_card_full_event">#E91A1A</color>
+    <color name="home_event_card_see_more">#929AB7</color>
+    <color name="home_event_card_label">#BFBABA</color>
+    <color name="home_event_card_text">#5B5B5B</color>
+
+    <!-- home/products{product_card} -->
+    <color name="home_solution_card_before_price">#F40F0F</color>
+    <color name="home_solution_card_before_price_crossed_out">#00F40F0F</color>
+
 </resources>
