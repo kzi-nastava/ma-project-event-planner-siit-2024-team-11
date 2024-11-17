@@ -58,7 +58,7 @@
                     android:paddingBottom="5dp"
                     android:text="@string/service_name"
                     android:textFontWeight="800"
-                    android:textSize="12.5sp"
+                    android:textSize="13sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </FrameLayout>
@@ -375,11 +375,10 @@
                 <!-- favorite button -->
                 <Button
                     android:id="@+id/favorite_button"
-                    android:layout_width="0dp"
+                    android:layout_width="33dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="10dp"
-                    android:layout_weight="0.93"
                     android:background="@drawable/icon_favorite_smaller"
                     android:text="@string/favorite" />
 

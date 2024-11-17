@@ -58,7 +58,7 @@
                     android:paddingBottom="5dp"
                     android:text="@string/product_name"
                     android:textFontWeight="800"
-                    android:textSize="12.5sp"
+                    android:textSize="13sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </FrameLayout>
@@ -224,8 +224,8 @@
             <!-- price container -->
             <LinearLayout
                 android:id="@+id/price_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="173dp"
+                android:layout_height="18dp"
                 android:layout_marginStart="2dp"
                 android:elevation="2dp"
                 android:orientation="horizontal"
@@ -258,9 +258,9 @@
                                 android:fontFamily="@font/albert_sans"
                                 android:maxLines="1"
                                 android:paddingStart="2dp"
-                                android:textFontWeight="900"
                                 android:text="@string/solution_price_before_discount"
                                 android:textColor="@color/home_solution_card_before_price"
+                                android:textFontWeight="900"
                                 android:textSize="12sp" />
 
                             <!-- euro symbol -->
@@ -270,9 +270,9 @@
                                 android:layout_marginStart="1dp"
                                 android:fontFamily="@font/albert_sans"
                                 android:maxLines="1"
-                                android:textFontWeight="900"
                                 android:text="@string/euro_symbol"
                                 android:textColor="@color/home_solution_card_before_price"
+                                android:textFontWeight="900"
                                 android:textSize="9sp"
                                 tools:ignore="SmallSp" />
                         </LinearLayout>
@@ -293,9 +293,9 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/albert_sans"
                                 android:maxLines="1"
-                                android:textFontWeight="900"
                                 android:text="@string/solution_price_before_discount"
                                 android:textColor="@color/home_solution_card_before_price_crossed_out"
+                                android:textFontWeight="900"
                                 android:textSize="11sp" />
 
                             <!-- euro symbol -->
@@ -305,9 +305,9 @@
                                 android:layout_marginStart="1dp"
                                 android:fontFamily="@font/albert_sans"
                                 android:maxLines="1"
-                                android:textFontWeight="900"
                                 android:text="@string/euro_symbol"
                                 android:textColor="@color/home_solution_card_before_price_crossed_out"
+                                android:textFontWeight="900"
                                 android:textSize="9sp"
                                 tools:ignore="SmallSp" />
                         </LinearLayout>
@@ -371,11 +371,10 @@
                 <!-- favorite button -->
                 <Button
                     android:id="@+id/favorite_button"
-                    android:layout_width="0dp"
+                    android:layout_width="33dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="10dp"
-                    android:layout_weight="1.02"
                     android:background="@drawable/icon_favorite_smaller"
                     android:text="@string/favorite" />
 
@@ -385,7 +384,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="12dp"
-                    android:layout_weight="3.4"
+                    android:layout_weight="3.1"
                     android:background="@drawable/event_card_see_more_border_smaller"
                     android:fontFamily="@font/albert_sans"
                     android:letterSpacing="0.02"
