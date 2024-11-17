@@ -12,6 +12,7 @@ import androidx.navigation.Navigation;
 
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentLoginBinding;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class LoginFragment extends Fragment {
 
@@ -23,17 +24,30 @@ public class LoginFragment extends Fragment {
         binding = FragmentLoginBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        binding.registerHereButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        binding.registerHereButton.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(v);
+
+            // Problem with back button so we clear the backstack
+            navController.popBackStack();
+
+            navController.navigate(R.id.nav_register);
+        });
+
+        binding.loginButton.setOnClickListener(v -> {
+            if(binding.emailInput.getText().toString().equals("good@email.com") &&
+            binding.passwordInput.getText().toString().equals("pass1234")) {
                 NavController navController = Navigation.findNavController(v);
 
-                // Potential problem with back button?
-                // Clear any existing stack to avoid looping behavior
                 navController.popBackStack();
 
-                // Navigate to the register screen
-                navController.navigate(R.id.nav_register);
+                navController.navigate(R.id.nav_home);
+            } else {
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Invalid input")
+                        .setMessage("Email and password don't match!")
+                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                        .setIcon(R.drawable.icon_error)
+                        .show();
             }
         });
 
