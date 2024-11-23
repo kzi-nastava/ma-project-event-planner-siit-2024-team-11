@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.eventy.databinding.FragmentAddActivityBinding;
-import com.example.eventy.databinding.FragmentEventAgendaCreationBinding;
 import com.example.eventy.events.model.Activity;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -23,6 +22,7 @@ import com.google.android.material.timepicker.TimeFormat;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 import java.util.function.BiConsumer;
 
@@ -30,6 +30,8 @@ public class AddActivityFragment extends Fragment {
 
     private FragmentAddActivityBinding binding;
     private ArrayList<Activity> agenda;
+
+    private Date minDate;
 
     public AddActivityFragment(ArrayList<Activity> agenda) {
         this.agenda = agenda;
@@ -45,7 +47,7 @@ public class AddActivityFragment extends Fragment {
         addValidation(binding.descriptionInputLayout, binding.descriptionInput, this::validateRequired);
         addValidation(binding.locationInputLayout, binding.locationInput, this::validateRequired);
 
-        // needs validation and probably UX improvement (though GPT isn't sure about the library)
+        minDate = new Date();
         binding.activityTimeRangeInput.setOnClickListener(v -> showDateRangePicker());
 
         binding.addActivityButton.setOnClickListener(v -> {
@@ -103,8 +105,11 @@ public class AddActivityFragment extends Fragment {
     }
 
     private void showDateRangePicker() {
+        // Assume minDate is defined somewhere in your code
+        long minDate = System.currentTimeMillis(); // Example: current date and time as minimum date
+
         // Create MaterialDatePicker for start date
-        MaterialDatePicker<Long> startDatePicker = createDatePicker("Select Start Date");
+        MaterialDatePicker<Long> startDatePicker = createDatePicker("Select Start Date", minDate);
 
         startDatePicker.addOnPositiveButtonClickListener(startDate -> {
             // After selecting start date, show time picker
@@ -116,7 +121,7 @@ public class AddActivityFragment extends Fragment {
                 startCalendar.set(Calendar.MINUTE, startMinute);
 
                 // Show end date picker
-                MaterialDatePicker<Long> endDatePicker = createDatePicker("Select End Date");
+                MaterialDatePicker<Long> endDatePicker = createDatePicker("Select End Date", startCalendar.getTimeInMillis());
                 endDatePicker.addOnPositiveButtonClickListener(endDate -> {
                     // Show time picker for end time
                     showTimePicker("Select End Time", (endHour, endMinute) -> {
@@ -126,12 +131,16 @@ public class AddActivityFragment extends Fragment {
                         endCalendar.set(Calendar.HOUR_OF_DAY, endHour);
                         endCalendar.set(Calendar.MINUTE, endMinute);
 
-                        // Display the selected datetime range
-                        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
-                        String selectedRange =
-                                dateTimeFormat.format(startCalendar.getTime()) +
-                                        "-" + dateTimeFormat.format(endCalendar.getTime());
-                        binding.activityTimeRangeInput.setText(selectedRange);
+                        // Check that start date-time is before end date-time
+                        if (startCalendar.before(endCalendar)) {
+                            // Display the selected date-time range
+                            SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                            String selectedRange = dateTimeFormat.format(startCalendar.getTime()) + " - " + dateTimeFormat.format(endCalendar.getTime());
+                            binding.activityTimeRangeInput.setText(selectedRange);
+                            binding.activityTimeRangeInputLayout.setError(null);
+                        } else {
+                            binding.activityTimeRangeInputLayout.setError("Start date-time must be earlier than end date-time.");
+                        }
                     });
                 });
 
@@ -142,8 +151,9 @@ public class AddActivityFragment extends Fragment {
         startDatePicker.show(getParentFragmentManager(), "StartDatePicker");
     }
 
-    private MaterialDatePicker<Long> createDatePicker(String title) {
+    private MaterialDatePicker<Long> createDatePicker(String title, long minDate) {
         CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
+        constraintsBuilder.setStart(minDate); // Set the minimum date
 
         return MaterialDatePicker.Builder.datePicker()
                 .setTitleText(title)
