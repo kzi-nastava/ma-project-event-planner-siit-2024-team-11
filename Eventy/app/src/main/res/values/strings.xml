@@ -1,7 +1,7 @@
 <resources>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-  
+
     <string name="app_name">Eventy</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -18,7 +18,7 @@
     <string name="profile">Profile</string>
     <string name="messages">Messages</string>
     <string name="notifications">Notifications</string>
-  
+
     <!-- /home -->
     <string name="service_and_products">Solutions</string>
     <string name="featured">FEATURED</string>
