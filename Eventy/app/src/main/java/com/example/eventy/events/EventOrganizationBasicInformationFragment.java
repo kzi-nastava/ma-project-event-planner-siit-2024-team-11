@@ -133,7 +133,7 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
                 pinMarker.setPosition(tappedPoint);
                 pinMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
-                pinMarker.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.location_pin_icon));
+                pinMarker.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_location_pin));
 
                 binding.mapview.getOverlays().add(pinMarker);
 

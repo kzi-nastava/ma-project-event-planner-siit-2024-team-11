@@ -4,8 +4,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +11,6 @@ import android.view.ViewGroup;
 
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentEventOrganizationBinding;
-import com.example.eventy.register.RegisterOrganiserFragment;
-import com.example.eventy.register.RegisterProviderFragment;
 
 enum EventOrganizationStage {
     BASIC_INFORMATION,
@@ -64,7 +60,7 @@ public class EventOrganizationFragment extends Fragment {
 
             if(binding.submitButton.getText().equals("ADD EVENT")) {
                 binding.submitButton.setText("NEXT");
-                binding.submitButton.setIconResource(R.drawable.arrow_forward);
+                binding.submitButton.setIconResource(R.drawable.icon_arrow_forward);
             }
             binding.titleText.setText(title);
         });
@@ -96,7 +92,7 @@ public class EventOrganizationFragment extends Fragment {
             if(eventOrganizationStage == EventOrganizationStage.INVITATION_SENDING ||
                     (!isEventPublic && eventOrganizationStage == EventOrganizationStage.AGENDA_CREATION)) {
                 submitText = "ADD EVENT";
-                binding.submitButton.setIconResource(R.drawable.add_icon);
+                binding.submitButton.setIconResource(R.drawable.icon_add);
             }
             binding.submitButton.setText(submitText);
             binding.titleText.setText(title);

@@ -36,7 +36,6 @@
         tools:layout="@layout/fragment_service_editing"/>
 
     <fragment
-        feature/event-organization
         android:id="@+id/nav_event_organization"
         android:name="com.example.eventy.events.EventOrganizationFragment"
         android:label="Organize Event"

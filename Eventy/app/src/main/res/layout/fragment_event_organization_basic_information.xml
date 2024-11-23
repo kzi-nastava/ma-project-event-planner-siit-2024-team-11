@@ -16,7 +16,7 @@
         android:layout_marginTop="12dp"
         android:hint="Name"
         app:endIconMode="clear_text"
-        app:endIconDrawable="@drawable/clear_icon">
+        app:endIconDrawable="@drawable/icon_remove">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/name_input"
@@ -34,7 +34,7 @@
         android:layout_marginTop="12dp"
         android:hint="Description"
         app:endIconMode="clear_text"
-        app:endIconDrawable="@drawable/clear_icon">
+        app:endIconDrawable="@drawable/icon_remove">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/description_input"
@@ -54,7 +54,7 @@
         android:layout_marginTop="12dp"
         android:hint="Maximum number of participants"
         app:endIconMode="clear_text"
-        app:endIconDrawable="@drawable/clear_icon">
+        app:endIconDrawable="@drawable/icon_remove">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/max_participants_input"
