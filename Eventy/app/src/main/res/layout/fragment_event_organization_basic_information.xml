@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".events.EventOrganizationBasicInformationFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <!-- Name Field -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/name_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="Name"
+        app:endIconMode="clear_text"
+        app:endIconDrawable="@drawable/icon_remove">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/name_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:background="@color/input_color"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Description Field -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/description_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="Description"
+        app:endIconMode="clear_text"
+        app:endIconDrawable="@drawable/icon_remove">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/description_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:minLines="2"
+            android:gravity="top|start"
+            android:background="@color/input_color"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Maximum number of participants Field -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/max_participants_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="Maximum number of participants"
+        app:endIconMode="clear_text"
+        app:endIconDrawable="@drawable/icon_remove">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/max_participants_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:background="@color/input_color"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/privacyTypeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Privacy Type:"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"
+            app:fontFamily="@font/roboto"
+            android:textColor="#222222"/>
+
+        <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/radioPublic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Public"
+            android:textColor="@color/black"
+            app:buttonTint="@color/button_color"
+            android:layout_marginStart="16dp" />
+
+        <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/radioPrivate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Private"
+            android:textColor="@color/black"
+            app:buttonTint="@color/button_color"
+            android:layout_marginStart="16dp" />
+    </LinearLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/event_type_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="Select Event Type">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/event_type_autoCompleteTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:background="@color/input_color"
+            android:paddingTop="24dp"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="8dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <org.osmdroid.views.MapView
+        android:id="@+id/mapview"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:longClickable="true"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="12dp"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/mapLocationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please select a location!"
+        android:textSize="16sp"
+        android:layout_marginBottom="24dp"
+        app:fontFamily="@font/roboto"
+        android:textColor="#222222"
+        android:textAlignment="center"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/date_range_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="Select Date Range">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/date_range_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="none"
+        android:focusable="false"
+        android:background="@color/input_color"/>
+    </com.google.android.material.textfield.TextInputLayout>
+</LinearLayout>

@@ -74,4 +74,5 @@
     <string name="select_max_participants"><font size="15">Select a number..</font></string>
 
     <string name="add_service_title">Add a new service</string>
+    <string name="organize_event">Organize event</string>
 </resources>
