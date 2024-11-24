@@ -2,65 +2,140 @@ package com.example.eventy.events;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.eventy.R;
+import com.example.eventy.databinding.FragmentAddEventTypeBinding;
+import com.example.eventy.databinding.FragmentEditEventTypeBinding;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link EditEventTypeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.function.BiConsumer;
+
 public class EditEventTypeFragment extends Fragment {
+    private FragmentEditEventTypeBinding binding;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+        binding = FragmentEditEventTypeBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
 
-    public EditEventTypeFragment() {
-        // Required empty public constructor
-    }
+        binding.backButton.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(v);
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment EditEventTypeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static EditEventTypeFragment newInstance(String param1, String param2) {
-        EditEventTypeFragment fragment = new EditEventTypeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+            // Problem with back button so we clear the backstack
+            navController.popBackStack();
+
+            navController.navigate(R.id.nav_event_type_details);
+        });
+
+        TextInputEditText multiSelectEditText = binding.selectCategoriesInput;
+        String[] options = {"Option 1", "Option 2", "Option 3", "Option 4"};
+        boolean[] selectedOptions = new boolean[options.length];
+
+        multiSelectEditText.setOnClickListener(v -> {
+            new MaterialAlertDialogBuilder(requireContext())
+                    .setTitle("Select Recommended Categories")
+                    .setMultiChoiceItems(options, selectedOptions, (dialog, which, isChecked) -> {
+                        selectedOptions[which] = isChecked; // Update selected options
+                    })
+                    .setPositiveButton("OK", (dialog, which) -> {
+                        // Collect selected options
+                        StringBuilder selected = new StringBuilder();
+                        for (int i = 0; i < options.length; i++) {
+                            if (selectedOptions[i]) {
+                                if (selected.length() > 0) {
+                                    selected.append(", ");
+                                }
+                                selected.append(options[i]);
+                            }
+                        }
+                        // Display selected options
+                        multiSelectEditText.setText(selected.toString());
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
+        });
+
+        addValidation(binding.nameInputLayout, binding.nameInput, this::validateRequired);
+        addValidation(binding.descriptionInputLayout, binding.descriptionInput, this::validateRequired);
+
+        binding.addTypeButton.setOnClickListener(v -> {
+            binding.nameInput.setText(binding.nameInput.getText());
+            binding.descriptionInput.setText(binding.descriptionInput.getText());
+
+            if(binding.nameInputLayout.getError() == null && binding.descriptionInputLayout.getError() == null &&
+                    binding.selectCategoriesInputLayout.getError() == null) {
+                // do add
+                NavController navController = Navigation.findNavController(v);
+
+                navController.popBackStack();
+
+                navController.navigate(R.id.nav_event_types);
+            } else {
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Invalid input")
+                        .setMessage("Name and description are required are required!")
+                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                        .setIcon(R.drawable.icon_error)
+                        .show();
+            }
+        });
+
+        // prefill with data, what about the multiple select
+        binding.nameInput.setText("Some name");
+        binding.descriptionInput.setText("DESCRIPTION some text");
+
+        return root;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
+    private void addValidation(TextInputLayout textInputLayout, TextInputEditText textInputEditText, BiConsumer<String, TextInputLayout> action) {
+        // Real-time field validation
+        textInputEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // No action needed here
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Validate input as the user types
+                action.accept(s.toString(), textInputLayout);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // No action needed here
+            }
+        });
+
+        textInputEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            action.accept(String.valueOf(textInputEditText.getText()), textInputLayout);
+        });
+    }
+
+    private void validateRequired(String inputText, TextInputLayout textInputLayout) {
+        if (inputText.trim().isEmpty()) {
+            textInputLayout.setError("This field is required");
+        } else {
+            textInputLayout.setError(null);
         }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_edit_event_type, container, false);
     }
 }
