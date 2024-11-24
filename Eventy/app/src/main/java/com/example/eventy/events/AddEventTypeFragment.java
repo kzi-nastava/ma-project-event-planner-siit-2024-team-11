@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,9 @@ import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentAddEventTypeBinding;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.function.BiConsumer;
 
 public class AddEventTypeFragment extends Fragment {
 
@@ -63,6 +68,31 @@ public class AddEventTypeFragment extends Fragment {
                     .show();
         });
 
+        addValidation(binding.nameInputLayout, binding.nameInput, this::validateRequired);
+        addValidation(binding.descriptionInputLayout, binding.descriptionInput, this::validateRequired);
+
+        binding.addTypeButton.setOnClickListener(v -> {
+            binding.nameInput.setText(binding.nameInput.getText());
+            binding.descriptionInput.setText(binding.descriptionInput.getText());
+
+            if(binding.nameInputLayout.getError() == null && binding.descriptionInputLayout.getError() == null &&
+                    binding.selectCategoriesInputLayout.getError() == null) {
+                // do add
+                NavController navController = Navigation.findNavController(v);
+
+                navController.popBackStack();
+
+                navController.navigate(R.id.nav_event_types);
+            } else {
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Invalid input")
+                        .setMessage("Name and description are required are required!")
+                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                        .setIcon(R.drawable.icon_error)
+                        .show();
+            }
+        });
+
         return root;
     }
 
@@ -70,5 +100,38 @@ public class AddEventTypeFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void addValidation(TextInputLayout textInputLayout, TextInputEditText textInputEditText, BiConsumer<String, TextInputLayout> action) {
+        // Real-time field validation
+        textInputEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // No action needed here
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Validate input as the user types
+                action.accept(s.toString(), textInputLayout);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // No action needed here
+            }
+        });
+
+        textInputEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            action.accept(String.valueOf(textInputEditText.getText()), textInputLayout);
+        });
+    }
+
+    private void validateRequired(String inputText, TextInputLayout textInputLayout) {
+        if (inputText.trim().isEmpty()) {
+            textInputLayout.setError("This field is required");
+        } else {
+            textInputLayout.setError(null);
+        }
     }
 }
