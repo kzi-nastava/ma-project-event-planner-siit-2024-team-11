@@ -46,4 +46,10 @@
         android:name="com.example.eventy.users.pup.PUPOwnServicesFragment"
         android:label="test"
         tools:layout="@layout/fragment_pup_own_services"/>
+
+    <fragment
+        android:id="@+id/nav_event_types"
+        android:name="com.example.eventy.events.EventTypesFragment"
+        android:label="Event Types"
+        tools:layout="@layout/fragment_event_types"/>
 </navigation>
