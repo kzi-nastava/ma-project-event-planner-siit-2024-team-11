@@ -94,8 +94,8 @@ public class EditEventTypeFragment extends Fragment {
         });
 
         // prefill with data, what about the multiple select
-        binding.nameInput.setText("Some name");
-        binding.descriptionInput.setText("DESCRIPTION some text");
+        binding.nameInput.setText("Wedding");
+        binding.descriptionInput.setText("This amazing event type is happening when two people are getting married! Celebrate their new life!");
 
         return root;
     }

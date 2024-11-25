@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="32dp">
+        android:layout_marginBottom="16dp">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/back_button"
@@ -58,7 +58,8 @@
             app:cornerRadius="7dp"
             android:fontFamily="@font/roboto"
             android:textStyle="bold"
-            android:layout_marginRight="10dp" />
+            android:padding="10dp"
+            android:layout_marginRight="20dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/edit_button"
@@ -71,7 +72,8 @@
             app:cornerRadius="7dp"
             android:fontFamily="@font/roboto"
             android:textStyle="bold"
-            android:layout_marginLeft="10dp" />
+            android:padding="10dp"
+            android:layout_marginLeft="20dp" />
     </LinearLayout>
 
     <TextView
