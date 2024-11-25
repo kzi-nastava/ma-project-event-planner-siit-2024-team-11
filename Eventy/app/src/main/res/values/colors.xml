@@ -15,6 +15,7 @@
     <color name="background_color">#F1F1F1</color>
     <color name="input_color">#e0e2ec</color>
     <color name="green_button">#408A56</color>
+    <color name="red_button">#852221</color>
     <color name="disabled_button">#B0BEC5</color>
 
     <!-- home -->

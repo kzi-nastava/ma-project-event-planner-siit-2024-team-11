@@ -46,4 +46,28 @@
         android:name="com.example.eventy.users.pup.PUPOwnServicesFragment"
         android:label="test"
         tools:layout="@layout/fragment_pup_own_services"/>
+
+    <fragment
+        android:id="@+id/nav_event_types"
+        android:name="com.example.eventy.events.EventTypesFragment"
+        android:label="Event Types"
+        tools:layout="@layout/fragment_event_types"/>
+
+    <fragment
+        android:id="@+id/nav_add_event_type"
+        android:name="com.example.eventy.events.AddEventTypeFragment"
+        android:label="Add Event Type"
+        tools:layout="@layout/fragment_add_event_type"/>
+
+    <fragment
+        android:id="@+id/nav_edit_event_type"
+        android:name="com.example.eventy.events.EditEventTypeFragment"
+        android:label="Edit Event Type"
+        tools:layout="@layout/fragment_edit_event_type"/>
+
+    <fragment
+        android:id="@+id/nav_event_type_details"
+        android:name="com.example.eventy.events.EventTypeDetailsFragment"
+        android:label="Event Type Details"
+        tools:layout="@layout/fragment_event_type_details"/>
 </navigation>
