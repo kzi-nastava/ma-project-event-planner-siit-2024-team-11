@@ -85,6 +85,6 @@ public class EventTypesFragment extends Fragment {
             }
             adapter.notifyDataSetChanged();
             isLoading = false;
-        }, 1000); // Simulate a network delay
+        }, 50); // Simulate a network delay
     }
 }

@@ -85,5 +85,11 @@
         android:textColor="#333333"
         android:textAlignment="center"/>
 
-    <!-- Adapter with categories -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/categories_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        app:cornerRadius="20dp"
+        android:backgroundTint="@color/white" />
 </LinearLayout>
