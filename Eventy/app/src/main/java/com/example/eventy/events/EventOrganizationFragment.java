@@ -48,7 +48,7 @@ public class EventOrganizationFragment extends Fragment {
             } else if(eventOrganizationStage == EventOrganizationStage.INVITATION_SENDING) {
                 eventOrganizationStage = EventOrganizationStage.AGENDA_CREATION;
                 fragment = new EventAgendaCreation();
-                title = "Add Agenda to the Event";
+                title = "Add Agenda";
             } else {
                 return;
             }
@@ -73,12 +73,12 @@ public class EventOrganizationFragment extends Fragment {
             if(eventOrganizationStage == EventOrganizationStage.BASIC_INFORMATION) {
                 eventOrganizationStage = EventOrganizationStage.AGENDA_CREATION;
                 fragment = new EventAgendaCreation();
-                title = "Add Agenda to the Event";
+                title = "Add Agenda";
                 binding.backButton.setEnabled(true);
             } else if(eventOrganizationStage == EventOrganizationStage.AGENDA_CREATION) {
                 eventOrganizationStage = EventOrganizationStage.INVITATION_SENDING;
                 fragment = new EventInvitationSending();
-                title = "Send Invitations";
+                title = "Invite people";
             } else {
                 // here we will create the event or maybe upstairs somewhere
                 return;

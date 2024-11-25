@@ -9,7 +9,6 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
         android:orientation="vertical"
         android:gravity="center"
         android:background="@color/background_color">
@@ -20,6 +19,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:background="@color/white"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:gravity="center_vertical">
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -37,13 +41,13 @@
             <!-- Title centered horizontally -->
             <TextView
                 android:id="@+id/titleText"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Organize an Event"
                 android:gravity="center"
                 android:textColor="@color/title_color"
-                android:textSize="34sp"
+                android:textSize="24sp"
                 android:fontFamily="@font/albert_sans" />
 
         </LinearLayout>
@@ -53,24 +57,40 @@
             android:id="@+id/formContainer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="20dp"
             android:layout_weight="1"
-            android:padding="20dp"/>
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"/>
 
-        <!-- Centered button at the bottom -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/submitButton"
-            android:layout_width="wrap_content"
+        <FrameLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:icon="@drawable/icon_arrow_forward"
-            android:text="NEXT"
-            app:backgroundTint="@color/green_button"
-            style="@style/Widget.MaterialComponents.Button"
-            android:layout_marginBottom="16dp"
-            app:cornerRadius="7dp"
-            android:fontFamily="@font/roboto"
-            android:textStyle="bold" />
+            android:paddingTop="0dp"
+            android:paddingBottom="30dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/submitButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/icon_arrow_forward"
+                android:layout_gravity="center"
+                android:text="NEXT"
+                android:textSize="16.5sp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="18dp"
+                android:paddingRight="18dp"
+                app:backgroundTint="@color/green_button"
+                style="@style/Widget.MaterialComponents.Button"
+                app:cornerRadius="10dp"
+                android:fontFamily="@font/roboto"
+                android:textStyle="bold" />
+        </FrameLayout>
 
     </LinearLayout>
 
