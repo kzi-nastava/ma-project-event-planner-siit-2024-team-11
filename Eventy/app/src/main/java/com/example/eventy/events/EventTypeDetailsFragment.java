@@ -23,7 +23,7 @@ public class EventTypeDetailsFragment extends Fragment {
     private FragmentEventTypeDetailsBinding binding;
 
     private RecyclerView recyclerView;
-    private EventTypeCardAdapter adapter;
+    private CategoryCardAdapter adapter;
     private List<String> categoriesList;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -52,7 +52,7 @@ public class EventTypeDetailsFragment extends Fragment {
 
         recyclerView = binding.categoriesContainer;
         categoriesList = new ArrayList<>();
-        adapter = new EventTypeCardAdapter(categoriesList);
+        adapter = new CategoryCardAdapter(categoriesList);
 
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recyclerView.setAdapter(adapter);
