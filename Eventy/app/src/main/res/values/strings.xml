@@ -75,4 +75,10 @@
 
     <string name="add_service_title">Add a new service</string>
     <string name="organize_event">Organize event</string>
+
+    <!-- /events/organize/invite-people -->
+    <string name="invite_people">You\'re one step away from creating your perfect event! All that is left is to choose the people you want to share it with!</string>
+    <string name="add_new_person">Add new person:</string>
+    <string name="added_people">Added people:</string>
+
 </resources>
