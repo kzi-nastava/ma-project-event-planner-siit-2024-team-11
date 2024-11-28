@@ -77,8 +77,8 @@ public class EventOrganizationFragment extends Fragment {
                 binding.backButton.setEnabled(true);
             } else if(eventOrganizationStage == EventOrganizationStage.AGENDA_CREATION) {
                 eventOrganizationStage = EventOrganizationStage.INVITATION_SENDING;
-                fragment = new EventInvitationSending();
-                title = "Invite people";
+                fragment = new EventInvitationSendingFragment();
+                title = "Send invitations";
             } else {
                 // here we will create the event or maybe upstairs somewhere
                 return;

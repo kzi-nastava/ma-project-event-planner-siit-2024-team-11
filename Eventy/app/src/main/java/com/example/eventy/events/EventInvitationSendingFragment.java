@@ -8,10 +8,15 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentEventInvitationSendingBinding;
+import com.example.eventy.events.organization.invitations.InvitedEmailsFragment;
+import com.google.android.material.textfield.TextInputEditText;
 
-public class EventInvitationSending extends Fragment {
+public class EventInvitationSendingFragment extends Fragment {
 
     private FragmentEventInvitationSendingBinding binding;
 
@@ -20,6 +25,14 @@ public class EventInvitationSending extends Fragment {
 
         binding = FragmentEventInvitationSendingBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        ImageView addEmailButton = root.findViewById(R.id.add_email_button);
+        TextInputEditText emailTextInput = root.findViewById(R.id.email_input);
+        TextView emailInputErrorText = root.findViewById(R.id.email_input_error);
+
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.all_invited_people, new InvitedEmailsFragment(addEmailButton, emailTextInput, emailInputErrorText))
+                .commit();
 
         return root;
     }
