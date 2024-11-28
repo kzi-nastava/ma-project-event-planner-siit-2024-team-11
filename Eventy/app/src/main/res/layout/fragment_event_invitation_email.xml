@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:background="@color/white"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/invited_email_value"
+            android:layout_width="0dp"
+            android:layout_weight="10"
+            android:textColor="@color/home_event_card_text"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textSize="14.5sp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:fontFamily="@font/figtree"
+            android:text="example@email.com">
+        </TextView>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/remove_email"
+            android:layout_width="65dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:fontFamily="@font/albert_sans"
+            android:textFontWeight="900"
+            android:text="Remove"
+            android:paddingRight="7dp"
+            android:paddingLeft="7dp"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            android:background="@drawable/clear_filter_background"
+            android:textColor="#FFFFFF"/>
+    </LinearLayout>
+
+    <!-- Divider line -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#BCBCBC"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginTop="8dp"/>
+
+</LinearLayout>
+
+
+
+
+
