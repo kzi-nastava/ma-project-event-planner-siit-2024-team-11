@@ -2,11 +2,13 @@ package com.example.eventy.events.organization.invitations;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -48,8 +50,8 @@ public class InvitedEmailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        invitedEmails = getInvitedEmails();
-        invitedEmailsAdapter = new InvitedEmailsAdapter(requireContext(), invitedEmails);
+        invitedEmails = new ArrayList<>();
+        invitedEmailsAdapter = new InvitedEmailsAdapter(requireContext(), invitedEmails, this);
 
         binding.invitedEmailsRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.invitedEmailsRecycler.setAdapter(invitedEmailsAdapter);
@@ -59,16 +61,15 @@ public class InvitedEmailsFragment extends Fragment {
         );
     }
 
-    @NonNull
-    private static ArrayList<String> getInvitedEmails() {
-        ArrayList<String> invitedEmails = new ArrayList<>();
-        return invitedEmails;
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @NonNull
+    public ArrayList<String> getInvitedEmails() {
+        return this.invitedEmails;
     }
 
     private void addItem(String item) {
@@ -82,13 +83,26 @@ public class InvitedEmailsFragment extends Fragment {
             emailInputErrorText.setText("Invalid email format!");
             return;
         }
+        if(invitedEmails.contains(item)) {
+            emailInputErrorText.setHeight(dpToPx(this.getContext(), 18));
+            emailInputErrorText.setText("This email is already added!");
+            return;
+        }
 
         emailInputErrorText.setHeight(dpToPx(this.getContext(), 0));
         invitedEmails.add(item);
         invitedEmailsAdapter.notifyDataSetChanged();
     }
 
-    public static int dpToPx(Context context, int dp) {
+    public void removeItem(String item) {
+        emailInputErrorText.setHeight(dpToPx(this.getContext(), 0));
+        String email = item.replaceAll(".*?(\\S+@\\S+\\.\\S+).*", "$1");
+        invitedEmails.remove(email);
+
+        invitedEmailsAdapter.notifyDataSetChanged();
+    }
+
+    private static int dpToPx(Context context, int dp) {
         float density = context.getResources().getDisplayMetrics().density;
         return Math.round(dp * density);
     }

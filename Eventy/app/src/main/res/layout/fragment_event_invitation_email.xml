@@ -9,14 +9,20 @@
 
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="6dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/invited_email_value"
             android:layout_width="0dp"
-            android:layout_weight="10"
+            android:paddingRight="5dp"
+            android:layout_weight="1"
+            android:paddingLeft="5dp"
+            android:paddingTop="9dp"
+            android:paddingBottom="9dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="3dp"
             android:textColor="@color/home_event_card_text"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
@@ -24,23 +30,32 @@
             android:textSize="14.5sp"
             app:layout_constraintTop_toTopOf="parent"
             android:fontFamily="@font/figtree"
-            android:text="example@email.com">
+            android:text="examplee@email.com">
         </TextView>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/remove_email"
-            android:layout_width="65dp"
-            android:layout_weight="1"
-            android:layout_height="40dp"
-            android:fontFamily="@font/albert_sans"
-            android:textFontWeight="900"
-            android:text="Remove"
-            android:paddingRight="7dp"
-            android:paddingLeft="7dp"
-            android:textAllCaps="false"
-            android:textSize="14sp"
-            android:background="@drawable/clear_filter_background"
-            android:textColor="#FFFFFF"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.35">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/remove_email_button"
+                android:layout_width="80dp"
+                android:layout_height="35dp"
+                android:background="@drawable/clear_filter_background"
+                android:fontFamily="@font/albert_sans"
+                android:text="Remove"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textFontWeight="900"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </LinearLayout>
 
     <!-- Divider line -->
@@ -50,7 +65,7 @@
         android:background="#BCBCBC"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="6dp"/>
 
 </LinearLayout>
 

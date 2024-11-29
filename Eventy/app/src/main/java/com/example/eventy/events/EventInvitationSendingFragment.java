@@ -16,9 +16,12 @@ import com.example.eventy.databinding.FragmentEventInvitationSendingBinding;
 import com.example.eventy.events.organization.invitations.InvitedEmailsFragment;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.ArrayList;
+
 public class EventInvitationSendingFragment extends Fragment {
 
     private FragmentEventInvitationSendingBinding binding;
+    private InvitedEmailsFragment invitedEmailsFragment;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -30,8 +33,10 @@ public class EventInvitationSendingFragment extends Fragment {
         TextInputEditText emailTextInput = root.findViewById(R.id.email_input);
         TextView emailInputErrorText = root.findViewById(R.id.email_input_error);
 
+        invitedEmailsFragment = new InvitedEmailsFragment(addEmailButton, emailTextInput, emailInputErrorText);
+
         getChildFragmentManager().beginTransaction()
-                .replace(R.id.all_invited_people, new InvitedEmailsFragment(addEmailButton, emailTextInput, emailInputErrorText))
+                .replace(R.id.all_invited_people, invitedEmailsFragment)
                 .commit();
 
         return root;
@@ -41,5 +46,9 @@ public class EventInvitationSendingFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    public ArrayList<String> getInvitedEmails() {
+        return invitedEmailsFragment.getInvitedEmails();
     }
 }

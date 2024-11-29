@@ -194,19 +194,19 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:padding="3dp"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="0dp"
                 android:layout_marginTop="3dp"
                 android:fontFamily="@font/albert_sans"
                 android:text="@string/added_people"
-                android:textColor="#A09999"
+                android:textColor="#B3ABAB"
                 android:textFontWeight="500"
-                android:textSize="14sp" />
+                android:textSize="14.5sp" />
 
             <!-- invited people container -->
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/all_invited_people"
                 android:layout_width="match_parent"
-                android:layout_height="310dp"
+                android:layout_height="235dp"
                 android:background="@color/white"
                 android:padding="3dp"
                 android:layout_marginBottom="5dp"

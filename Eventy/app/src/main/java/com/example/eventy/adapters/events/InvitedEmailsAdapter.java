@@ -4,22 +4,27 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventy.R;
+import com.example.eventy.events.organization.invitations.InvitedEmailsFragment;
 
 import java.util.ArrayList;
 
 public class InvitedEmailsAdapter extends RecyclerView.Adapter<InvitedEmailsAdapter.InvitedEmailsViewHolder> {
     private ArrayList<String> invitedEmails;
     private LayoutInflater layoutInflater;
+    private InvitedEmailsFragment invitedEmailsFragment;
 
-    public InvitedEmailsAdapter(Context context, ArrayList<String> invitedEmails) {
+    public InvitedEmailsAdapter(Context context, ArrayList<String> invitedEmails, InvitedEmailsFragment invitedEmailsFragment) {
         this.invitedEmails = invitedEmails;
         this.layoutInflater = LayoutInflater.from(context);
+        this.invitedEmailsFragment = invitedEmailsFragment;
     }
 
     @NonNull
@@ -38,15 +43,12 @@ public class InvitedEmailsAdapter extends RecyclerView.Adapter<InvitedEmailsAdap
             String text = position + 1 +  ". " + email;
             holder.invitedEmail.setText(text);
 
-            /*Button seeMoreButton = holder.itemView.findViewById(R.id.see_more_button);
-            seeMoreButton.setOnClickListener(v -> {
-                Toast.makeText(holder.itemView.getContext(), "See more: " + event.getName(), Toast.LENGTH_SHORT).show();
-            });
+            Button removeEmailButton = holder.itemView.findViewById(R.id.remove_email_button);
+            TextView invitedEmailValueText = holder.itemView.findViewById(R.id.invited_email_value);
 
-            Button favoriteButton = holder.itemView.findViewById(R.id.favorite_button);
-            favoriteButton.setOnClickListener(v -> {
-                Toast.makeText(holder.itemView.getContext(), "Favorite: " + event.getName(), Toast.LENGTH_SHORT).show();
-            });*/
+            removeEmailButton.setOnClickListener(v -> {
+                invitedEmailsFragment.removeItem((String) invitedEmailValueText.getText());
+            });
         }
     }
 
