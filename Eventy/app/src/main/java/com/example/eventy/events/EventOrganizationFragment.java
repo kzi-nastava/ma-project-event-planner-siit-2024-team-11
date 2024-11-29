@@ -5,12 +5,16 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentEventOrganizationBinding;
+
+import java.util.ArrayList;
 
 enum EventOrganizationStage {
     BASIC_INFORMATION,
@@ -22,6 +26,7 @@ public class EventOrganizationFragment extends Fragment {
     private FragmentEventOrganizationBinding binding;
     private EventOrganizationStage eventOrganizationStage;
     private boolean isEventPublic;
+    Fragment fragment;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -66,7 +71,6 @@ public class EventOrganizationFragment extends Fragment {
         });
 
         binding.submitButton.setOnClickListener(v -> {
-            Fragment fragment;
             String title;
             String submitText = "NEXT";
 
@@ -80,6 +84,17 @@ public class EventOrganizationFragment extends Fragment {
                 fragment = new EventInvitationSendingFragment();
                 title = "Send invitations";
             } else {
+                Log.wtf("Ovde sammm", "ELSEEE");
+                EventInvitationSendingFragment invitationFragment = (EventInvitationSendingFragment) fragment;
+                ArrayList<String> invitedEmails = invitationFragment.getInvitedEmails();
+                StringBuilder emails = new StringBuilder();
+                for (String email : invitedEmails) {
+                    Log.wtf("EMAILLLLLLLLLLLLLLLLLLLS: ", email);
+                    emails.append(email);
+                    emails.append(",");
+                }
+                //Log.wtf("EMAILLLLLLLLLLLLLLLLLLLS: ", emails.toString());
+                Toast.makeText(this.getContext(), emails.toString(), Toast.LENGTH_LONG).show();
                 // here we will create the event or maybe upstairs somewhere
                 return;
             }
