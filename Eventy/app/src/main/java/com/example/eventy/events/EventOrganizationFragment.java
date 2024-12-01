@@ -1,9 +1,13 @@
 package com.example.eventy.events;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -84,18 +88,39 @@ public class EventOrganizationFragment extends Fragment {
                 fragment = new EventInvitationSendingFragment();
                 title = "Send invitations";
             } else {
-                Log.wtf("Ovde sammm", "ELSEEE");
                 EventInvitationSendingFragment invitationFragment = (EventInvitationSendingFragment) fragment;
                 ArrayList<String> invitedEmails = invitationFragment.getInvitedEmails();
-                StringBuilder emails = new StringBuilder();
-                for (String email : invitedEmails) {
-                    Log.wtf("EMAILLLLLLLLLLLLLLLLLLLS: ", email);
-                    emails.append(email);
-                    emails.append(",");
+
+                if (invitedEmails.isEmpty()) {
+                    // event creation failed (no invited people)
+                    new AlertDialog.Builder(this.getContext())
+                        .setTitle(" Error")
+                        .setMessage("At least one person needs to be invited before proceeding!")
+                        .setNegativeButton(android.R.string.ok, null)
+                        .setIcon(R.drawable.icon_error_png)
+                        .show();
+                } else {
+                    // event creation successful
+                    StringBuilder emails = new StringBuilder();
+                    for (String email : invitedEmails) {
+                        emails.append(email);
+                        emails.append(",");
+                    }
+                    Toast.makeText(this.getContext(), emails.toString(), Toast.LENGTH_LONG).show();
+                    new AlertDialog.Builder(this.getContext())
+                        .setTitle(" Successful creation")
+                        .setMessage("Your event has been created successfully! Invitations have been sent to the specified email addresses.")
+                        .setIcon(R.drawable.icon_success_png)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                // this leads to home (for now), will lead to the event page or user profile
+                                NavController navController = Navigation.findNavController(v);
+                                navController.popBackStack();
+                                navController.navigate(R.id.nav_home);
+                            }})
+                        .show();
                 }
-                //Log.wtf("EMAILLLLLLLLLLLLLLLLLLLS: ", emails.toString());
-                Toast.makeText(this.getContext(), emails.toString(), Toast.LENGTH_LONG).show();
-                // here we will create the event or maybe upstairs somewhere
+
                 return;
             }
 
