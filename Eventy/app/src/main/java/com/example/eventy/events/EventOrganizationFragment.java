@@ -1,16 +1,24 @@
 package com.example.eventy.events;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentEventOrganizationBinding;
+
+import java.util.ArrayList;
 
 enum EventOrganizationStage {
     BASIC_INFORMATION,
@@ -22,6 +30,7 @@ public class EventOrganizationFragment extends Fragment {
     private FragmentEventOrganizationBinding binding;
     private EventOrganizationStage eventOrganizationStage;
     private boolean isEventPublic;
+    Fragment fragment;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -66,7 +75,6 @@ public class EventOrganizationFragment extends Fragment {
         });
 
         binding.submitButton.setOnClickListener(v -> {
-            Fragment fragment;
             String title;
             String submitText = "NEXT";
 
@@ -77,10 +85,42 @@ public class EventOrganizationFragment extends Fragment {
                 binding.backButton.setEnabled(true);
             } else if(eventOrganizationStage == EventOrganizationStage.AGENDA_CREATION) {
                 eventOrganizationStage = EventOrganizationStage.INVITATION_SENDING;
-                fragment = new EventInvitationSending();
-                title = "Invite people";
+                fragment = new EventInvitationSendingFragment();
+                title = "Send invitations";
             } else {
-                // here we will create the event or maybe upstairs somewhere
+                EventInvitationSendingFragment invitationFragment = (EventInvitationSendingFragment) fragment;
+                ArrayList<String> invitedEmails = invitationFragment.getInvitedEmails();
+
+                if (invitedEmails.isEmpty()) {
+                    // event creation failed (no invited people)
+                    new AlertDialog.Builder(this.getContext())
+                        .setTitle(" Error")
+                        .setMessage("At least one person needs to be invited before proceeding!")
+                        .setNegativeButton(android.R.string.ok, null)
+                        .setIcon(R.drawable.icon_error_png)
+                        .show();
+                } else {
+                    // event creation successful
+                    StringBuilder emails = new StringBuilder();
+                    for (String email : invitedEmails) {
+                        emails.append(email);
+                        emails.append(",");
+                    }
+                    Toast.makeText(this.getContext(), emails.toString(), Toast.LENGTH_LONG).show();
+                    new AlertDialog.Builder(this.getContext())
+                        .setTitle(" Successful creation")
+                        .setMessage("Your event has been created successfully! Invitations have been sent to the specified email addresses.")
+                        .setIcon(R.drawable.icon_success_png)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                // this leads to home (for now), will lead to the event page or user profile
+                                NavController navController = Navigation.findNavController(v);
+                                navController.popBackStack();
+                                navController.navigate(R.id.nav_home);
+                            }})
+                        .show();
+                }
+
                 return;
             }
 

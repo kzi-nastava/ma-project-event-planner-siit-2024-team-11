@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:background="@color/white"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginTop="6dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/invited_email_value"
+            android:layout_width="0dp"
+            android:paddingRight="5dp"
+            android:layout_weight="1"
+            android:paddingLeft="5dp"
+            android:paddingTop="9dp"
+            android:paddingBottom="9dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="3dp"
+            android:textColor="@color/home_event_card_text"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textSize="14.5sp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:fontFamily="@font/figtree"
+            android:text="examplee@email.com">
+        </TextView>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.35">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/remove_email_button"
+                android:layout_width="80dp"
+                android:layout_height="35dp"
+                android:background="@drawable/clear_filter_background"
+                android:fontFamily="@font/albert_sans"
+                android:text="Remove"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textFontWeight="900"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+    <!-- Divider line -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#BCBCBC"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginTop="6dp"/>
+
+</LinearLayout>
+
+
+
+
+
