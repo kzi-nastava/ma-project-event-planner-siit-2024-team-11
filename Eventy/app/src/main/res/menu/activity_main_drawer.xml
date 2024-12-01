@@ -34,5 +34,8 @@
         <item android:id="@+id/nav_event_types"
             android:icon="@drawable/icon_types"
             android:title="Event Types"/>
+        <item android:id="@+id/nav_other_user_profile_page"
+            android:icon="@drawable/icon_profile"
+            android:title="Other user profile page"/>
     </group>
 </menu>
