@@ -39,7 +39,7 @@ public class OtherUserProfilePageFragment extends Fragment {
         // Default fragment
         getParentFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragmentContainer, new BasicInformationFragment())
+                .replace(R.id.fragmentContainer, new BasicInformationFragment(this.user))
                 .commit();
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -47,7 +47,7 @@ public class OtherUserProfilePageFragment extends Fragment {
             public void onTabSelected(TabLayout.Tab tab) {
                 Fragment selectedFragment;
                 if (tab.getPosition() == 0) {
-                    selectedFragment = new BasicInformationFragment();
+                    selectedFragment = new BasicInformationFragment(user);
                 } else {
                     selectedFragment = new MyCardsFragment();
                 }
