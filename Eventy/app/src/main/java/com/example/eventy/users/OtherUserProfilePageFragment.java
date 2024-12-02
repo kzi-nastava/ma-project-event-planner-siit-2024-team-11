@@ -49,7 +49,7 @@ public class OtherUserProfilePageFragment extends Fragment {
                 if (tab.getPosition() == 0) {
                     selectedFragment = new BasicInformationFragment(user);
                 } else {
-                    selectedFragment = new MyCardsFragment();
+                    selectedFragment = new MyCardsFragment(user);
                 }
 
                 getParentFragmentManager()
