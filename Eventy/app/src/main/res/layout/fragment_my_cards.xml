@@ -7,42 +7,8 @@
     android:orientation="vertical"
     tools:context=".users.MyCardsFragment">
 
-    <LinearLayout
-        android:id="@+id/search_container"
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="5dp"
-        android:elevation="1.5dp"
-        android:padding="2.5dp"
-        android:background="@drawable/search_input_background">
-
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/search_input"
-            android:paddingStart="0dp"
-            android:paddingEnd="0dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/search_input_background"
-            app:queryHint="Search.." />
-    </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/featured_events_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/featured_solutions_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp" />
+        android:layout_height="match_parent" />
 </LinearLayout>
