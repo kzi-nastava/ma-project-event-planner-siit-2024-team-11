@@ -6,8 +6,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
@@ -22,32 +24,33 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.eventy.R;
-import com.example.eventy.adapters.solutions.SolutionsAdapter;
+import com.example.eventy.adapters.events.EventsAdapter;
 import com.example.eventy.custom.MultiSpinner;
-import com.example.eventy.databinding.FragmentPupOwnServicesBinding;
-import com.example.eventy.model.enums.ReservationConfirmationType;
-import com.example.eventy.model.enums.Status;
-import com.example.eventy.model.solution.Category;
-import com.example.eventy.model.solution.Service;
-import com.example.eventy.model.solution.Solution;
+import com.example.eventy.databinding.FragmentOrganizerEventsBinding;
+import com.example.eventy.home.events.EventsViewModel;
+import com.example.eventy.model.enums.PrivacyType;
+import com.example.eventy.model.event.Event;
+import com.example.eventy.model.event.EventType;
+import com.example.eventy.model.utils.Location;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
 public class OrganizerEventsFragment extends Fragment implements MultiSpinner.MultiSpinnerListener {
-    private FragmentPupOwnServicesBinding binding;
-    private SolutionsAdapter solutionsAdapter;
-    private TextView showSelectedDateText;
+    private FragmentOrganizerEventsBinding binding;
+    private EventsAdapter eventsAdapter;
+    private EventsViewModel eventsViewModel;
+    // private SolutionsViewModel solutionsViewModel;
     private Button dateRangeButton;
+    private TextView showSelectedDateText;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentPupOwnServicesBinding.inflate(inflater, container, false);
+        binding = FragmentOrganizerEventsBinding.inflate(inflater, container, false);
 
         setupTabSolutions();
 
@@ -58,91 +61,55 @@ public class OrganizerEventsFragment extends Fragment implements MultiSpinner.Mu
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ArrayList<Solution> solutions = getSolutions();
+        ArrayList<Event> events = getEvents();
 
-        solutionsAdapter = new SolutionsAdapter(requireContext(), solutions);
+        eventsAdapter = new EventsAdapter(requireContext(), events);
 
-        binding.solutionsRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
-        binding.solutionsRecycler.setAdapter(solutionsAdapter);
+        binding.eventsRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.eventsRecycler.setAdapter(eventsAdapter);
     }
 
     @NonNull
-    private static ArrayList<Solution> getSolutions() {
-        ArrayList<Solution> solutions = new ArrayList<>();
+    private static ArrayList<Event> getEvents() {
+        ArrayList<Event> events = new ArrayList<>();
 
-        Service service1 = new Service(
-                "Photography",
-                new Category("photography", "Neki description", Status.ACCEPTED),
-                "Professional wedding photography service.",
-                1500.0, 10,
-                new ArrayList<>(Arrays.asList("image1.jpg", "image2.jpg")),
-                false, true, true, "Full-day photography",
-                30, 180, 7, 3,
-                ReservationConfirmationType.AUTOMATIC
-        );
+        // event types
+        EventType weddingType = new EventType("Wedding", "An unforgettable celebration of love and commitment", true);
+        EventType conferenceType = new EventType("Conference", "A professional event for exchanging ideas and insights", true);
+        EventType concertType = new EventType("Concert", "A thrilling live performance of music", true);
+        EventType partyType = new EventType("Party", "An entertaining social gathering filled with fun", true);
+        EventType meetingType = new EventType("Meeting", "A strategic assembly to align goals and plans", true);
+        EventType workshopType = new EventType("Workshop", "An interactive session focused on skill development", true);
+        EventType seminarType = new EventType("Seminar", "An educational event with expert speakers", true);
+        EventType festivalType = new EventType("Festival", "A lively celebration with cultural activities", true);
+        EventType sportsEventType = new EventType("Sports Event", "A competition showcasing athletic talent", true);
+        EventType charityEventType = new EventType("Charity Event", "A fundraising event for a noble cause", true);
 
-        Service service2 = new Service(
-                "Bon Jovi",
-                new Category("music", "Neki description", Status.ACCEPTED),
-                "Best band ever!", 800.0, 5,
-                new ArrayList<>(Arrays.asList("dj1.jpg", "dj2.jpg")),
-                false, true, true, "Includes sound and lighting equipment",
-                60, 120, 14, 7,
-                ReservationConfirmationType.MANUAL
-        );
+        // locations
+        Location weddingLocation = new Location("Grand Hall", "123 Wedding St, Cityville", 40.7128, -74.0060);
+        Location conferenceLocation = new Location("Tech Center", "456 Innovation Blvd, Tech City", 37.7749, -122.4194);
+        Location concertLocation = new Location("Stadium Arena", "789 Music Ave, Townsville", 34.0522, -118.2437);
+        Location partyLocation = new Location("Luxe Lounge", "101 Party Ln, Fun Town", 51.5074, -0.1278);
+        Location meetingLocation = new Location("Boardroom", "200 Corporate Rd, Business Park", 42.3601, -71.0589);
+        Location workshopLocation = new Location("SkillSpace", "321 Learning Dr, Workshop City", 45.4215, -75.6972);
+        Location seminarLocation = new Location("Knowledge Auditorium", "555 Wisdom Blvd, Studyville", 34.0522, -118.2437);
+        Location festivalLocation = new Location("Festival Grounds", "789 Culture St, Festive Town", 55.7558, 37.6173);
+        Location sportsEventLocation = new Location("Olympic Stadium", "101 Sport Ave, Game City", 48.8566, 2.3522);
+        Location charityEventLocation = new Location("Community Center", "500 Giving Ln, Charity Village", 40.7306, -73.9352);
 
-        Service service3 = new Service(
-                "Event Catering - The best",
-                new Category("catering", "Neki description", Status.ACCEPTED),
-                "Delicious catering service for all types of events.",
-                1200.0, 15,
-                new ArrayList<>(Arrays.asList("catering1.jpg", "catering2.jpg")),
-                false, true, true, "Custom menu available",
-                30, 150, 10, 5,
-                ReservationConfirmationType.AUTOMATIC
-        );
+        // add to events
+        events.add(new Event("Mark & Jana's Wedding", "An unforgettable celebration of love and commitment", 200, PrivacyType.PUBLIC, new Date(), weddingLocation, weddingType));
+        events.add(new Event("Tech Conference", "A tech conference with industry leaders", 500, PrivacyType.PRIVATE, new Date(), conferenceLocation, conferenceType));
+        events.add(new Event("Summer Music Concert", "Enjoy the best live music performances", 1000, PrivacyType.PUBLIC, new Date(), concertLocation, concertType));
+        events.add(new Event("VIP PartyLounge", "An exclusive party for select guests", 100, PrivacyType.PRIVATE, new Date(), partyLocation, partyType));
+        events.add(new Event("Business Meeting", "Discussing the upcoming quarter's goals", 30, PrivacyType.PUBLIC, new Date(), meetingLocation, meetingType));
+        events.add(new Event("Art of Coding Workshop", "A hands-on coding workshop for developers", 50, PrivacyType.PUBLIC, new Date(), workshopLocation, workshopType));
+        events.add(new Event("Science & Health Seminar", "A seminar exploring the latest in science and health", 300, PrivacyType.PRIVATE, new Date(), seminarLocation, seminarType));
+        events.add(new Event("Cultural Fest 2024", "A celebration of cultures with music, food, and art", 1500, PrivacyType.PUBLIC, new Date(), festivalLocation, festivalType));
+        events.add(new Event("Championship Finals", "The most exciting sports event of the season", 5000, PrivacyType.PUBLIC, new Date(), sportsEventLocation, sportsEventType));
+        events.add(new Event("Hope Foundation Gala", "A charity gala supporting local communities", 200, PrivacyType.PRIVATE, new Date(), charityEventLocation, charityEventType));
 
-        Service service4 = new Service(
-                "Event Decor",
-                new Category("decor", "Neki description", Status.ACCEPTED),
-                "Luxurious event decor for any theme.",
-                1000.0, 12,
-                new ArrayList<>(Arrays.asList("decor1.jpg", "decor2.jpg")),
-                false, true, true, "Includes venue setup and takedown",
-                45, 200, 10, 5,
-                ReservationConfirmationType.MANUAL
-        );
-
-        Service service5 = new Service(
-                "Makeup Artist",
-                new Category("beauty", "Neki description", Status.ACCEPTED),
-                "Professional makeup services for any occasion.",
-                300.0, 0,
-                new ArrayList<>(Arrays.asList("makeup1.jpg", "makeup2.jpg")),
-                false, true, true, "Includes trial session and travel to venue",
-                30, 90, 7, 3,
-                ReservationConfirmationType.AUTOMATIC
-        );
-
-        Service service6 = new Service(
-                "DJ Service",
-                new Category("entertainment", "Neki description", Status.ACCEPTED),
-                "High-energy DJ service for any event.",
-                500.0, 8,
-                new ArrayList<>(Arrays.asList("dj3.jpg", "dj4.jpg")),
-                false, true, true, "Includes lighting and custom playlists",
-                60, 180, 14, 7,
-                ReservationConfirmationType.MANUAL
-        );
-
-        solutions.add(service1);
-        solutions.add(service2);
-        solutions.add(service3);
-        solutions.add(service4);
-        solutions.add(service5);
-        solutions.add(service6);
-
-        return solutions;
+        return events;
     }
 
     @Override
@@ -152,85 +119,52 @@ public class OrganizerEventsFragment extends Fragment implements MultiSpinner.Mu
     }
 
     private void setupTabSolutions() {
-        setupSolutionSearch();
-        setupSolutionFilters();
-        setupSolutionSort();
+        setupEventSearch();
+        setupEventFilters();
+        setupEventSort();
     }
 
-
-
-    private void setupSolutionSearch() {
-        // Not implemented yet
-    }
-
-    private void setupSolutionFilters() {
-        binding.filterButton.setOnClickListener(v -> {
-            Toast.makeText(this.getContext(), "Solution Filter button clicked!", Toast.LENGTH_SHORT).show();
-
-            BottomSheetDialog bottomSheetDialog = loadAndGetSolutionBottomSheetFilterDialog();
-
-            setupSolutionFilterType(bottomSheetDialog);
-            setupSolutionFilterCategoryType(bottomSheetDialog);
-            setupSolutionFilterEventTypes(bottomSheetDialog);
-            setupSolutionFilterCompany(bottomSheetDialog);
-            setupSolutionFilterDay(bottomSheetDialog);
-
-            showSelectedDateText = bottomSheetDialog.findViewById(R.id.show_selected_date);
-
-            MaterialDatePicker<Pair<Long, Long>> materialDatePicker = buildAndGetSolutionMaterialDatePicker();
-            setupSolutionFilterDateSelection(bottomSheetDialog, materialDatePicker);
-
-            setupSolutionConfirmFilter(bottomSheetDialog);
-        });
-    }
-
-    private void setupSolutionConfirmFilter(BottomSheetDialog bottomSheetDialog) {
-        Button closeButton = bottomSheetDialog.findViewById(R.id.solutions_confirm_button);
-        closeButton.setOnClickListener(v -> bottomSheetDialog.dismiss());
+    private void setupEventSearch() {
+        eventsViewModel = new ViewModelProvider(this).get(EventsViewModel.class);
+        SearchView searchView = binding.searchInput;
+        eventsViewModel.getText().observe(getViewLifecycleOwner(), searchView::setQueryHint);
     }
 
     @NonNull
-    private BottomSheetDialog loadAndGetSolutionBottomSheetFilterDialog() {
+    private BottomSheetDialog loadAndGetEventBottomSheetFilterDialog() {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
-        View dialogView = getLayoutInflater().inflate(R.layout.bottom_sheet_home_solutions_filter, null);
+        View dialogView = getLayoutInflater().inflate(R.layout.bottom_sheet_home_events_filter, null);
         bottomSheetDialog.setContentView(dialogView);
         bottomSheetDialog.show();
         return bottomSheetDialog;
     }
 
-    private void setupSolutionFilterType(BottomSheetDialog bottomSheetDialog) {
-        Spinner solutionTypeSpinner = bottomSheetDialog.findViewById(R.id.solution_type_filter);
+    private void setupEventFilters() {
+        binding.filterButton.setOnClickListener(v -> {
+            Toast.makeText(this.getContext(), "Event Filter button clicked!", Toast.LENGTH_SHORT).show();
 
-        String[] types = new String[] {
-                "-", "Services", "Products"
-        };
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item, types);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            BottomSheetDialog bottomSheetDialog = loadAndGetEventBottomSheetFilterDialog();
 
-        solutionTypeSpinner.setAdapter(arrayAdapter);
-        solutionTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            }
+            setupEventFilterEventTypes(bottomSheetDialog);
+            setupEventFilterLocation(bottomSheetDialog);
+            setupEventFilterDay(bottomSheetDialog);
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+            showSelectedDateText = bottomSheetDialog.findViewById(R.id.event_show_selected_date);
+
+            MaterialDatePicker<Pair<Long, Long>> materialDatePicker = buildAndGetEventMaterialDatePicker();
+            setupEventFilterDateSelection(bottomSheetDialog, materialDatePicker);
+
+            setupEventConfirmFilter(bottomSheetDialog);
         });
     }
 
-    private void setupSolutionFilterCategoryType(BottomSheetDialog bottomSheetDialog) {
-        MultiSpinner solutionCategoryMultiSpinner = bottomSheetDialog.findViewById(R.id.solution_category_filter);
-
-        ArrayList<String> categories = new ArrayList<>();
-        categories.add("Food"); categories.add("Music"); categories.add("Catering");
-        categories.add("Flowers"); categories.add("Formal attires"); categories.add("Party");
-        solutionCategoryMultiSpinner.setItems(categories, "-", this , "Event types");
+    private void setupEventConfirmFilter(BottomSheetDialog bottomSheetDialog) {
+        Button closeButton = bottomSheetDialog.findViewById(R.id.events_confirm_button);
+        closeButton.setOnClickListener(v -> bottomSheetDialog.dismiss());
     }
 
-    private void setupSolutionFilterEventTypes(BottomSheetDialog bottomSheetDialog) {
-        MultiSpinner eventTypeMultiSpinner = bottomSheetDialog.findViewById(R.id.solution_event_types_filter);
+    private void setupEventFilterEventTypes(BottomSheetDialog bottomSheetDialog) {
+        MultiSpinner eventTypeMultiSpinner = bottomSheetDialog.findViewById(R.id.event_type_filter);
 
         ArrayList<String> eventTypes = new ArrayList<>();
         eventTypes.add("Wedding"); eventTypes.add("Sport"); eventTypes.add("Conference");
@@ -238,32 +172,17 @@ public class OrganizerEventsFragment extends Fragment implements MultiSpinner.Mu
         eventTypeMultiSpinner.setItems(eventTypes, "-", this, "Event types");
     }
 
-    private void setupSolutionFilterCompany(BottomSheetDialog bottomSheetDialog) {
-        String[] companies = new String[] {
-                "-", "Beograd DOO", "Gradiška DOO", "New York DOO", "Paris DOO"
-        };
+    private void setupEventFilterLocation(BottomSheetDialog bottomSheetDialog) {
+        MultiSpinner locationMultiSpinner = bottomSheetDialog.findViewById(R.id.location_filter);
 
-        Spinner solutionTypeSpinner = bottomSheetDialog.findViewById(R.id.company_filter);
-
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item, companies);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        solutionTypeSpinner.setAdapter(arrayAdapter);
-        solutionTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
+        ArrayList<String> locations = new ArrayList<>();
+        locations.add("Belgrade");locations.add("Gradiška");locations.add("New York");
+        locations.add("Paris");locations.add("Kuala Lumpur");locations.add("Banja Luka");
+        locationMultiSpinner.setItems(locations, "-", this, "Locations");
     }
 
-    private void setupSolutionFilterDay(BottomSheetDialog bottomSheetDialog) {
-        Spinner daySpinner = bottomSheetDialog.findViewById(R.id.day_filter);
+    private void setupEventFilterDay(BottomSheetDialog bottomSheetDialog) {
+        Spinner daySpinner = bottomSheetDialog.findViewById(R.id.event_day_filter);
 
         String[] dayTypes = new String[] {
                 "Any day", "Custom"
@@ -283,7 +202,7 @@ public class OrganizerEventsFragment extends Fragment implements MultiSpinner.Mu
             }
         });
 
-        Button dateRangeButton = bottomSheetDialog.findViewById(R.id.solution_date_range_filter);
+        Button dateRangeButton = bottomSheetDialog.findViewById(R.id.date_range_filter);
         dateRangeButton.setEnabled(false);
 
         daySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -310,15 +229,15 @@ public class OrganizerEventsFragment extends Fragment implements MultiSpinner.Mu
     }
 
     @NonNull
-    private static MaterialDatePicker<Pair<Long, Long>> buildAndGetSolutionMaterialDatePicker() {
+    private static MaterialDatePicker<Pair<Long, Long>> buildAndGetEventMaterialDatePicker() {
         MaterialDatePicker.Builder<Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
         builder.setTitleText("Select a date range");
         MaterialDatePicker<Pair<Long, Long>> materialDatePicker = builder.build();
         return materialDatePicker;
     }
 
-    private void setupSolutionFilterDateSelection(BottomSheetDialog bottomSheetDialog, MaterialDatePicker<Pair<Long, Long>> materialDatePicker) {
-        dateRangeButton = bottomSheetDialog.findViewById(R.id.solution_date_range_filter);
+    private void setupEventFilterDateSelection(BottomSheetDialog bottomSheetDialog, MaterialDatePicker<Pair<Long, Long>> materialDatePicker) {
+        dateRangeButton = bottomSheetDialog.findViewById(R.id.date_range_filter);
         dateRangeButton.setOnClickListener(v1 ->
                 materialDatePicker.show(getParentFragmentManager(), "MATERIAL_DATE_PICKER")
         );
@@ -334,18 +253,18 @@ public class OrganizerEventsFragment extends Fragment implements MultiSpinner.Mu
             String selectedDateRange = startDateString.equals(endDateString) ? startDateString : startDateString + " - " + endDateString;
             dateRangeButton.setText(selectedDateRange);
 
-            showSelectedDateText = bottomSheetDialog.findViewById(R.id.show_selected_date);
+            showSelectedDateText = bottomSheetDialog.findViewById(R.id.event_show_selected_date);
             showSelectedDateText.setText(startDateString.equals(endDateString) ? "Selected date is: " + selectedDateRange : "Selected dates are: " + selectedDateRange);
         });
     }
 
-    private void setupSolutionSort() {
+    private void setupEventSort() {
         Spinner spinner = binding.sortButton;
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_spinner_item,
-                getResources().getStringArray(R.array.solution_sort_options));
+                getResources().getStringArray(R.array.event_sort_options));
 
         // Specify the layout to use when the list of choices appears
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

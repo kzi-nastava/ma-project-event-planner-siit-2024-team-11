@@ -1,26 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:orientation="vertical"
-android:background="@color/background_color"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="@color/background_color"
     tools:context=".users.OrganizerEventsFragment">
-
-    <TextView
-        android:id="@+id/register_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:text="My Services"
-        android:textColor="@color/title_color"
-        android:textSize="34sp"
-        android:fontFamily="@font/albert_sans"
-        android:layout_gravity="center_horizontal"
-        android:textAlignment="center"/>
 
     <LinearLayout
         android:id="@+id/search_and_filter_container"
@@ -118,29 +105,11 @@ android:background="@color/background_color"
         </LinearLayout>
     </LinearLayout>
 
-    <FrameLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/events_recycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".home.solutions.SolutionsFragment">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@color/background_color">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/solutions_recycler"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:paddingTop="10dp"
-                android:paddingBottom="5dp"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </FrameLayout>
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="5dp"/>
 </LinearLayout>
 

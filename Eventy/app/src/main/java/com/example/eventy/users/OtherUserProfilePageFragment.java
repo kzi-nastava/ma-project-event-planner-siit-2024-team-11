@@ -28,8 +28,8 @@ public class OtherUserProfilePageFragment extends Fragment {
         binding = FragmentOtherUserProfilePageBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        this.user = new User(UserType.PROVIDER, new ArrayList<>(), "organizer@gmail.com", "Some address 23",
-                "+381 34 24 53 243", "Organizer", "Ofevents", "asd", "sdads");
+        this.user = new User(UserType.ORGANIZER, new ArrayList<>(), "organizer@gmail.com", "Some address 23",
+                "+381 34 24 53 243", "Organizer", "Ofevents", null, null);
 
         TabLayout tabLayout = binding.tabLayout;
 
