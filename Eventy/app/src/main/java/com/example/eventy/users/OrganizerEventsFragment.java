@@ -52,7 +52,7 @@ public class OrganizerEventsFragment extends Fragment implements MultiSpinner.Mu
                              Bundle savedInstanceState) {
         binding = FragmentOrganizerEventsBinding.inflate(inflater, container, false);
 
-        setupTabSolutions();
+        setupTabEvents();
 
         return binding.getRoot();
     }
@@ -118,7 +118,7 @@ public class OrganizerEventsFragment extends Fragment implements MultiSpinner.Mu
         binding = null;
     }
 
-    private void setupTabSolutions() {
+    private void setupTabEvents() {
         setupEventSearch();
         setupEventFilters();
         setupEventSort();
