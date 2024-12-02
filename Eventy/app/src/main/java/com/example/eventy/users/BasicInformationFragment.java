@@ -20,6 +20,13 @@ public class BasicInformationFragment extends Fragment {
 
     public BasicInformationFragment(User user) {
         this.user = user;
+    }
+
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+
+        binding = FragmentBasicInformationBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
 
         if(user.getAccountType() != UserType.PROVIDER) {
             binding.descriptionText.setVisibility(View.GONE);
@@ -31,13 +38,6 @@ public class BasicInformationFragment extends Fragment {
         binding.emailText.setText(this.user.getEmail());
         binding.addressText.setText(this.user.getAddress());
         binding.phoneNumberText.setText(this.user.getPhoneNumber());
-    }
-
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-
-        binding = FragmentBasicInformationBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
 
         return root;
     }
