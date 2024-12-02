@@ -1,14 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".users.OtherUserProfilePageFragment">
+<LinearLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+android:gravity="center"
+android:padding="40dp"
+android:background="@color/background_color"
+tools:context=".users.OtherUserProfilePageFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/name_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Name"
+        android:textColor="@color/title_color"
+        android:textSize="30sp"
+        android:fontFamily="@font/albert_sans"
+        android:textAlignment="center"/>
 
-</FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:gravity="center">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/edit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/icon_messages"
+            android:text="Chat"
+            app:backgroundTint="@color/button_color"
+            style="@style/Widget.MaterialComponents.Button"
+            app:cornerRadius="7dp"
+            android:fontFamily="@font/roboto"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:padding="6dp"
+            android:layout_marginEnd="5dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/deactivate_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/icon_error"
+            android:text="Report"
+            app:backgroundTint="@color/red_button"
+            style="@style/Widget.MaterialComponents.Button"
+            app:cornerRadius="7dp"
+            android:fontFamily="@font/roboto"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:padding="6dp"
+            android:layout_marginStart="5dp"/>
+    </LinearLayout>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabIndicatorColor="@color/white"
+        app:tabIndicatorHeight="4dp"
+        app:tabSelectedTextColor="@color/title_color"
+        app:tabTextColor="@color/eventy_color"
+        android:layout_marginBottom="24dp" />
+
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

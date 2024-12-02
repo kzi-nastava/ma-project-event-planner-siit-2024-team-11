@@ -31,7 +31,7 @@ public class EventAgendaCreation extends Fragment {
 
         TabLayout tabLayout = binding.tabLayout;
 
-        tabLayout.addTab(tabLayout.newTab().setText("Add Activity"));
+        tabLayout.addTab(tabLayout.newTab().setText("Basic info"));
         tabLayout.addTab(tabLayout.newTab().setText("See Agenda"));
 
         // Default fragment
