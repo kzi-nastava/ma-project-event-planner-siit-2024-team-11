@@ -1,4 +1,4 @@
-package com.example.eventy.events;
+package com.example.eventy.users;
 
 import android.os.Bundle;
 
@@ -10,34 +10,36 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.eventy.R;
-import com.example.eventy.databinding.FragmentEventAgendaCreationBinding;
-import com.example.eventy.events.model.Activity;
+import com.example.eventy.databinding.FragmentOtherUserProfilePageBinding;
+import com.example.eventy.users.model.User;
+import com.example.eventy.users.model.UserType;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
-public class EventAgendaCreation extends Fragment {
+public class OtherUserProfilePageFragment extends Fragment {
+    private FragmentOtherUserProfilePageBinding binding;
 
-    private FragmentEventAgendaCreationBinding binding;
-    private ArrayList<Activity> agenda;
+    private User user;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        this.agenda = new ArrayList<>();
-
-        binding = FragmentEventAgendaCreationBinding.inflate(inflater, container, false);
+        binding = FragmentOtherUserProfilePageBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        this.user = new User(UserType.ORGANIZER, new ArrayList<>(), "organizer@gmail.com", "Some address 23",
+                "+381 34 24 53 243", "Organizer", "Ofevents", null, null);
 
         TabLayout tabLayout = binding.tabLayout;
 
-        tabLayout.addTab(tabLayout.newTab().setText("Basic info"));
-        tabLayout.addTab(tabLayout.newTab().setText("See Agenda"));
+        tabLayout.addTab(tabLayout.newTab().setText("Basic information"));
+        tabLayout.addTab(tabLayout.newTab().setText(user.getAccountType() == UserType.ORGANIZER ? "My Events" : "My Products/Services"));
 
         // Default fragment
         getParentFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragmentContainer, new AddActivityFragment(this.agenda))
+                .replace(R.id.fragmentContainer, new BasicInformationFragment(this.user))
                 .commit();
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -45,9 +47,9 @@ public class EventAgendaCreation extends Fragment {
             public void onTabSelected(TabLayout.Tab tab) {
                 Fragment selectedFragment;
                 if (tab.getPosition() == 0) {
-                    selectedFragment = new AddActivityFragment(agenda);
+                    selectedFragment = new BasicInformationFragment(user);
                 } else {
-                    selectedFragment = new SeeAgendaFragment(agenda);
+                    selectedFragment = new MyCardsFragment(user);
                 }
 
                 getParentFragmentManager()
@@ -66,6 +68,17 @@ public class EventAgendaCreation extends Fragment {
 
             }
         });
+
+        if(user.getAccountType() != UserType.ORGANIZER && user.getAccountType() != UserType.PROVIDER) {
+            tabLayout.setVisibility(View.GONE);
+        }
+
+        if(user.getAccountType() == UserType.PROVIDER) {
+            binding.nameText.setText(user.getName());
+        }
+        else {
+            binding.nameText.setText(user.getFirstName() + " " + user.getLastName());
+        }
 
         return root;
     }
