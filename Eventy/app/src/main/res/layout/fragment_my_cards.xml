@@ -1,48 +1,48 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context=".users.MyCardsFragment">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".users.MyCardsFragment">
 
-    <!-- Top 5 events container -->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
+        android:id="@+id/search_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/home_featured_items_background_color">
+        android:orientation="horizontal"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="5dp"
+        android:elevation="1.5dp"
+        android:padding="2.5dp"
+        android:background="@drawable/search_input_background">
 
-        <!-- Top 5 events dynamically inserted with RecyclerView -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/featured_events_recycler"
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search_input"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"/>
+            android:layout_height="match_parent"
+            android:background="@drawable/search_input_background"
+            app:queryHint="Search.." />
+    </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/featured_events_recycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/home_featured_items_background_color">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp" />
 
-        <!-- Top 5 solutions dynamically inserted with RecyclerView -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/featured_solutions_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</FrameLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/featured_solutions_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp" />
+</LinearLayout>

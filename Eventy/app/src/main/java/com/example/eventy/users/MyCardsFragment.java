@@ -55,6 +55,7 @@ public class MyCardsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         if(this.user.getAccountType() == UserType.ORGANIZER) {
+            binding.featuredSolutionsRecycler.setVisibility(View.GONE);
             ArrayList<Event> featuredEvents = getFeaturedEvents();
 
             featuredEventsAdapter = new FeaturedEventsAdapter(requireContext(), featuredEvents);
@@ -63,6 +64,7 @@ public class MyCardsFragment extends Fragment {
             binding.featuredEventsRecycler.setAdapter(featuredEventsAdapter);
         }
         else {
+            binding.featuredEventsRecycler.setVisibility(View.GONE);
             ArrayList<Solution> featuredSolutions = getFeaturedSolutions();
 
             featuredSolutionsAdapter = new FeaturedSolutionsAdapter(requireContext(), featuredSolutions);
