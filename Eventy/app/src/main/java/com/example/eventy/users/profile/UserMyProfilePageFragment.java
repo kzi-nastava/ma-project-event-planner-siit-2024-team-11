@@ -42,6 +42,7 @@ public class UserMyProfilePageFragment extends Fragment {
         TabLayout tabLayout = binding.tabLayout;
 
         tabLayout.addTab(tabLayout.newTab().setText("Basic information"));
+        tabLayout.addTab(tabLayout.newTab().setText("Calendar"));
         if(user.getAccountType() == UserType.ORGANIZER || user.getAccountType() == UserType.PROVIDER) {
             tabLayout.addTab(tabLayout.newTab().setText(user.getAccountType() == UserType.ORGANIZER ? "My Events" : "My Products/Services"));
         }
@@ -61,8 +62,10 @@ public class UserMyProfilePageFragment extends Fragment {
                 if (tab.getPosition() == 0) {
                     selectedFragment = new BasicInformationFragment(user);
                 } else if(tab.getPosition() == 1) {
-                    selectedFragment = new MyCardsFragment(user);
+                    selectedFragment = new UserCalendarFragment();
                 } else if(tab.getPosition() == 2) {
+                    selectedFragment = new MyCardsFragment(user);
+                } else if(tab.getPosition() == 3) {
                     selectedFragment = new OrganizerEventsFragment();
                 } else {
                     selectedFragment = new PUPOwnServicesFragment();
