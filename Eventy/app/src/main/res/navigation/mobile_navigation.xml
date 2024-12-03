@@ -70,4 +70,11 @@
         android:name="com.example.eventy.events.EventTypeDetailsFragment"
         android:label="Event Type Details"
         tools:layout="@layout/fragment_event_type_details"/>
+
+    <fragment
+        android:id="@+id/service_reservation"
+        android:name="com.example.eventy.services.ReservationFragment"
+        android:label="Service Reservation"
+        tools:layout="@layout/fragment_service_reservation"/>
+
 </navigation>
