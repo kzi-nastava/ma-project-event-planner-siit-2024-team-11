@@ -14,5 +14,6 @@ tools:context=".users.profile.UserCalendarFragment">
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:mcv_showOtherDates="all"
-        app:mcv_tileSize="40dp" />
+        app:mcv_tileSize="40dp"
+        app:mcv_selectionColor="#aaaaaa"/>
 </LinearLayout>

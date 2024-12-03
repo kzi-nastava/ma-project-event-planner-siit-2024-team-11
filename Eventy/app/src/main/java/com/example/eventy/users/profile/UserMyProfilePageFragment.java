@@ -45,7 +45,7 @@ public class UserMyProfilePageFragment extends Fragment {
 
         TabLayout tabLayout = binding.tabLayout;
 
-        tabLayout.addTab(tabLayout.newTab().setText("Basic information"));
+        tabLayout.addTab(tabLayout.newTab().setText("Basic info"));
         tabLayout.addTab(tabLayout.newTab().setText("Calendar"));
         if(user.getAccountType() == UserType.ORGANIZER || user.getAccountType() == UserType.PROVIDER) {
             tabLayout.addTab(tabLayout.newTab().setText(user.getAccountType() == UserType.ORGANIZER ? "My Events" : "My Products/Services"));

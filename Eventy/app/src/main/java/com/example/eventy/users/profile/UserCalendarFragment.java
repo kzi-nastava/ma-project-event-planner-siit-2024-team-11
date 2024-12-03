@@ -43,7 +43,7 @@ public class UserCalendarFragment extends Fragment {
         eventDates.add(CalendarDay.from(2024, 12, 20));
 
         // Add a decorator to the calendar
-        calendarView.addDecorator(new EventDecorator(Color.RED, eventDates));
+        calendarView.addDecorator(new EventDecorator(Color.parseColor("#808AAC"), eventDates));
 
         return root;
     }
