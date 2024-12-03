@@ -4,8 +4,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,28 +30,21 @@ public class UserEditFragment extends Fragment {
                 "+381 34 24 53 243", "Organizer", "Ofevents", null, null);
 
         if(this.user.getAccountType() == UserType.PROVIDER) {
-            getChildFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new UserProviderEditFragment())
-                    .commit();
+//            UserProviderEditFragment userProviderEditFragment = new UserProviderEditFragment(user);
+//            getChildFragmentManager().beginTransaction()
+//                    .replace(R.id.fragment_container, userProviderEditFragment)
+//                    .commit();
+//
+//            binding.editButton.setOnClickListener(userProviderEditFragment::confirmEdit);
         }
         else {
+            UserOrganizerEditFragment userOrganizerEditFragment = new UserOrganizerEditFragment(user);
             getChildFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new UserOrganizerEditFragment())
+                    .replace(R.id.fragment_container, userOrganizerEditFragment)
                     .commit();
+
+            binding.editButton.setOnClickListener(userOrganizerEditFragment::confirmEdit);
         }
-
-        binding.editButton.setOnClickListener(v -> {
-            // logic for editing, call service
-
-
-            NavController navController = Navigation.findNavController(v);
-
-            // Problem with back button so we clear the backstack
-            navController.popBackStack();
-
-            // change nav
-            navController.navigate(R.id.nav_home);
-        });
 
         return root;
     }
