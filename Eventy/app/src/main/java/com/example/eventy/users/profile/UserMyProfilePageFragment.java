@@ -10,6 +10,7 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentOtherUserProfilePageBinding;
@@ -45,13 +46,14 @@ public class UserMyProfilePageFragment extends Fragment {
 
         TabLayout tabLayout = binding.tabLayout;
 
-        tabLayout.addTab(tabLayout.newTab().setText("Basic info"));
-        tabLayout.addTab(tabLayout.newTab().setText("Calendar"));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_info));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_organize_event));
         if(user.getAccountType() == UserType.ORGANIZER || user.getAccountType() == UserType.PROVIDER) {
-            tabLayout.addTab(tabLayout.newTab().setText(user.getAccountType() == UserType.ORGANIZER ? "My Events" : "My Products/Services"));
+            tabLayout.addTab(tabLayout.newTab().setText("My")
+                    .setIcon(user.getAccountType() == UserType.ORGANIZER ? R.drawable.icon_event_seat : R.drawable.icon_service));
         }
-        tabLayout.addTab(tabLayout.newTab().setText("My favorite events"));
-        tabLayout.addTab(tabLayout.newTab().setText("My favorite solutionss"));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_favorite).setText("Events"));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_favorite).setText("Solutions"));
 
         // Default fragment
         getParentFragmentManager()
