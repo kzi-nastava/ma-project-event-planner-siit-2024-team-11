@@ -82,4 +82,10 @@
         android:name="com.example.eventy.users.edit.UserEditFragment"
         android:label="Edit User"
         tools:layout="@layout/fragment_user_edit"/>
+
+    <fragment
+        android:id="@+id/nav_my_profile"
+        android:name="com.example.eventy.users.profile.UserMyProfilePageFragment"
+        android:label="My Profile"
+        tools:layout="@layout/fragment_user_my_profile_page"/>
 </navigation>

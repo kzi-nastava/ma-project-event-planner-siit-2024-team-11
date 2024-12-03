@@ -2,7 +2,9 @@ package com.example.eventy;
 
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_login, R.id.nav_register, R.id.nav_add_service, R.id.nav_edit_service,
                 R.id.nav_event_organization, R.id.nav_own_services_test, R.id.nav_event_types, R.id.nav_add_event_type,
-                R.id.nav_edit_event_type, R.id.nav_event_type_details, R.id.nav_other_user_profile_page, R.id.nav_edit_user)
+                R.id.nav_edit_event_type, R.id.nav_event_type_details, R.id.nav_other_user_profile_page, R.id.nav_edit_user, R.id.nav_my_profile)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
@@ -53,6 +55,27 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_profile) {
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+
+            navController.popBackStack();
+
+            navController.navigate(R.id.nav_my_profile);
+            return true;
+        } else if (id == R.id.action_messages) {
+
+            return true;
+        } else if (id == R.id.action_notifications) {
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
