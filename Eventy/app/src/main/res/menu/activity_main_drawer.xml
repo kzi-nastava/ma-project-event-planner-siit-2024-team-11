@@ -37,8 +37,5 @@
         <item android:id="@+id/nav_other_user_profile_page"
             android:icon="@drawable/icon_profile"
             android:title="Other user profile page"/>
-        <item android:id="@+id/nav_edit_user"
-            android:icon="@drawable/icon_edit"
-            android:title="Edit user"/>
     </group>
 </menu>
