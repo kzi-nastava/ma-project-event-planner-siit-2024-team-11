@@ -28,7 +28,7 @@ tools:context=".users.profile.UserMyProfilePageFragment">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="8dp"
             android:gravity="center">
 
             <com.google.android.material.button.MaterialButton
@@ -62,6 +62,22 @@ tools:context=".users.profile.UserMyProfilePageFragment">
                 android:layout_marginStart="5dp"/>
         </LinearLayout>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/upgrade_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/icon_triangle_up"
+            android:text="Upgrade account"
+            app:backgroundTint="@color/red_button"
+            style="@style/Widget.MaterialComponents.Button"
+            app:cornerRadius="7dp"
+            android:fontFamily="@font/roboto"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:padding="6dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="8dp"/>
+
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
@@ -70,7 +86,8 @@ tools:context=".users.profile.UserMyProfilePageFragment">
             app:tabIndicatorHeight="4dp"
             app:tabSelectedTextColor="@color/title_color"
             app:tabTextColor="@color/eventy_color"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="24dp"
+            android:layout_marginTop="24dp"/>
 
         <FrameLayout
             android:id="@+id/fragmentContainer"

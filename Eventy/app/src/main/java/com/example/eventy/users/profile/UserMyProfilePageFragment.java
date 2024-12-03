@@ -39,6 +39,10 @@ public class UserMyProfilePageFragment extends Fragment {
         this.user = new User(UserType.ORGANIZER, new ArrayList<>(), "organizer@gmail.com", "Some address 23",
                 "+381 34 24 53 243", "Organizer", "Ofevents", null, null);
 
+        if(user.getAccountType() != UserType.AUTH_USER) {
+            binding.upgradeButton.setVisibility(View.GONE);
+        }
+
         TabLayout tabLayout = binding.tabLayout;
 
         tabLayout.addTab(tabLayout.newTab().setText("Basic information"));
