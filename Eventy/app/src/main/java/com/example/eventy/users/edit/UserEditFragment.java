@@ -29,13 +29,20 @@ public class UserEditFragment extends Fragment {
         this.user = new User(UserType.ORGANIZER, new ArrayList<>(), "organizer@gmail.com", "Some address 23",
                 "+381 34 24 53 243", "Organizer", "Ofevents", null, null);
 
+        if(this.user.getAccountType() != UserType.PROVIDER) {
+            binding.editTitle.setText("Edit " + this.user.getFirstName() + " " + this.user.getLastName());
+        }
+        else {
+            binding.editTitle.setText("Edit " + this.user.getName());
+        }
+
         if(this.user.getAccountType() == UserType.PROVIDER) {
-//            UserProviderEditFragment userProviderEditFragment = new UserProviderEditFragment(user);
-//            getChildFragmentManager().beginTransaction()
-//                    .replace(R.id.fragment_container, userProviderEditFragment)
-//                    .commit();
-//
-//            binding.editButton.setOnClickListener(userProviderEditFragment::confirmEdit);
+            UserProviderEditFragment userProviderEditFragment = new UserProviderEditFragment(user);
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, userProviderEditFragment)
+                    .commit();
+
+            binding.editButton.setOnClickListener(userProviderEditFragment::confirmEdit);
         }
         else {
             UserOrganizerEditFragment userOrganizerEditFragment = new UserOrganizerEditFragment(user);
