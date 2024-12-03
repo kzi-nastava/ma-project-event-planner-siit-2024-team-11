@@ -14,6 +14,7 @@ import com.example.eventy.adapters.solutions.FeaturedSolutionsAdapter;
 import com.example.eventy.databinding.FragmentHomeFeaturedSolutionsBinding;
 import com.example.eventy.model.enums.ReservationConfirmationType;
 import com.example.eventy.model.enums.Status;
+import com.example.eventy.model.event.EventType;
 import com.example.eventy.model.solution.Category;
 import com.example.eventy.model.solution.Product;
 import com.example.eventy.model.solution.Service;
@@ -53,6 +54,21 @@ public class FeaturedSolutionsFragment extends Fragment {
     private static ArrayList<Solution> getFeaturedSolutions() {
         ArrayList<Solution> featuredSolutions = new ArrayList<>();
 
+        ArrayList<EventType> eventTypes = new ArrayList<>();
+        EventType eventType1 = new EventType();
+        eventType1.setName("Wedding");
+        EventType eventType2 = new EventType();
+        eventType2.setName("Sport");
+        EventType eventType3 = new EventType();
+        eventType3.setName("Conference");
+        EventType eventType4 = new EventType();
+        eventType4.setName("Party");
+
+        eventTypes.add(eventType1);
+        eventTypes.add(eventType2);
+        eventTypes.add(eventType3);
+        eventTypes.add(eventType4);
+
         Service service1 = new Service(
             "Photography",
             new Category("photography", "Neki description", Status.ACCEPTED),
@@ -61,7 +77,7 @@ public class FeaturedSolutionsFragment extends Fragment {
             new ArrayList<>(Arrays.asList("image1.jpg", "image2.jpg")),
             false, true, true, "Full-day photography",
             30, 180, 7, 3,
-            ReservationConfirmationType.AUTOMATIC
+            ReservationConfirmationType.AUTOMATIC, eventTypes
         );
 
         Service service2 = new Service(
@@ -71,7 +87,7 @@ public class FeaturedSolutionsFragment extends Fragment {
             new ArrayList<>(Arrays.asList("dj1.jpg", "dj2.jpg")),
             false, true, true, "Includes sound and lighting equipment",
             60, 120, 14, 7,
-            ReservationConfirmationType.MANUAL
+            ReservationConfirmationType.MANUAL, eventTypes
         );
 
         Service service3 = new Service(
@@ -82,7 +98,7 @@ public class FeaturedSolutionsFragment extends Fragment {
             new ArrayList<>(Arrays.asList("catering1.jpg", "catering2.jpg")),
             false, true, true, "Custom menu available",
             30, 150, 10, 5,
-            ReservationConfirmationType.AUTOMATIC
+            ReservationConfirmationType.AUTOMATIC, eventTypes
         );
 
         Product product1 = new Product(
@@ -91,7 +107,7 @@ public class FeaturedSolutionsFragment extends Fragment {
             "Elegant floral centerpiece for your event.",
             50.0, 0,
             new ArrayList<>(Arrays.asList("floral1.jpg", "floral2.jpg")),
-            false, true, true
+            false, true, true, eventTypes
         );
 
         Product product2 = new Product(
@@ -99,7 +115,7 @@ public class FeaturedSolutionsFragment extends Fragment {
             new Category("gifts", "Neki description", Status.ACCEPTED),
             "Personalized gift basket for special occasions.", 75.0, 5,
             new ArrayList<>(Arrays.asList("gift1.jpg", "gift2.jpg")),
-            false, true, true
+            false, true, true, eventTypes
         );
 
         featuredSolutions.add(service1);
