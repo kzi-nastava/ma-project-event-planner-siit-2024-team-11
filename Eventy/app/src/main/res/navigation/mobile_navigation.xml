@@ -70,7 +70,7 @@
         android:name="com.example.eventy.events.EventTypeDetailsFragment"
         android:label="Event Type Details"
         tools:layout="@layout/fragment_event_type_details"/>
-
+  
     <fragment
         android:id="@+id/nav_other_user_profile_page"
         android:name="com.example.eventy.users.OtherUserProfilePageFragment"
@@ -88,4 +88,11 @@
         android:name="com.example.eventy.users.profile.UserMyProfilePageFragment"
         android:label="My Profile"
         tools:layout="@layout/fragment_user_my_profile_page"/>
+
+    <fragment
+        android:id="@+id/service_reservation"
+        android:name="com.example.eventy.services.ReservationSelectEventFragment"
+        android:label="Service Reservation"
+        tools:layout="@layout/fragment_service_reservation_select_event"/>
+  
 </navigation>

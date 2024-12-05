@@ -1,5 +1,7 @@
 package com.example.eventy.model.solution;
 
+import com.example.eventy.model.event.EventType;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -13,12 +15,13 @@ public class Solution {
     private Boolean isDeleted;
     private Boolean isVisible;
     private Boolean isAvailable;
+    private ArrayList<EventType> eventTypes;
 
     public Solution() {
 
     }
 
-    public Solution(String name, Category category, String description, double price, Integer discount, ArrayList<String> imageUrls, Boolean isDeleted, Boolean isVisible, Boolean isAvailable) {
+    public Solution(String name, Category category, String description, double price, Integer discount, ArrayList<String> imageUrls, Boolean isDeleted, Boolean isVisible, Boolean isAvailable, ArrayList<EventType> eventTypes) {
         this.name = name;
         this.category = category;
         this.description = description;
@@ -28,6 +31,7 @@ public class Solution {
         this.isDeleted = isDeleted;
         this.isVisible = isVisible;
         this.isAvailable = isAvailable;
+        this.eventTypes = eventTypes;
     }
 
     public String getName() {
@@ -78,28 +82,36 @@ public class Solution {
         this.imageUrls = imageUrls;
     }
 
-    public Boolean getIsDeleted() {
+    public Boolean getDeleted() {
         return isDeleted;
     }
 
-    public void setIsDeleted(Boolean deleted) {
+    public void setDeleted(Boolean deleted) {
         isDeleted = deleted;
     }
 
-    public Boolean getIsVisible() {
+    public Boolean getVisible() {
         return isVisible;
     }
 
-    public void setIsVisible(Boolean visible) {
+    public void setVisible(Boolean visible) {
         isVisible = visible;
     }
 
-    public Boolean getIsAvailable() {
+    public Boolean getAvailable() {
         return isAvailable;
     }
 
-    public void setIsAvailable(Boolean available) {
+    public void setAvailable(Boolean available) {
         isAvailable = available;
+    }
+
+    public ArrayList<EventType> getEventTypes() {
+        return eventTypes;
+    }
+
+    public void setEventTypes(ArrayList<EventType> eventTypes) {
+        this.eventTypes = eventTypes;
     }
 
     @Override
@@ -107,16 +119,22 @@ public class Solution {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Solution solution = (Solution) o;
-        return Double.compare(price, solution.price) == 0 && Objects.equals(name, solution.name) && Objects.equals(category, solution.category) && Objects.equals(description, solution.description) && Objects.equals(discount, solution.discount) && Objects.equals(imageUrls, solution.imageUrls) && Objects.equals(isDeleted, solution.isDeleted) && Objects.equals(isVisible, solution.isVisible) && Objects.equals(isAvailable, solution.isAvailable);
+        return Double.compare(price, solution.price) == 0 && Objects.equals(name, solution.name) && Objects.equals(category, solution.category) && Objects.equals(description, solution.description) && Objects.equals(discount, solution.discount) && Objects.equals(imageUrls, solution.imageUrls) && Objects.equals(isDeleted, solution.isDeleted) && Objects.equals(isVisible, solution.isVisible) && Objects.equals(isAvailable, solution.isAvailable) && Objects.equals(eventTypes, solution.eventTypes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, category, description, price, discount, imageUrls, isDeleted, isVisible, isAvailable);
+        return Objects.hash(name, category, description, price, discount, imageUrls, isDeleted, isVisible, isAvailable, eventTypes);
     }
 
     @Override
     public String toString() {
+        StringBuilder eventTypesString = new StringBuilder();
+        for (EventType eventType : eventTypes) {
+            eventTypesString.append(eventType);
+            eventTypesString.append(",");
+        }
+
         return "Solution{" +
                 "name='" + name + '\'' +
                 ", category=" + category +
@@ -127,6 +145,7 @@ public class Solution {
                 ", isDeleted=" + isDeleted +
                 ", isVisible=" + isVisible +
                 ", isAvailable=" + isAvailable +
+                ", eventTypes=" + eventTypesString +
                 '}';
     }
 }

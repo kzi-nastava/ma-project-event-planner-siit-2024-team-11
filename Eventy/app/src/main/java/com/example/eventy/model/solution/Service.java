@@ -1,6 +1,7 @@
 package com.example.eventy.model.solution;
 
 import com.example.eventy.model.enums.ReservationConfirmationType;
+import com.example.eventy.model.event.EventType;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -17,8 +18,8 @@ public class Service extends Solution {
 
     }
 
-    public Service(String name, Category category, String description, double price, Integer discount, ArrayList<String> imageUrls, Boolean isDeleted, Boolean isVisible, Boolean isAvailable, String specifics, Integer minReservationTime, Integer maxReservationTime, Integer reservationDeadline, Integer cancellationDeadline, ReservationConfirmationType reservationConfirmationType) {
-        super(name, category, description, price, discount, imageUrls, isDeleted, isVisible, isAvailable);
+    public Service(String name, Category category, String description, double price, Integer discount, ArrayList<String> imageUrls, Boolean isDeleted, Boolean isVisible, Boolean isAvailable, String specifics, Integer minReservationTime, Integer maxReservationTime, Integer reservationDeadline, Integer cancellationDeadline, ReservationConfirmationType reservationConfirmationType, ArrayList<EventType> eventTypes) {
+        super(name, category, description, price, discount, imageUrls, isDeleted, isVisible, isAvailable, eventTypes);
         this.specifics = specifics;
         this.minReservationTime = minReservationTime;
         this.maxReservationTime = maxReservationTime;
@@ -104,9 +105,9 @@ public class Service extends Solution {
                 ", price=" + getPrice() +
                 ", discount=" + getDiscount() +
                 ", imageUrls=" + getImageUrls() +
-                ", isDeleted=" + getIsDeleted() +
-                ", isVisible=" + getIsVisible() +
-                ", isAvailable=" + getIsAvailable() +
+                ", isDeleted=" + getDeleted() +
+                ", isVisible=" + getVisible() +
+                ", isAvailable=" + getAvailable() +
                 ", specifics='" + specifics + '\'' +
                 ", minReservationTime=" + minReservationTime +
                 ", maxReservationTime=" + maxReservationTime +
