@@ -76,6 +76,7 @@
                     android:layout_marginLeft="2dp">
 
                     <LinearLayout
+                        android:layout_marginTop="1dp"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="horizontal">
@@ -141,9 +142,9 @@
 
                     <!-- filter button -->
                     <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/filter_button"
+                        android:id="@+id/see_event_button"
                         android:layout_width="match_parent"
-                        android:layout_height="36dp"
+                        android:layout_height="40dp"
                         android:background="@drawable/filter_button_background"
                         android:fontFamily="@font/albert_sans"
                         android:letterSpacing="0.03"
@@ -184,7 +185,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2. Select the dates you want to reserve: "
+                    android:text="2. Select the date you want to reserve: "
                     android:textSize="14sp"
                     android:textFontWeight="600"
                     android:fontFamily="@font/figtree"
@@ -195,7 +196,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Date range:"
+                    android:text="Select event date:"
                     android:layout_marginLeft="1dp"
                     android:fontFamily="@font/albert_sans"
                     android:textSize="14sp"
@@ -208,19 +209,19 @@
                     android:layout_width="wrap_content"
                     android:elevation="1dp"
                     android:layout_margin="1dp"
-                    android:layout_height="43dp"
+                    android:layout_height="41dp"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="2dp"
                     android:textColor="#9D9B9B"
                     android:background="@drawable/event_card_description_background"
                     android:fontFamily="@font/albert_sans"
                     android:letterSpacing="0.05"
-                    android:paddingLeft="13dp"
-                    android:paddingRight="13dp"
+                    android:paddingLeft="14dp"
+                    android:paddingRight="14dp"
                     android:text="@string/select_date"
                     android:textAllCaps="false"
                     android:textFontWeight="900"
-                    android:textSize="15.5sp" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <!--simple text view to show the selected date by the user-->
@@ -301,18 +302,18 @@
                             android:stateListAnimator="@null"
                             android:layout_width="match_parent"
                             android:elevation="1dp"
-                            android:layout_height="43dp"
+                            android:layout_height="41dp"
                             android:layout_marginLeft="15dp"
                             android:layout_marginRight="15dp"
                             android:textColor="#9D9B9B"
                             android:background="@drawable/event_card_description_background"
                             android:fontFamily="@font/albert_sans"
                             android:letterSpacing="0.05"
-                            android:paddingLeft="13dp"
-                            android:paddingRight="13dp"
+                            android:paddingLeft="14dp"
+                            android:paddingRight="14dp"
                             android:textAllCaps="false"
                             android:textFontWeight="900"
-                            android:textSize="15.5sp" />
+                            android:textSize="14sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -322,6 +323,7 @@
                         android:layout_weight="1">
 
                         <TextView
+                            android:id="@+id/select_end_time_text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Select end time:"
@@ -338,18 +340,18 @@
                             android:stateListAnimator="@null"
                             android:layout_width="match_parent"
                             android:elevation="1dp"
-                            android:layout_height="43dp"
+                            android:layout_height="41dp"
                             android:layout_marginLeft="15dp"
                             android:layout_marginRight="15dp"
                             android:textColor="#9D9B9B"
                             android:background="@drawable/event_card_description_background"
                             android:fontFamily="@font/albert_sans"
                             android:letterSpacing="0.05"
-                            android:paddingLeft="13dp"
-                            android:paddingRight="13dp"
+                            android:paddingLeft="14dp"
+                            android:paddingRight="14dp"
                             android:textAllCaps="false"
                             android:textFontWeight="900"
-                            android:textSize="15.5sp" />
+                            android:textSize="14sp" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -367,6 +369,26 @@
                 android:text="No time range selected"
                 android:textSize="14sp" />
         </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/confirm_reservation_button"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/filter_done_button_background"
+            android:fontFamily="@font/albert_sans"
+            android:letterSpacing="0.05"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="CONFIRM RESERVATION"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textFontWeight="900"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/time_picker_container" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
