@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -5,7 +6,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:background="@color/background_color">
+    android:background="@color/background_color"
+    tools:context=".users.OrganizerEventsFragment">
 
     <LinearLayout
         android:id="@+id/search_and_filter_container"
@@ -104,7 +106,7 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/solutions_recycler"
+        android:id="@+id/events_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="10dp"
