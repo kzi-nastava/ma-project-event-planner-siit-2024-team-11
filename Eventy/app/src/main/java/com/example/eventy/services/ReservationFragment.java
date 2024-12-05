@@ -14,10 +14,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentServiceReservationBinding;
-import com.example.eventy.home.events.EventDetailsDialog;
+import com.example.eventy.events.EventDetailsDialog;
 import com.example.eventy.model.enums.ReservationConfirmationType;
 import com.example.eventy.model.enums.Status;
 import com.example.eventy.model.event.Event;
@@ -71,6 +73,11 @@ public class ReservationFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentServiceReservationBinding.inflate(inflater, container, false);
 
+        if (selectedEvent == null) {
+            NavController navController = Navigation.findNavController(container);
+            navController.popBackStack();
+            navController.navigate(R.id.service_reservation);
+        }
         selectedService = getService();
         setupServiceDetails();
 
@@ -142,6 +149,9 @@ public class ReservationFragment extends Fragment {
                 newReservation.setReservationStartDateTime(startDateTime);
                 newReservation.setReservationEndDateTime(endDateTime);
                 Toast.makeText(this.getContext(), newReservation.toString(), Toast.LENGTH_LONG).show();
+                NavController navController = Navigation.findNavController(container);
+                navController.popBackStack();
+                navController.navigate(R.id.nav_home);
             } else {
                 Toast.makeText(this.getContext(), "Time is not valid!", Toast.LENGTH_SHORT).show();
             }
@@ -179,7 +189,7 @@ public class ReservationFragment extends Fragment {
 
     private void setupServiceDetails() {
         TextView name = binding.service.name;
-        name.setText(selectedService.getName());
+        name.setText('"' + selectedService.getName() + '"');
 
         TextView category = binding.service.category;
         category.setText("Category: " + selectedService.getCategory().getName());
