@@ -2,6 +2,8 @@ package com.example.eventy.events;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.eventy.R;
+import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentEventOrganizationBinding;
 
 import java.util.ArrayList;
@@ -93,12 +96,9 @@ public class EventOrganizationFragment extends Fragment {
 
                 if (invitedEmails.isEmpty()) {
                     // event creation failed (no invited people)
-                    new AlertDialog.Builder(this.getContext())
-                        .setTitle(" Error")
-                        .setMessage("At least one person needs to be invited before proceeding!")
-                        .setNegativeButton(android.R.string.ok, null)
-                        .setIcon(R.drawable.icon_error_png)
-                        .show();
+                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(this.getActivity(), "Error", "At least one person needs to be invited before proceeding!");
+                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    errorOkDialog.show();
                 } else {
                     // event creation successful
                     StringBuilder emails = new StringBuilder();

@@ -1,8 +1,8 @@
 package com.example.eventy.services;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.eventy.R;
 import com.example.eventy.custom.MultiSpinner;
+import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentServiceReservationSelectEventBinding;
 import com.example.eventy.events.SelectEventFragment;
 import com.example.eventy.model.event.Event;
@@ -60,12 +61,9 @@ public class ReservationSelectEventFragment extends Fragment implements MultiSpi
         AppCompatButton continueButton = binding.confirmReservationButton;
         continueButton.setOnClickListener(v1 -> {
             if (selectedEvent == null) {
-                new AlertDialog.Builder(getContext())
-                    .setTitle("Event Error")
-                    .setMessage("Event needs to be selected!")
-                    .setNegativeButton(android.R.string.ok, null)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
+                ErrorOkDialog errorOkDialog = new ErrorOkDialog(this.getActivity(), "Event Not Selected", "Please choose an event to proceed to the next step.");
+                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                errorOkDialog.show();
             } else {
                 getChildFragmentManager().beginTransaction()
                     .replace(R.id.main_container, new ReservationFragment(selectedEvent))
