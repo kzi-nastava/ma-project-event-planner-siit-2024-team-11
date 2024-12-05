@@ -70,7 +70,7 @@
     <string name="event_filters_text">Event Filters</string>
     <string name="reset_filter">Reset All</string>
 
-    <string name="select_date">SELECT DATES 🗓️</string>
+    <string name="select_date">SELECT DATE 🗓️</string>
     <string name="select_max_participants"><font size="15">Select a number..</font></string>
 
     <string name="add_service_title">Add a new service</string>
