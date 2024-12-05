@@ -1,4 +1,4 @@
-package com.example.eventy.home.events;
+package com.example.eventy.events;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -7,14 +7,11 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.eventy.R;
 import com.example.eventy.model.enums.PrivacyType;
-import com.example.eventy.model.enums.ReservationConfirmationType;
 import com.example.eventy.model.event.Event;
 
 import java.text.SimpleDateFormat;
