@@ -73,8 +73,8 @@
 
     <fragment
         android:id="@+id/service_reservation"
-        android:name="com.example.eventy.services.ReservationFragment"
+        android:name="com.example.eventy.services.ReservationSelectEventFragment"
         android:label="Service Reservation"
-        tools:layout="@layout/fragment_service_reservation"/>
+        tools:layout="@layout/fragment_service_reservation_select_event"/>
 
 </navigation>
