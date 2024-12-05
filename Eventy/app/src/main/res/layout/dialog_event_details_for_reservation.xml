@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/event_card"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="2dp">
+
+    <!-- event card container -->
+    <LinearLayout
+        android:id="@+id/card_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/event_card_description_background"
+        android:elevation="2dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- left side of card -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/left_side"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="15dp"
+            android:paddingTop="15dp"
+            android:paddingEnd="7dp">
+
+            <!-- event name container -->
+            <LinearLayout
+                android:id="@+id/event_name_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <!-- event name -->
+                <TextView
+                    android:id="@+id/event_name"
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/event_card_name_container_background"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/albert_sans"
+                    android:paddingBottom="7dp"
+                    android:text="@string/event_name"
+                    android:textFontWeight="800"
+                    android:textSize="14sp"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/close_button"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="11dp"
+                    android:background="@drawable/icon_remove">
+                </ImageView>
+
+            </LinearLayout>
+
+            <!-- event type -->
+            <TextView
+                android:id="@+id/event_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:layout_marginEnd="3dp"
+                android:fontFamily="@font/albert_sans"
+                android:text="@string/event_type"
+                android:textColor="@color/home_event_card_label"
+                android:textFontWeight="600"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/event_name_container" />
+
+            <!-- max participants text -->
+            <TextView
+                android:id="@+id/max_participants"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="3dp"
+                android:fontFamily="@font/albert_sans"
+                android:maxLines="1"
+                android:text="@string/event_max_participants"
+                android:textColor="@color/home_event_card_text"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/event_type" />
+
+            <!-- date container -->
+            <LinearLayout
+                android:id="@+id/date_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="3dp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@+id/max_participants">
+
+                <!-- date icon -->
+                <View
+                    android:id="@+id/icon_date"
+                    android:layout_width="19dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/icon_calendar" />
+
+                <!-- date text -->
+                <TextView
+                    android:id="@+id/event_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/albert_sans"
+                    android:maxLines="1"
+                    android:text="@string/event_date"
+                    android:textColor="@color/home_event_card_text"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent" />
+            </LinearLayout>
+
+            <!-- location container -->
+            <LinearLayout
+                android:id="@+id/location_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="3dp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@+id/date_container">
+
+                <!-- location icon -->
+                <View
+                    android:id="@+id/icon_location"
+                    android:layout_width="19dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/icon_location" />
+
+                <!-- location text -->
+                <TextView
+                    android:id="@+id/event_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/albert_sans"
+                    android:maxLines="1"
+                    android:text="@string/event_location"
+                    android:textColor="@color/home_event_card_text"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent" />
+            </LinearLayout>
+
+            <!-- open/full event label -->
+            <TextView
+                android:id="@+id/open_or_full"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="3dp"
+                android:fontFamily="@font/albert_sans"
+                android:letterSpacing="0.02"
+                android:text="@string/open_event"
+                android:textColor="@color/home_event_card_open_event"
+                android:textFontWeight="900"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/location_container" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- description container -->
+        <LinearLayout
+            android:id="@+id/description_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/event_card_description_background"
+            android:elevation="2dp"
+            android:orientation="vertical"
+            android:padding="7dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginBottom="23dp"
+            android:layout_marginTop="11dp">
+
+            <!-- description label -->
+            <TextView
+                android:id="@+id/decription_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/albert_sans"
+                android:text="@string/event_description"
+                android:textColor="@color/home_event_card_label"
+                android:textFontWeight="700"
+                android:textSize="12.5sp" />
+
+            <!-- description text -->
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/albert_sans"
+                android:maxLines="5"
+                android:text="@string/event_description_text"
+                android:textColor="@color/home_event_card_text"
+                android:textSize="13sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:layout_marginBottom="53dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background_color">
+
+            <TextView
+                android:id="@+id/text1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="23dp"
+                android:fontFamily="@font/albert_sans"
+                android:text="SELECT EVENT"
+                android:textColor="#8C8989"
+                android:textFontWeight="900"
+                android:textSize="27sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- search & filter container -->
+            <LinearLayout
+                android:id="@+id/search_and_filter_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:background="@color/background_color"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/text1">
+
+                <!-- search container -->
+                <LinearLayout
+                    android:id="@+id/search_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/search_input_background"
+                    android:elevation="1.5dp"
+                    android:orientation="horizontal"
+                    android:padding="2.5dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <!-- search input -->
+                    <androidx.appcompat.widget.SearchView
+                        android:id="@+id/search_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/search_input_background"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="0dp"
+                        app:queryHint="Search.." />
+                </LinearLayout>
+
+                <!-- filter container -->
+                <LinearLayout
+                    android:id="@+id/filter_and_sort_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/linear1">
+
+                    <!-- filter button -->
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/filter_button"
+                        android:layout_width="0dp"
+                        android:layout_height="45dp"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="25dp"
+                        android:layout_marginEnd="40dp"
+                        android:layout_marginBottom="15dp"
+                        android:layout_weight="0.85"
+                        android:background="@drawable/filter_button_background"
+                        android:fontFamily="@font/albert_sans"
+                        android:letterSpacing="0.03"
+                        android:text="@string/filter"
+                        android:textColor="@color/white"
+                        android:textFontWeight="900"
+                        android:textSize="15sp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="40dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_marginBottom="13dp"
+                        android:layout_weight="1.4"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginBottom="3dp"
+                            android:text="Sort by:"
+                            android:textColor="@color/home_event_card_label" />
+
+                        <!-- sort button -->
+                        <Spinner
+                            android:id="@+id/sort_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/sort_input_background"
+                            android:contentDescription="@string/sort"
+                            android:paddingLeft="6dp"
+                            android:paddingTop="2dp"
+                            android:paddingRight="6dp"
+                            android:paddingBottom="2dp"
+                            android:text="@string/sort"
+                            android:tooltipText="@string/sort" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- all events/solutions container -->
+            <FrameLayout
+                android:id="@+id/all_items"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@color/background_color"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/search_and_filter_container" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background_color"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="16dp"
+            android:id="@+id/confirm_reservation_button"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/filter_done_button_background"
+            android:fontFamily="@font/albert_sans"
+            android:letterSpacing="0.05"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="CONTINUE"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textFontWeight="900"
+            android:textSize="17sp" />
+
+    </FrameLayout>
+
+
+</RelativeLayout>
+
