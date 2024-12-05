@@ -45,7 +45,7 @@ public class EventsSingleSelectionAdapter extends RecyclerView.Adapter<EventsSin
     public void onBindViewHolder(@NonNull EventsSingleSelectionAdapter.EventSingleSelectionViewHolder holder, int position) {
         Event event = events.get(position);
         if (event != null) {
-            holder.eventName.setText(event.getName());
+            holder.eventName.setText('"' + event.getName() + '"');
 
             String eventTypeString = "Type: " + event.getEventType().getName();
             holder.eventType.setText(eventTypeString);

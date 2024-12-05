@@ -47,7 +47,7 @@ public class FeaturedEventsAdapter extends RecyclerView.Adapter<FeaturedEventsAd
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = featuredEvents.get(position);
         if (event != null) {
-            holder.eventName.setText(event.getName());
+            holder.eventName.setText('"' + event.getName() + '"');
 
             if (position % 2 == 0) {
                 View eventCardLeft = holder.itemView.findViewById(R.id.event_card_left);

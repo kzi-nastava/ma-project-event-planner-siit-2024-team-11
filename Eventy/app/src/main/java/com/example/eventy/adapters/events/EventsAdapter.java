@@ -41,7 +41,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
     public void onBindViewHolder(@NonNull EventsAdapter.EventViewHolder holder, int position) {
         Event event = events.get(position);
         if (event != null) {
-            holder.eventName.setText(event.getName());
+            holder.eventName.setText('"' + event.getName() + '"');
 
             String eventTypeString = "Type: " + event.getEventType().getName();
             holder.eventType.setText(eventTypeString);
