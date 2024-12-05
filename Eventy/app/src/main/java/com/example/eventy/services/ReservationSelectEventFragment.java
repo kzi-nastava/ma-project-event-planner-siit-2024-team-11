@@ -1,6 +1,8 @@
 package com.example.eventy.services;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
@@ -33,7 +36,6 @@ import java.util.Locale;
 
 public class ReservationSelectEventFragment extends Fragment implements MultiSpinner.MultiSpinnerListener  {
     private FragmentServiceReservationSelectEventBinding binding;
-    // event & service
     private Event selectedEvent = null;
     private Button dateRangeButton;
     private TextView showSelectedDateText;
@@ -47,31 +49,6 @@ public class ReservationSelectEventFragment extends Fragment implements MultiSpi
                              Bundle savedInstanceState) {
         binding = FragmentServiceReservationSelectEventBinding.inflate(inflater, container, false);
 
-        /*
-        // Get screen height
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int screenHeight = displayMetrics.heightPixels;
-
-        TextView selectEventText = binding.selectEventText;
-        LinearLayout searchFilterContainer = binding.searchAndFilterContainer;
-        LinearLayout filterSortContainer = binding.filterAndSortContainer;
-
-        selectEventText.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        searchFilterContainer.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        filterSortContainer.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-
-        int selectEventTextHeight = selectEventText.getMeasuredHeight();
-        int searchFilterContainerHeight = searchFilterContainer.getMeasuredHeight();
-        int filterSortContainerHeight = filterSortContainer.getMeasuredHeight();
-
-        int newHeight = screenHeight - selectEventTextHeight - searchFilterContainerHeight - filterSortContainerHeight;
-
-        LinearLayout containerLayout = binding.container;
-        ViewGroup.LayoutParams params = containerLayout.getLayoutParams();
-        params.height = newHeight;
-        containerLayout.setLayoutParams(params);
-*/
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.all_items, new SelectEventFragment(this))
                 .commit();
@@ -79,6 +56,23 @@ public class ReservationSelectEventFragment extends Fragment implements MultiSpi
         setupEventSearch();
         setupEventFilters();
         setupEventSort();
+
+        AppCompatButton continueButton = binding.confirmReservationButton;
+        continueButton.setOnClickListener(v1 -> {
+            if (selectedEvent == null) {
+                new AlertDialog.Builder(getContext())
+                    .setTitle("Event Error")
+                    .setMessage("Event needs to be selected!")
+                    .setNegativeButton(android.R.string.ok, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+            } else {
+                getChildFragmentManager().beginTransaction()
+                    .replace(R.id.main_container, new ReservationFragment(selectedEvent))
+                    .addToBackStack(null)
+                    .commit();
+            }
+        });
 
         return binding.getRoot();
     }

@@ -18,7 +18,6 @@ import androidx.fragment.app.Fragment;
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentServiceReservationBinding;
 import com.example.eventy.home.events.EventDetailsDialog;
-import com.example.eventy.model.enums.PrivacyType;
 import com.example.eventy.model.enums.ReservationConfirmationType;
 import com.example.eventy.model.enums.Status;
 import com.example.eventy.model.event.Event;
@@ -26,7 +25,6 @@ import com.example.eventy.model.event.EventType;
 import com.example.eventy.model.solution.Category;
 import com.example.eventy.model.solution.Reservation;
 import com.example.eventy.model.solution.Service;
-import com.example.eventy.model.utils.Location;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -64,6 +62,10 @@ public class ReservationFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public ReservationFragment(Event selectedEvent) {
+        this.selectedEvent = selectedEvent;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -72,17 +74,12 @@ public class ReservationFragment extends Fragment {
         selectedService = getService();
         setupServiceDetails();
 
-        selectedEvent = getEvent();
         setupSeeEventButton();
 
         setupDatePicker();
         setupTimePicker();
 
         binding.confirmReservationButton.setOnClickListener(v -> {
-
-            //SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy.", Locale.getDefault());
-            //String eventDateString = sdf.format(new Date(eventDate));
-
             Calendar startDateTime = Calendar.getInstance();
             if (selectedStartHour == -1 || selectedStartMinute == -1 || eventDate == null) {
                 startDateTime = null;
@@ -148,19 +145,9 @@ public class ReservationFragment extends Fragment {
             } else {
                 Toast.makeText(this.getContext(), "Time is not valid!", Toast.LENGTH_SHORT).show();
             }
-
-
-
         });
 
         return binding.getRoot();
-    }
-
-    private Event getEvent() {
-        EventType weddingType = new EventType("Wedding", "An unforgettable celebration of love and commitment", true);
-        Location weddingLocation = new Location("Grand Hall", "123 Wedding St, Cityville", 40.7128, -74.0060);
-
-        return new Event("Mark & Jana's Wedding", "An unforgettable celebration of love and commitment", 200, PrivacyType.PUBLIC, new Date(), weddingLocation, weddingType);
     }
 
     private Service getService() {
@@ -234,7 +221,7 @@ public class ReservationFragment extends Fragment {
     private void setupSeeEventButton() {
         Button seeEventButton = binding.seeEventButton;
         seeEventButton.setOnClickListener(v -> {
-            EventDetailsDialog cdd = new EventDetailsDialog(this.getActivity());
+            EventDetailsDialog cdd = new EventDetailsDialog(this.getActivity(), selectedEvent);
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
         });
@@ -507,19 +494,6 @@ public class ReservationFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        //ArrayList<Event> events = getEvents();
-
-        //eventsAdapter = new EventsAdapter(requireContext(), events);
-
-        //binding.eventsRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
-        //binding.eventsRecycler.setAdapter(eventsAdapter);
-    }
-
-    @NonNull
-    private static ArrayList<Event> getEvents() {
-        ArrayList<Event> events = new ArrayList<>();
-        return events;
     }
 
     @Override
