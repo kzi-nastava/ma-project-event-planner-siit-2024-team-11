@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:paddingBottom="18dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_color"
+        tools:context="services.ReservationFragment">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/albert_sans"
+            android:text="SERVICE RESERVATION"
+            android:textColor="#8C8989"
+            android:textFontWeight="900"
+            android:textSize="25sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/card"
+            android:background="@color/white"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1. See the details of your service reservation:"
+                android:textSize="14sp"
+                android:textFontWeight="600"
+                android:fontFamily="@font/figtree"
+                android:textColor="#929292"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="15dp"
+                android:maxLines="1" />
+
+            <include
+                android:id="@+id/service"
+                layout="@layout/fragment_service_card_reservation" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="11dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginStart="15dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="2dp">
+
+                    <LinearLayout
+                        android:layout_marginTop="1dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="‣  Reserve by: "
+                            android:textSize="12.5sp"
+                            android:fontFamily="@font/albert_sans"
+                            android:textColor="@color/home_event_card_label"
+                            android:maxLines="1"
+                            />
+
+                        <TextView
+                            android:id="@+id/reserve_by"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="5 days"
+                            android:textSize="12.5sp"
+                            android:fontFamily="@font/albert_sans"
+                            android:textColor="#737272"
+                            android:maxLines="1"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="‣  Cancel by: "
+                            android:textSize="12.5sp"
+                            android:fontFamily="@font/albert_sans"
+                            android:textColor="@color/home_event_card_label"
+                            android:layout_marginTop="1dp"
+                            android:maxLines="1"
+                            />
+
+                        <TextView
+                            android:id="@+id/cancel_by"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="10 days"
+                            android:textSize="12.5sp"
+                            android:fontFamily="@font/albert_sans"
+                            android:textColor="#737272"
+                            android:layout_marginTop="1dp"
+                            android:maxLines="1"
+                            />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1">
+
+                    <!-- filter button -->
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/see_event_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@drawable/filter_button_background"
+                        android:fontFamily="@font/albert_sans"
+                        android:letterSpacing="0.03"
+                        android:paddingLeft="3dp"
+                        android:paddingRight="3dp"
+                        android:text="VIEW YOUR EVENT"
+                        android:textColor="@color/white"
+                        android:textFontWeight="900"
+                        android:textSize="13sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/date_picker_container"
+            android:background="@color/white"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="23dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/card">
+
+            <!-- From Date Button -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2. Select the date you want to reserve: "
+                    android:textSize="14sp"
+                    android:textFontWeight="600"
+                    android:fontFamily="@font/figtree"
+                    android:textColor="#929292"
+                    android:layout_marginBottom="12dp"
+                    android:maxLines="1" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Select event date:"
+                    android:layout_marginLeft="1dp"
+                    android:fontFamily="@font/albert_sans"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="6dp"
+                    android:textColor="@color/home_event_card_label"/>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/select_date_button"
+                    android:stateListAnimator="@null"
+                    android:layout_width="wrap_content"
+                    android:elevation="1dp"
+                    android:layout_margin="1dp"
+                    android:layout_height="41dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="2dp"
+                    android:textColor="#9D9B9B"
+                    android:background="@drawable/event_card_description_background"
+                    android:fontFamily="@font/albert_sans"
+                    android:letterSpacing="0.05"
+                    android:paddingLeft="14dp"
+                    android:paddingRight="14dp"
+                    android:text="@string/select_date"
+                    android:textAllCaps="false"
+                    android:textFontWeight="900"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!--simple text view to show the selected date by the user-->
+            <TextView
+                android:id="@+id/event_show_selected_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:textColor="@color/home_event_card_label"
+                android:fontFamily="@font/albert_sans"
+                android:layout_marginRight="2dp"
+                android:layout_marginTop="7dp"
+                android:text="No date selected"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/time_picker_container"
+            android:background="@color/white"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="23dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/date_picker_container">
+
+            <!-- From Date Button -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3. Select the preferred time range: "
+                    android:textSize="14sp"
+                    android:textFontWeight="600"
+                    android:fontFamily="@font/figtree"
+                    android:textColor="#929292"
+                    android:layout_marginBottom="12dp"
+                    android:maxLines="1" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        android:layout_marginRight="15dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Select start time:"
+                            android:layout_marginLeft="1dp"
+                            android:fontFamily="@font/albert_sans"
+                            android:textSize="14sp"
+                            android:layout_marginBottom="6dp"
+                            android:textColor="@color/home_event_card_label"/>
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/select_start_time_button"
+                            android:layout_margin="1dp"
+                            android:text="START TIME 🕙"
+                            android:stateListAnimator="@null"
+                            android:layout_width="match_parent"
+                            android:elevation="1dp"
+                            android:layout_height="41dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginRight="15dp"
+                            android:textColor="#9D9B9B"
+                            android:background="@drawable/event_card_description_background"
+                            android:fontFamily="@font/albert_sans"
+                            android:letterSpacing="0.05"
+                            android:paddingLeft="14dp"
+                            android:paddingRight="14dp"
+                            android:textAllCaps="false"
+                            android:textFontWeight="900"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/select_end_time_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Select end time:"
+                            android:layout_marginLeft="1dp"
+                            android:fontFamily="@font/albert_sans"
+                            android:textSize="14sp"
+                            android:layout_marginBottom="6dp"
+                            android:textColor="@color/home_event_card_label"/>
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/select_end_time_button"
+                            android:layout_margin="1dp"
+                            android:text="END TIME 🕑"
+                            android:stateListAnimator="@null"
+                            android:layout_width="match_parent"
+                            android:elevation="1dp"
+                            android:layout_height="41dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginRight="15dp"
+                            android:textColor="#9D9B9B"
+                            android:background="@drawable/event_card_description_background"
+                            android:fontFamily="@font/albert_sans"
+                            android:letterSpacing="0.05"
+                            android:paddingLeft="14dp"
+                            android:paddingRight="14dp"
+                            android:textAllCaps="false"
+                            android:textFontWeight="900"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!--simple text view to show the selected date by the user-->
+            <TextView
+                android:id="@+id/show_selected_time_range"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:textColor="@color/home_event_card_label"
+                android:fontFamily="@font/albert_sans"
+                android:layout_marginRight="2dp"
+                android:layout_marginTop="7dp"
+                android:text="No time range selected"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/confirm_reservation_button"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/filter_done_button_background"
+            android:fontFamily="@font/albert_sans"
+            android:letterSpacing="0.05"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="CONFIRM RESERVATION"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textFontWeight="900"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/time_picker_container" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

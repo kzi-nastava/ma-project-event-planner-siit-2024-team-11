@@ -45,10 +45,8 @@ public class SolutionsAdapter extends RecyclerView.Adapter<SolutionsAdapter.Solu
     public void onBindViewHolder(@NonNull SolutionsAdapter.SolutionViewHolder holder, int position) {
         Solution solution = solutions.get(position);
 
-        Log.wtf("OVDEEE", solution.toString());
-
         if (solution != null) {
-            holder.name.setText(solution.getName());
+            holder.name.setText('"' + solution.getName() + '"');
 
             String categoryString = "Type: " + solution.getCategory().getName();
             holder.category.setText(categoryString);

@@ -56,7 +56,7 @@ public class FeaturedSolutionsAdapter extends RecyclerView.Adapter<FeaturedSolut
         Solution solution = featuredSolutions.get(position);
 
         if (solution != null) {
-            holder.name.setText(solution.getName());
+            holder.name.setText('"' + solution.getName() + '"');
 
             if (position % 2 == 0) {
                 if (solution instanceof Product) {

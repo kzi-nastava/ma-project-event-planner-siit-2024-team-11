@@ -7,8 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="0dp"
-    android:layout_marginBottom="13dp"
-    android:layout_marginEnd="14dp"
+    android:layout_marginEnd="13dp"
     android:layout_marginStart="13dp">
 
     <!-- service card container -->
@@ -32,10 +31,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/service_card_yellow_stripe_background"
-            android:paddingStart="20dp"
+            android:paddingStart="18dp"
             android:paddingTop="9dp"
             android:paddingEnd="7dp"
-            android:paddingBottom="8dp">
+            android:paddingBottom="4dp">
 
             <!-- service name container -->
             <FrameLayout
@@ -68,7 +67,7 @@
                 android:id="@+id/category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginLeft="2dp"
                 android:layout_marginRight="2dp"
                 android:fontFamily="@font/albert_sans"
@@ -85,7 +84,7 @@
                 android:id="@+id/duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginLeft="2dp"
                 android:layout_marginRight="2dp"
                 android:fontFamily="@font/albert_sans"
@@ -101,7 +100,7 @@
                 android:id="@+id/reservation_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="2dp"
                 android:layout_marginLeft="2dp"
                 android:layout_marginRight="2dp"
                 android:fontFamily="@font/albert_sans"
@@ -118,7 +117,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
-                android:layout_marginTop="7dp"
+                android:layout_marginTop="9dp"
                 android:layout_marginEnd="2dp"
                 android:fontFamily="@font/albert_sans"
                 android:maxLines="1"
@@ -134,6 +133,7 @@
                 android:id="@+id/event_types_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
                 android:layout_marginStart="0dp"
                 android:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="parent"
@@ -222,24 +222,34 @@
                         tools:ignore="SmallSp" />
                 </LinearLayout>
             </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!-- price container -->
+        <!-- right side of card -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/right_side"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/event_card_white_background">
+
+            <!-- favorite & see more buttons container -->
             <LinearLayout
-                android:id="@+id/price_container"
+                android:id="@+id/buttons_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:elevation="2dp"
+                android:layout_height="25dp"
                 android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="6dp"
+                android:gravity="center_vertical"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/event_types_container">
+                app:layout_constraintTop_toTopOf="parent"
+                >
 
                 <!-- price before discount container -->
                 <FrameLayout
                     android:id="@+id/discount_container"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -276,7 +286,7 @@
                                 android:textFontWeight="900"
                                 android:text="@string/euro_symbol"
                                 android:textColor="@color/home_solution_card_before_price"
-                                android:textSize="9sp"
+                                android:textSize="10sp"
                                 tools:ignore="SmallSp" />
                         </LinearLayout>
 
@@ -300,20 +310,7 @@
                                 android:textFontWeight="900"
                                 android:text="@string/solution_price_before_discount"
                                 android:textColor="@color/home_solution_card_before_price_crossed_out"
-                                android:textSize="12sp" />
-
-                            <!-- crossed out euro symbol -->
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="1dp"
-                                android:fontFamily="@font/albert_sans"
-                                android:maxLines="1"
-                                android:textFontWeight="900"
-                                android:text="@string/euro_symbol"
-                                android:textColor="@color/home_solution_card_before_price_crossed_out"
-                                android:textSize="9sp"
-                                tools:ignore="SmallSp" />
+                                android:textSize="17sp" />
                         </LinearLayout>
                     </RelativeLayout>
                 </FrameLayout>
@@ -321,7 +318,7 @@
                 <!-- price before discount container -->
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <!-- price before discount -->
@@ -334,7 +331,7 @@
                         android:text="@string/solution_current_price"
                         android:textColor="@color/home_event_card_text"
                         android:textFontWeight="900"
-                        android:textSize="14sp" />
+                        android:textSize="16sp"/>
 
                     <!-- euro symbol -->
                     <TextView
@@ -346,58 +343,10 @@
                         android:text="@string/euro_symbol"
                         android:textColor="@color/home_event_card_text"
                         android:textFontWeight="900"
-                        android:textSize="11sp"
+                        android:textSize="12sp"
                         tools:ignore="SmallSp" />
                 </LinearLayout>
-            </LinearLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- right side of card -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/right_side"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/event_card_white_background">
-
-            <!-- favorite & see more buttons container -->
-            <LinearLayout
-                android:id="@+id/buttons_container"
-                android:layout_width="match_parent"
-                android:layout_height="32dp"
-                android:orientation="horizontal"
-                android:layout_marginTop="9dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <!-- favorite button -->
-                <Button
-                    android:id="@+id/favorite_button"
-                    android:layout_width="33dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="10dp"
-                    android:background="@drawable/icon_favorite_smaller"
-                    android:text="@string/favorite" />
-
-                <!-- see more button -->
-                <Button
-                    android:id="@+id/see_more_button"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="12dp"
-                    android:layout_weight="3.4"
-                    android:background="@drawable/event_card_see_more_border_smaller"
-                    android:fontFamily="@font/albert_sans"
-                    android:letterSpacing="0.02"
-                    android:text="@string/event_card_see_more"
-                    android:textAllCaps="false"
-                    android:padding="0dp"
-                    android:textColor="@color/home_event_card_see_more"
-                    android:textFontWeight="900"
-                    android:textSize="13sp" />
             </LinearLayout>
 
             <!-- service image container -->
@@ -408,8 +357,8 @@
                 android:orientation="vertical"
                 android:layout_marginStart="3dp"
                 android:layout_marginEnd="11dp"
-                android:layout_marginTop="11dp"
-                android:layout_marginBottom="11dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="9dp"
                 android:elevation="1dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/buttons_container">
@@ -421,7 +370,6 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/bon_jovi"
                     app:shapeAppearanceOverlay="@style/roundedImage"/>
-
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

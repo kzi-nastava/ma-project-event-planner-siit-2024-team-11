@@ -61,7 +61,7 @@
     <string name="product_description_text">Best cake in town! Buy and see! ONLY LEGIT! BEST QULAITY, COME AND SEE!!</string>
 
     <!-- /home/services{service_card} -->
-    <string name="service_name">Bon Jovisssssssssssssssssssssssssssssssssss</string>
+    <string name="service_name">Bon Jovi</string>
     <string name="service_category">Category: music</string>
     <string name="service_duration">Duration: 1h-5h</string>
     <string name="service_reservation_type">Reservation: manual</string>
@@ -70,7 +70,7 @@
     <string name="event_filters_text">Event Filters</string>
     <string name="reset_filter">Reset All</string>
 
-    <string name="select_date">SELECT DATES 🗓️</string>
+    <string name="select_date">SELECT DATE 🗓️</string>
     <string name="select_max_participants"><font size="15">Select a number..</font></string>
 
     <string name="add_service_title">Add a new service</string>
