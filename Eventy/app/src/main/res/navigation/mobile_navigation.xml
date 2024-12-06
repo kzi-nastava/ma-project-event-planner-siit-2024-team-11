@@ -94,5 +94,11 @@
         android:name="com.example.eventy.services.ReservationSelectEventFragment"
         android:label="Service Reservation"
         tools:layout="@layout/fragment_service_reservation_select_event"/>
-  
+
+    <fragment
+        android:id="@+id/fast_registration"
+        android:name="com.example.eventy.users.fast_registration.FastRegistrationFragment"
+        android:label="Fast Registration"
+        tools:layout="@layout/fragment_user_fast_registration"/>
+
 </navigation>
