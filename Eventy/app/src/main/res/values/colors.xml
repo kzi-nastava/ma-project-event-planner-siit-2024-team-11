@@ -16,6 +16,8 @@
     <color name="input_color">#e0e2ec</color>
     <color name="green_button">#408A56</color>
     <color name="red_button">#852221</color>
+    <color name="dark_blue_button">#0000FF</color>
+    <color name="red_255_button">#FF0000</color>
     <color name="disabled_button">#B0BEC5</color>
 
     <!-- home -->
