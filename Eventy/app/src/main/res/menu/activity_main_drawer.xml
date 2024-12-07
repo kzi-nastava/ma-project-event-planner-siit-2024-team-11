@@ -48,5 +48,10 @@
             android:id="@+id/fast_registration"
             android:icon="@drawable/icon_service_reservation"
             android:title="Fast Registration"/>
+        <item
+            android:id="@+id/upgrade_profile"
+            android:icon="@drawable/icon_service_reservation"
+            android:title="Upgrade Profile"/>
+
     </group>
 </menu>

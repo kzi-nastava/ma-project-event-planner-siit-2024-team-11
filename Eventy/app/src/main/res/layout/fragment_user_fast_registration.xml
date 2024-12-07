@@ -185,8 +185,7 @@
                 app:boxBackgroundColor="@color/white"
                 app:boxStrokeColor="#A0ABC7"
                 android:textColor="@color/home_event_card_text"
-                app:endIconDrawable="@drawable/icon_remove"
-                >
+                app:endIconDrawable="@drawable/icon_remove" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/email_input"
@@ -359,7 +358,6 @@
                 android:letterSpacing="0.03"
                 android:textSize="18sp"
                 />
-
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

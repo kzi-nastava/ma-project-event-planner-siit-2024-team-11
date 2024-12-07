@@ -101,4 +101,10 @@
         android:label="Fast Registration"
         tools:layout="@layout/fragment_user_fast_registration"/>
 
+    <fragment
+        android:id="@+id/upgrade_profile"
+        android:name="com.example.eventy.users.fast_registration.UpgradeAccountFragment"
+        android:label="Upgrade Profile"
+        tools:layout="@layout/fragment_user_fast_registration_upgrade_account"/>
+
 </navigation>
