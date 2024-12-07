@@ -28,17 +28,30 @@
             android:id="@+id/nav_event_organization"
             android:icon="@drawable/icon_organize_event"
             android:title="@string/organize_event" />
-        <item android:id="@+id/nav_own_services_test"
+        <item
+            android:id="@+id/nav_own_services_test"
             android:icon="@drawable/service_add_icon"
             android:title="My services"/>
-        <item android:id="@+id/nav_event_types"
+        <item
+            android:id="@+id/nav_event_types"
             android:icon="@drawable/icon_types"
             android:title="Event Types"/>
-        <item android:id="@+id/nav_other_user_profile_page"
+        <item
+            android:id="@+id/nav_other_user_profile_page"
             android:icon="@drawable/icon_profile"
             android:title="Other user profile page"/>
-        <item android:id="@+id/service_reservation"
+        <item
+            android:id="@+id/service_reservation"
             android:icon="@drawable/icon_service_reservation"
             android:title="Service Reservation"/>
+        <item
+            android:id="@+id/fast_registration"
+            android:icon="@drawable/icon_service_reservation"
+            android:title="Fast Registration"/>
+        <item
+            android:id="@+id/upgrade_profile"
+            android:icon="@drawable/icon_service_reservation"
+            android:title="Upgrade Profile"/>
+
     </group>
 </menu>

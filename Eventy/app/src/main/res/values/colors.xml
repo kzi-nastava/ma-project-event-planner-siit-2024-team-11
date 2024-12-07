@@ -36,4 +36,6 @@
     <!-- home/products{product_card} -->
     <color name="home_solution_card_before_price">#F40F0F</color>
     <color name="home_solution_card_before_price_crossed_out">#00F40F0F</color>
+
+    <!-- <color name="mtrl_textinput_default_box_stroke_color">#fff</color> -->
 </resources>

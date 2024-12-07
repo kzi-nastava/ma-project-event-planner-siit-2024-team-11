@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:fillViewport="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:background="@color/background_color"
+        tools:context="register.RegisterFragment">
+
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="17dp"
+            android:layout_marginBottom="17dp"
+            android:fontFamily="@font/albert_sans"
+            android:text="UPGRADE PROFILE"
+            android:textColor="#8C8989"
+            android:textFontWeight="900"
+            android:textSize="25sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Switch Register Type Button -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/switchFragmentButton"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:onClick="onLoginButtonClick"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
+            android:background="@drawable/filter_button_background"
+            android:text="CHANGE ROLE"
+            android:fontFamily="@font/albert_sans"
+            android:textFontWeight="900"
+            android:textColor="@color/white"
+            android:letterSpacing="0.03"
+            android:textSize="18sp" />
+
+        <!-- description container -->
+        <LinearLayout
+            android:id="@+id/description_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/event_card_description_background"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
+            android:orientation="vertical"
+            android:paddingTop="11dp"
+            android:paddingBottom="11dp"
+            android:layout_marginTop="20dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            app:layout_constraintTop_toBottomOf="@+id/description_container1">
+
+            <!-- description label -->
+            <TextView
+                android:id="@+id/decription_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/albert_sans"
+                android:text="Selected role:"
+                android:textColor="@color/home_event_card_label"
+                android:textFontWeight="600"
+                android:textSize="14sp" />
+
+            <!-- description text -->
+            <TextView
+                android:id="@+id/register_label"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/albert_sans"
+                android:text="Event Organiser"
+                android:textFontWeight="900"
+                android:textColor="#949FBC"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_marginTop="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Already have an account?"
+            android:textColor="#949FBC"
+            android:textSize="16sp"
+            android:fontFamily="@font/albert_sans"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/login_here_button"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/filter_button_background"
+            android:text="LOGIN HERE"
+            android:fontFamily="@font/albert_sans"
+            android:textFontWeight="900"
+            android:textColor="@color/white"
+            android:letterSpacing="0.03"
+            android:textSize="18sp" />
+    </LinearLayout>
+</ScrollView>

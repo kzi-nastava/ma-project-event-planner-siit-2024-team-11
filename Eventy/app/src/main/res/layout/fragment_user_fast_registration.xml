@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:fillViewport="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_color"
+        tools:context="services.ReservationFragment">
+
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="17dp"
+            android:fontFamily="@font/albert_sans"
+            android:text="FAST REGISTRATION"
+            android:textColor="#8C8989"
+            android:textFontWeight="900"
+            android:textSize="25sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/card"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:paddingRight="18dp"
+            android:paddingLeft="18dp"
+            android:layout_marginTop="17dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title_text">
+
+            <TextView
+                android:id="@+id/welcome_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/figtree"
+                android:text="Welcome:"
+                android:textColor="@color/home_event_card_label"
+                android:textFontWeight="600"
+                android:textSize="17sp"/>
+
+            <TextView
+                android:id="@+id/welcome_email_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/figtree"
+                android:layout_marginTop="12dp"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp"
+                android:text="‣  example@gmail.com!"
+                android:textColor="@color/white"
+                android:background="@drawable/filter_button_background"
+                android:textFontWeight="700"
+                android:textSize="16sp"/>
+        </LinearLayout>
+
+        <!-- description container -->
+        <LinearLayout
+            android:id="@+id/description_container1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/event_card_description_background"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:orientation="vertical"
+            android:padding="9dp"
+            android:layout_marginTop="17dp"
+            android:paddingStart="11dp"
+            android:paddingEnd="11dp"
+            app:layout_constraintTop_toBottomOf="@+id/card">
+
+            <!-- description text -->
+            <TextView
+                android:id="@+id/description1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/albert_sans"
+                android:text="@string/fast_registration_text1"
+                android:textColor="@color/home_event_card_text"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+
+        <!-- description container -->
+        <LinearLayout
+            android:id="@+id/description_container2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/event_card_description_background"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:orientation="vertical"
+            android:padding="9dp"
+            android:layout_marginTop="17dp"
+            android:paddingStart="11dp"
+            android:paddingEnd="11dp"
+            app:layout_constraintTop_toBottomOf="@+id/description_container1">
+
+            <!-- description label -->
+            <TextView
+                android:id="@+id/decription_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/albert_sans"
+                android:text="Note:"
+                android:textColor="#F4B32E"
+                android:textFontWeight="700"
+                android:textSize="12.5sp" />
+
+            <!-- description text -->
+            <TextView
+                android:id="@+id/description2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="4.2dp"
+                android:fontFamily="@font/albert_sans"
+                android:text="@string/fast_registration_text2"
+                android:textColor="@color/home_event_card_text"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- divider line container -->
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/line_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/description_container2">
+
+            <!-- date Label -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:background="@color/background_color"
+                android:fontFamily="@font/albert_sans"
+                android:paddingLeft="7dp"
+                android:paddingRight="7dp"
+                android:text="Personal info"
+                android:textColor="@color/home_event_card_label"
+                android:textSize="16sp" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/frameLayout">
+
+            <!-- Email Field -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/email_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintEnabled="true"
+                android:hint="Email"
+                app:hintTextColor="@color/home_event_card_label"
+                app:endIconMode="clear_text"
+                app:boxBackgroundColor="@color/white"
+                app:boxStrokeColor="#A0ABC7"
+                android:textColor="@color/home_event_card_text"
+                app:endIconDrawable="@drawable/icon_remove" >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/email_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:enabled="false"
+                    android:textColor="@color/home_event_card_text"
+                    android:inputType="textEmailAddress"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Password Field -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/password_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:hint="Password"
+                android:textColor="@color/home_event_card_text"
+                app:hintTextColor="@color/home_event_card_label"
+                app:boxBackgroundColor="@color/white"
+                app:boxStrokeColor="#A0ABC7"
+                app:endIconMode="password_toggle">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/password_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:textSize="15sp"
+                    android:textColor="@color/home_event_card_text"
+                    android:background="@drawable/event_card_description_background"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Confirm Password Field -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/confirm_password_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                app:boxBackgroundColor="@color/white"
+                app:boxStrokeColor="#A0ABC7"
+                android:hint="Confirm Password"
+                android:textColor="@color/home_event_card_text"
+                app:hintTextColor="@color/home_event_card_label"
+                app:endIconMode="password_toggle">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/confirm_password_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:textSize="15sp"
+                    android:textColor="@color/home_event_card_text"
+                    android:background="@drawable/event_card_description_background"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- First Name Field -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/first_name_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:hint="First Name"
+                app:hintTextColor="@color/home_event_card_label"
+                app:endIconMode="clear_text"
+                android:textColor="@color/home_event_card_text"
+                app:boxBackgroundColor="@color/white"
+                app:boxStrokeColor="#A0ABC7"
+                app:endIconDrawable="@drawable/icon_remove">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/first_name_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:textSize="15sp"
+                    android:textColor="@color/home_event_card_text"
+                    android:background="@drawable/event_card_description_background"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Last Name Field -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/last_name_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:hint="Last Name"
+                android:textColor="@color/home_event_card_text"
+                app:hintTextColor="@color/home_event_card_label"
+                app:boxBackgroundColor="@color/white"
+                app:boxStrokeColor="#A0ABC7"
+                app:endIconMode="clear_text"
+                app:endIconDrawable="@drawable/icon_remove">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/last_name_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:textSize="15sp"
+                    android:textColor="@color/home_event_card_text"
+                    android:background="@drawable/event_card_description_background"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Address Field -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/address_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:hint="Address"
+                android:textColor="@color/home_event_card_text"
+                app:hintTextColor="@color/home_event_card_label"
+                app:boxBackgroundColor="@color/white"
+                app:boxStrokeColor="#A0ABC7"
+                app:endIconMode="clear_text"
+
+                app:endIconDrawable="@drawable/icon_remove">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/address_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPostalAddress"
+                    android:textSize="15sp"
+                    android:textColor="@color/home_event_card_text"
+                    android:background="@drawable/event_card_description_background"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Phone Number Field -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/phone_number_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:hint="Phone Number"
+                android:textColor="@color/home_event_card_text"
+                app:hintTextColor="@color/home_event_card_label"
+                app:boxBackgroundColor="@color/white"
+                app:boxStrokeColor="#A0ABC7"
+                app:endIconMode="clear_text"
+                app:endIconDrawable="@drawable/icon_remove">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/phone_number_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"
+                    android:textSize="15sp"
+                    android:textColor="@color/home_event_card_text"
+                    android:background="@drawable/event_card_description_background"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- filter button -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/register_button"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
+                android:layout_gravity="center"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:background="@drawable/filter_button_background"
+                android:text="REGISTER"
+                android:fontFamily="@font/albert_sans"
+                android:textFontWeight="900"
+                android:textColor="@color/white"
+                android:letterSpacing="0.03"
+                android:textSize="18sp"
+                />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
