@@ -47,11 +47,13 @@ public class SolutionCategoryAdapter extends RecyclerView.Adapter<SolutionCatego
             editButton.setOnClickListener(v -> {
                 Toast.makeText(holder.itemView.getContext(), "EDIT DIALOG OPENED", Toast.LENGTH_SHORT).show();
             });
+            // TODO
 
             Button deleteButton = holder.itemView.findViewById(R.id.category_card_delete_button);
             deleteButton.setOnClickListener(v -> {
                 Toast.makeText(holder.itemView.getContext(), "DELETE DIALOG OPENED", Toast.LENGTH_SHORT).show();
             });
+            // TODO
         }
     }
 
