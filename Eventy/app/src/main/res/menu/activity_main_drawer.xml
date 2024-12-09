@@ -52,6 +52,9 @@
             android:id="@+id/upgrade_profile"
             android:icon="@drawable/icon_service_reservation"
             android:title="Upgrade Profile"/>
-
+        <item
+            android:id="@+id/nav_category_management"
+            android:icon="@drawable/category_management_icon"
+            android:title="@string/category_management"/>
     </group>
 </menu>

@@ -81,6 +81,12 @@
     <string name="add_new_person">Add new person:</string>
     <string name="added_people">Added people:</string>
 
+    <string name="category_management">Category management</string>
+    <string name="add_category_button">Add category</string>
+    <string name="edit_category_button">Edit category</string>
+    <string name="add_category_label">Add category</string>
+    <string name="edit_category_label">Edit category</string>
+
     <!-- /users/fast-registration -->
     <string name="fast_registration_text1">You’ve been invited to an event, and a temporary account has been created for you using \"example@gmail.com\"!</string>
     <string name="fast_registration_text2">In order to accept the event and access the details, please fill the required fields down below. After completing the registration, your account will be fully created and you will be able to access the event!</string>

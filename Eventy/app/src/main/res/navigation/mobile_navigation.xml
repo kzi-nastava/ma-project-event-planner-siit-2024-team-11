@@ -88,12 +88,21 @@
         android:name="com.example.eventy.users.profile.UserMyProfilePageFragment"
         android:label="My Profile"
         tools:layout="@layout/fragment_user_my_profile_page"/>
-
     <fragment
         android:id="@+id/service_reservation"
         android:name="com.example.eventy.services.ReservationSelectEventFragment"
         android:label="Service Reservation"
         tools:layout="@layout/fragment_service_reservation_select_event"/>
+    <fragment
+        android:id="@+id/nav_category_management"
+        android:name="com.example.eventy.solutions.solutionCategories.CategoryManagementFragment"
+        android:label="Category management"
+        tools:layout="@layout/fragment_category_management"/>
+    <fragment
+        android:id="@+id/nav_category_input"
+        android:label=""
+        android:name="com.example.eventy.solutions.solutionCategories.CategoryInputFragment"
+        tools:layout="@layout/fragment_category_input"/>
 
     <fragment
         android:id="@+id/fast_registration"

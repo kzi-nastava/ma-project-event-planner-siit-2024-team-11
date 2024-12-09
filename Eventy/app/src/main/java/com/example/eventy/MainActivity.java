@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
                 R.id.nav_event_organization, R.id.nav_own_services_test, R.id.nav_event_types, R.id.nav_add_event_type,
                 R.id.nav_edit_event_type, R.id.nav_event_type_details, R.id.nav_other_user_profile_page,
                 R.id.nav_edit_user, R.id.nav_my_profile, R.id.service_reservation, R.id.fast_registration,
-                R.id.upgrade_profile)
+                R.id.upgrade_profile, R.id.nav_category_management)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
