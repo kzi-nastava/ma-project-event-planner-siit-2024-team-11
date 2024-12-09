@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
@@ -53,6 +55,11 @@ public class CategoryManagementFragment extends Fragment {
 
         binding.categoriesRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.categoriesRecycler.setAdapter(adapter);
+
+        binding.floatingActionButton.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(v);
+            navController.navigate(R.id.nav_category_input);
+        });
     }
 
     @Override
