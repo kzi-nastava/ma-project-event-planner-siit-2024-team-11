@@ -82,5 +82,9 @@
     <string name="added_people">Added people:</string>
 
     <string name="category_management">Category management</string>
+    <string name="add_category_button">Add category</string>
+    <string name="edit_category_button">Edit category</string>
+    <string name="add_category_label">Add category</string>
+    <string name="edit_category_label">Edit category</string>
 
 </resources>
