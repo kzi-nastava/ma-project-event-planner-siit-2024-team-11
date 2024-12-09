@@ -103,4 +103,17 @@
         android:label=""
         android:name="com.example.eventy.solutions.solutionCategories.CategoryInputFragment"
         tools:layout="@layout/fragment_category_input"/>
+
+    <fragment
+        android:id="@+id/fast_registration"
+        android:name="com.example.eventy.users.fast_registration.FastRegistrationFragment"
+        android:label="Fast Registration"
+        tools:layout="@layout/fragment_user_fast_registration"/>
+
+    <fragment
+        android:id="@+id/upgrade_profile"
+        android:name="com.example.eventy.users.fast_registration.UpgradeAccountFragment"
+        android:label="Upgrade Profile"
+        tools:layout="@layout/fragment_user_fast_registration_upgrade_account"/>
+
 </navigation>
