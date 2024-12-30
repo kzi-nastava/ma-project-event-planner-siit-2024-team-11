@@ -1,5 +1,18 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
+}
+
+fun getIpAddress(): String? {
+    val properties = Properties()
+    val localPropertiesFile = File("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { inputStream ->
+            properties.load(inputStream)
+        }
+    }
+    return properties.getProperty("ip_addr")
 }
 
 android {
@@ -12,8 +25,10 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+        buildConfigField("String", "IP_ADDR", "\""+getIpAddress()+"\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled = true
     }
 
     buildTypes {
@@ -31,6 +46,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -48,4 +64,7 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.12.0")
     implementation("org.osmdroid:osmdroid-android:6.1.10")
     implementation("com.github.prolificinteractive:material-calendarview:2.0.0")
+    implementation("com.squareup.retrofit2:retrofit:2.3.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.3.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:3.12.1")
 }
