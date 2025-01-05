@@ -13,6 +13,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.eventy.databinding.ActivityMainBinding;
+import com.example.eventy.users.services.LoggedInHelperService;
 import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.navigation.NavigationView;
 
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         ClientUtils.init(getApplicationContext());
+        LoggedInHelperService.init(getApplicationContext());
 
         setSupportActionBar(binding.appBarMain.toolbar);
         DrawerLayout drawer = binding.drawerLayout;

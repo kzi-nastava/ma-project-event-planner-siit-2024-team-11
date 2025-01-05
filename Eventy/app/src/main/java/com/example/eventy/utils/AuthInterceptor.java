@@ -17,7 +17,7 @@ public class AuthInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         // Get the token from SharedPreferences (or EncryptedSharedPreferences)
-        String jwtToken = context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
+        String jwtToken = context.getSharedPreferences("EventyPreferences", Context.MODE_PRIVATE)
                 .getString("JWT_TOKEN", null);
 
         // Add the token to the request if it exists
