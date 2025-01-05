@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        manageNavigationDrawerItems();
+        LoggedInHelperService.manageNavigationDrawerItems(binding.navView);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         } else if(id == R.id.action_logout) {
             this.logout();
 
-            manageNavigationDrawerItems();
+            LoggedInHelperService.manageNavigationDrawerItems(binding.navView);
 
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
 
@@ -106,57 +106,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
-    }
-
-    public void manageNavigationDrawerItems() {
-        // Get the role from your role-determination function
-        String role = LoggedInHelperService.getRole();
-
-        // Get the Menu from the NavigationView
-        Menu menu = binding.navView.getMenu();
-
-        menu.findItem(R.id.action_profile).setVisible(false);
-        menu.findItem(R.id.action_messages).setVisible(false);
-        menu.findItem(R.id.action_notifications).setVisible(false);
-        menu.findItem(R.id.action_logout).setVisible(false);
-        menu.findItem(R.id.nav_login).setVisible(false);
-        menu.findItem(R.id.nav_register).setVisible(false);
-        menu.findItem(R.id.nav_add_service).setVisible(false);
-        menu.findItem(R.id.nav_edit_service).setVisible(false);
-        menu.findItem(R.id.nav_event_organization).setVisible(false);
-        menu.findItem(R.id.nav_own_services_test).setVisible(false);
-        menu.findItem(R.id.nav_event_types).setVisible(false);
-        menu.findItem(R.id.service_reservation).setVisible(false);
-        menu.findItem(R.id.fast_registration).setVisible(false);
-        menu.findItem(R.id.upgrade_profile).setVisible(false);
-        menu.findItem(R.id.nav_category_management).setVisible(false);
-
-        if (role != null) {
-            menu.findItem(R.id.action_profile).setVisible(true);
-            menu.findItem(R.id.action_messages).setVisible(true);
-            menu.findItem(R.id.action_notifications).setVisible(true);
-            menu.findItem(R.id.action_logout).setVisible(true);
-        }
-
-        // Example logic: Show/Hide items based on role
-        if ("ROLE_Admin".equals(role)) {
-            menu.findItem(R.id.nav_event_types).setVisible(true);
-            menu.findItem(R.id.nav_category_management).setVisible(true);
-        } else if ("ROLE_Organizer".equals(role)){
-            menu.findItem(R.id.nav_event_organization).setVisible(true);
-            menu.findItem(R.id.service_reservation).setVisible(true);
-        } else if ("ROLE_Provider".equals(role)) {
-            menu.findItem(R.id.nav_add_service).setVisible(true);
-            menu.findItem(R.id.nav_edit_service).setVisible(true);
-            menu.findItem(R.id.nav_own_services_test).setVisible(true);
-        } else if ("ROLE_AuthenticatedUser".equals(role)) {
-            menu.findItem(R.id.upgrade_profile).setVisible(true);
-        } else if (role == null) {
-            menu.findItem(R.id.nav_login).setVisible(true);
-            menu.findItem(R.id.nav_register).setVisible(true);
-            menu.findItem(R.id.fast_registration).setVisible(true);
-        }
-
     }
 
     private void logout() {
