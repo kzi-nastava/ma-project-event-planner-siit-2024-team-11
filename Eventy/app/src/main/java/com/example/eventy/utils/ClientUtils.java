@@ -1,11 +1,13 @@
 package com.example.eventy.utils;
 
+import android.content.Context;
+
 import java.util.concurrent.TimeUnit;
 
 import com.example.eventy.BuildConfig;
+import com.example.eventy.users.services.AuthService;
 
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -14,13 +16,18 @@ public class ClientUtils {
     //EXAMPLE: http://192.168.43.73:8080/api/
     public static final String SERVICE_API_PATH = "http://"+ BuildConfig.IP_ADDR +":8080/api/";
 
+    private static Context appContext; // Store the application context
+
+    public static void init(Context context) {
+        appContext = context.getApplicationContext(); // Store application context
+    }
+
     /*
      * Ovo ce nam sluziti za debug, da vidimo da li zahtevi i odgovori idu
      * odnosno dolaze i kako izgeldaju.
      * */
-    public static OkHttpClient test(){
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+    public static OkHttpClient client(){
+        AuthInterceptor interceptor = new AuthInterceptor(appContext); // no context ://
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(120, TimeUnit.SECONDS)
@@ -37,12 +44,13 @@ public class ClientUtils {
     public static Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(SERVICE_API_PATH)
             .addConverterFactory(GsonConverterFactory.create())
-            .client(test())
+            .client(client())
             .build();
 
     /*
      * Definisemo konkretnu instancu servisa na intnerntu sa kojim
      * vrsimo komunikaciju
      * */
-    public static ProductService productService = retrofit.create(ProductService.class);
+
+    public static AuthService authService = retrofit.create(AuthService.class);
 }
