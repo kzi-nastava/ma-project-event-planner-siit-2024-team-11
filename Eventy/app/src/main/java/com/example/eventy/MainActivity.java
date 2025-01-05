@@ -32,11 +32,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         ClientUtils.init(getApplicationContext());
-        LoggedInHelperService.init(getApplicationContext());
 
         setSupportActionBar(binding.appBarMain.toolbar);
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
+
+        LoggedInHelperService.init(getApplicationContext(), binding.navView);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        LoggedInHelperService.manageNavigationDrawerItems(binding.navView);
+        LoggedInHelperService.manageNavigationDrawerItems();
     }
 
     @Override
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         } else if(id == R.id.action_logout) {
             this.logout();
 
-            LoggedInHelperService.manageNavigationDrawerItems(binding.navView);
+            LoggedInHelperService.manageNavigationDrawerItems();
 
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
 

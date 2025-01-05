@@ -10,9 +10,11 @@ import com.google.android.material.navigation.NavigationView;
 
 public class LoggedInHelperService {
     private static Context appContext;
+    private static NavigationView navigationView;
 
-    public static void init(Context context) {
+    public static void init(Context context, NavigationView navigationView) {
         LoggedInHelperService.appContext = context;
+        LoggedInHelperService.navigationView = navigationView;
     }
 
     public static String getRole() {
@@ -41,10 +43,10 @@ public class LoggedInHelperService {
         return null;
     }
 
-    public static void manageNavigationDrawerItems(NavigationView navigationView) {
+    public static void manageNavigationDrawerItems() {
         String role = LoggedInHelperService.getRole();
 
-        Menu menu = navigationView.getMenu();
+        Menu menu = LoggedInHelperService.navigationView.getMenu();
 
         menu.findItem(R.id.action_profile).setVisible(false);
         menu.findItem(R.id.action_messages).setVisible(false);
