@@ -22,6 +22,7 @@ public class LoggedInHelperService {
             return decodedJWT.getClaim("role").asString();
         }
 
+        return null;
     }
 
     public static Long getId() {
