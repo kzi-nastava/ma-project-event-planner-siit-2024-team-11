@@ -26,6 +26,9 @@ public class AuthInterceptor implements Interceptor {
             requestBuilder.addHeader("Authorization", "Bearer " + jwtToken);
         }
 
+        requestBuilder.addHeader("User-Agent", "Mobile-Android");
+        requestBuilder.addHeader("Content-Type", "application/json");
+
         return chain.proceed(requestBuilder.build());
     }
 }

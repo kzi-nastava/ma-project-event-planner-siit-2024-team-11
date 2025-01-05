@@ -1,13 +1,11 @@
 package com.example.eventy.users.services;
 
-import java.util.ArrayList;
+import com.example.eventy.users.model.AuthResponse;
+import com.example.eventy.users.model.LoginData;
+import com.example.eventy.users.model.RegisterData;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.DELETE;
-import retrofit2.http.GET;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -17,39 +15,14 @@ import retrofit2.http.Path;
  * Opisuje koji metod koristimo ali i sta ocekujemo kao rezultat
  * */
 public interface AuthService {
+    String prefix = "authentication/";
 
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type:application/json"
-    })
-    @GET("product/")
-    Call<ArrayList<Product>> getAll();
+    @POST(prefix + "login")
+    Call<AuthResponse> login(@Body LoginData loginData);
 
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type:application/json"
-    })
-    @GET("product/{id}")
-    Call<Product> getById(@Path("id") Long id);
+    @POST(prefix + "registration")
+    Call<String> register(@Body RegisterData registerData);
 
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type:application/json"
-    })
-    @POST("product/")
-    Call<Product> add(@Body Product product);
-
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type:application/json"
-    })
-    @DELETE("product/{id}")
-    Call<ResponseBody> deleteById(@Path("id") Long id);
-
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type:application/json"
-    })
-    @PUT("product/")
-    Call<Product> edit(@Body Product product);
+    @PUT(prefix + "registration-confirmation/{requestId}")
+    Call<String> confirmRegistration(@Path("requestId") Long requestId);
 }
