@@ -23,6 +23,8 @@ import android.view.ViewGroup;
 
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentRegisterProviderBinding;
+import com.example.eventy.users.model.RegisterData;
+import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -31,6 +33,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RegisterProviderFragment extends Fragment {
     private FragmentRegisterProviderBinding binding;
@@ -106,11 +112,53 @@ public class RegisterProviderFragment extends Fragment {
                     binding.descriptionInputLayout.getError() == null &&
                     binding.addressInputLayout.getError() == null &&
                     binding.phoneNumberInputLayout.getError() == null) {
-                NavController navController = Navigation.findNavController(v);
+                Call<String> call = ClientUtils.authService.register(
+                        new RegisterData(this.urisToStringList(),
+                                binding.emailInput.getText().toString(),
+                                binding.passwordInput.getText().toString(),
+                                binding.confirmPasswordInput.getText().toString(),
+                                null,
+                                null,
+                                binding.nameInput.getText().toString(),
+                                binding.descriptionInput.getText().toString(),
+                                binding.addressInput.getText().toString(),
+                                binding.phoneNumberInput.getText().toString()));
+                call.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            new MaterialAlertDialogBuilder(requireContext())
+                                    .setTitle("Confirmation email sent")
+                                    .setMessage("Please check your email and confirm the registration!")
+                                    .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                                    .setIcon(R.drawable.icon_info)
+                                    .show();
 
-                navController.popBackStack();
+                            NavController navController = Navigation.findNavController(v);
 
-                navController.navigate(R.id.nav_home);
+                            navController.popBackStack();
+
+                            navController.navigate(R.id.nav_home);
+                        } else {
+                            new MaterialAlertDialogBuilder(requireContext())
+                                    .setTitle("Invalid input")
+                                    .setMessage("Invalid input data!")
+                                    .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                                    .setIcon(R.drawable.icon_error)
+                                    .show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        new MaterialAlertDialogBuilder(requireContext())
+                                .setTitle("Invalid input")
+                                .setMessage("Invalid input data!")
+                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                                .setIcon(R.drawable.icon_error)
+                                .show();
+                    }
+                });
             } else {
                 new MaterialAlertDialogBuilder(requireContext())
                         .setTitle("Invalid input")
@@ -192,5 +240,15 @@ public class RegisterProviderFragment extends Fragment {
         } else {
             textInputLayout.setError(null);
         }
+    }
+
+    private List<String> urisToStringList() {
+        List<String> uriStrings = new ArrayList<>();
+
+        for(Uri uri : images) {
+            uriStrings.add(uri.toString());
+        }
+
+        return uriStrings;
     }
 }
