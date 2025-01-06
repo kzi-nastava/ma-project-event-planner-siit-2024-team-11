@@ -1,7 +1,9 @@
 package com.example.eventy;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,9 +17,16 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.eventy.databinding.ActivityMainBinding;
+import com.example.eventy.users.model.AuthResponse;
+import com.example.eventy.users.model.LoginData;
 import com.example.eventy.users.services.LoggedInHelperService;
 import com.example.eventy.utils.ClientUtils;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = binding.navView;
 
         LoggedInHelperService.init(getApplicationContext(), binding.navView);
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -60,6 +70,47 @@ public class MainActivity extends AppCompatActivity {
         });
 
         LoggedInHelperService.manageNavigationDrawerItems();
+
+        Intent intent = getIntent();
+        Uri data = intent.getData();
+        MainActivity thisActivity = this;
+
+        if (data != null && "confirm-registration".equals(data.getHost())) {
+            String id = data.getQueryParameter("id");
+            if (id != null) {
+                Call<AuthResponse> call = ClientUtils.authService.confirmRegistration(Long.valueOf(id));
+                call.enqueue(new Callback<AuthResponse>() {
+                    @Override
+                    public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("EventyPreferences", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("JWT_TOKEN", response.body().getAccessToken());
+                            editor.apply();
+
+                            LoggedInHelperService.manageNavigationDrawerItems();
+                        } else {
+                            new MaterialAlertDialogBuilder(getApplicationContext())
+                                    .setTitle("An error occured")
+                                    .setMessage("An error occured!")
+                                    .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                                    .setIcon(R.drawable.icon_error)
+                                    .show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<AuthResponse> call, Throwable t) {
+                        new MaterialAlertDialogBuilder(getApplicationContext())
+                                .setTitle("An error occured")
+                                .setMessage("An error occured!")
+                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                                .setIcon(R.drawable.icon_error)
+                                .show();
+                    }
+                });
+            }
+        }
     }
 
     @Override

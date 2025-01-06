@@ -24,5 +24,5 @@ public interface AuthService {
     Call<String> register(@Body RegisterData registerData);
 
     @PUT(prefix + "registration-confirmation/{requestId}")
-    Call<String> confirmRegistration(@Path("requestId") Long requestId);
+    Call<AuthResponse> confirmRegistration(@Path("requestId") Long requestId);
 }
