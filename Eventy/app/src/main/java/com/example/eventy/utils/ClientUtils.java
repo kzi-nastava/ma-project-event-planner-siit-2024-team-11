@@ -20,6 +20,14 @@ public class ClientUtils {
 
     public static void init(Context context) {
         appContext = context.getApplicationContext(); // Store application context
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl(SERVICE_API_PATH)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client())
+                .build();
+
+        authService = retrofit.create(AuthService.class);
     }
 
     /*
@@ -27,7 +35,7 @@ public class ClientUtils {
      * odnosno dolaze i kako izgeldaju.
      * */
     public static OkHttpClient client(){
-        AuthInterceptor interceptor = new AuthInterceptor(appContext); // no context ://
+        AuthInterceptor interceptor = new AuthInterceptor(appContext);
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(120, TimeUnit.SECONDS)
@@ -41,16 +49,12 @@ public class ClientUtils {
     /*
      * Prvo je potrebno da definisemo retrofit instancu preko koje ce komunikacija ici
      * */
-    public static Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(SERVICE_API_PATH)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(client())
-            .build();
+    public static Retrofit retrofit;
 
     /*
      * Definisemo konkretnu instancu servisa na intnerntu sa kojim
      * vrsimo komunikaciju
      * */
 
-    public static AuthService authService = retrofit.create(AuthService.class);
+    public static AuthService authService;
 }
