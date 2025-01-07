@@ -34,6 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -112,7 +113,7 @@ public class RegisterProviderFragment extends Fragment {
                     binding.descriptionInputLayout.getError() == null &&
                     binding.addressInputLayout.getError() == null &&
                     binding.phoneNumberInputLayout.getError() == null) {
-                Call<String> call = ClientUtils.authService.register(
+                Call<ResponseBody> call = ClientUtils.authService.register(
                         new RegisterData(this.urisToStringList(),
                                 binding.emailInput.getText().toString(),
                                 binding.passwordInput.getText().toString(),
@@ -123,9 +124,9 @@ public class RegisterProviderFragment extends Fragment {
                                 binding.descriptionInput.getText().toString(),
                                 binding.addressInput.getText().toString(),
                                 binding.phoneNumberInput.getText().toString()));
-                call.enqueue(new Callback<String>() {
+                call.enqueue(new Callback<ResponseBody>() {
                     @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
                             new MaterialAlertDialogBuilder(requireContext())
                                     .setTitle("Confirmation email sent")
@@ -150,7 +151,7 @@ public class RegisterProviderFragment extends Fragment {
                     }
 
                     @Override
-                    public void onFailure(Call<String> call, Throwable t) {
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
                         new MaterialAlertDialogBuilder(requireContext())
                                 .setTitle("Invalid input")
                                 .setMessage("Invalid input data!")

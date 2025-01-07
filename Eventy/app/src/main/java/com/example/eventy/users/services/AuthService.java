@@ -4,6 +4,7 @@ import com.example.eventy.users.model.AuthResponse;
 import com.example.eventy.users.model.LoginData;
 import com.example.eventy.users.model.RegisterData;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -21,7 +22,7 @@ public interface AuthService {
     Call<AuthResponse> login(@Body LoginData loginData);
 
     @POST(prefix + "registration")
-    Call<String> register(@Body RegisterData registerData);
+    Call<ResponseBody> register(@Body RegisterData registerData);
 
     @PUT(prefix + "registration-confirmation/{requestId}")
     Call<AuthResponse> confirmRegistration(@Path("requestId") Long requestId);
