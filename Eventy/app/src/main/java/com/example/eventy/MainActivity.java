@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
             navController.popBackStack();
 
-            navController.navigate(R.id.nav_my_profile);
+            navController.navigate(R.id.nav_home);
             return true;
         }
 
