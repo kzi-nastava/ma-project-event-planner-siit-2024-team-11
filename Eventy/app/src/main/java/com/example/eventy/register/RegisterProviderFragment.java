@@ -126,7 +126,7 @@ public class RegisterProviderFragment extends Fragment {
                 call.enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
-                        if (response.isSuccessful() && response.body() != null) {
+                        if (response.isSuccessful()) {
                             new MaterialAlertDialogBuilder(requireContext())
                                     .setTitle("Confirmation email sent")
                                     .setMessage("Please check your email and confirm the registration!")

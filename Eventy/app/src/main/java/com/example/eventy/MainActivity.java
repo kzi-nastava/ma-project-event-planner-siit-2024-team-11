@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         Uri data = intent.getData();
-        MainActivity thisActivity = this;
 
         if (data != null && "confirm-registration".equals(data.getHost())) {
             String id = data.getQueryParameter("id");
