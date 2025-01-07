@@ -18,7 +18,6 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.eventy.databinding.ActivityMainBinding;
 import com.example.eventy.users.model.AuthResponse;
-import com.example.eventy.users.model.LoginData;
 import com.example.eventy.users.services.LoggedInHelperService;
 import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -46,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
 
-        LoggedInHelperService.init(getApplicationContext(), binding.navView);
+        LoggedInHelperService.init(getApplicationContext(), binding.navView, this);
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -69,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        LoggedInHelperService.manageNavigationDrawerItems();
+        LoggedInHelperService.manageNavigationItems();
 
         Intent intent = getIntent();
         Uri data = intent.getData();
@@ -88,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                             editor.putString("JWT_TOKEN", response.body().getAccessToken());
                             editor.apply();
 
-                            LoggedInHelperService.manageNavigationDrawerItems();
+                            LoggedInHelperService.manageNavigationItems();
                         } else {
                             new MaterialAlertDialogBuilder(getApplicationContext())
                                     .setTitle("An error occured")
@@ -117,6 +116,14 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
+        String role = LoggedInHelperService.getRole();
+
+        menu.findItem(R.id.action_profile).setVisible(role != null);
+        menu.findItem(R.id.action_messages).setVisible(role != null);
+        menu.findItem(R.id.action_notifications).setVisible(role != null);
+        menu.findItem(R.id.action_logout).setVisible(role != null);
+
         return true;
     }
 
@@ -140,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         } else if(id == R.id.action_logout) {
             this.logout();
 
-            LoggedInHelperService.manageNavigationDrawerItems();
+            LoggedInHelperService.manageNavigationItems();
 
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
 

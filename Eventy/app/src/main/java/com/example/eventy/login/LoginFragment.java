@@ -56,7 +56,7 @@ public class LoginFragment extends Fragment {
                         editor.putString("JWT_TOKEN", response.body().getAccessToken());
                         editor.apply();
 
-                        LoggedInHelperService.manageNavigationDrawerItems();
+                        LoggedInHelperService.manageNavigationItems();
 
                         NavController navController = Navigation.findNavController(v);
 

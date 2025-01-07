@@ -3,6 +3,8 @@ package com.example.eventy.users.services;
 import android.content.Context;
 import android.view.Menu;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.eventy.R;
@@ -11,10 +13,12 @@ import com.google.android.material.navigation.NavigationView;
 public class LoggedInHelperService {
     private static Context appContext;
     private static NavigationView navigationView;
+    private static AppCompatActivity mainActivity;
 
-    public static void init(Context context, NavigationView navigationView) {
+    public static void init(Context context, NavigationView navigationView, AppCompatActivity mainActivity) {
         LoggedInHelperService.appContext = context;
         LoggedInHelperService.navigationView = navigationView;
+        LoggedInHelperService.mainActivity = mainActivity;
     }
 
     public static String getRole() {
@@ -43,15 +47,13 @@ public class LoggedInHelperService {
         return null;
     }
 
-    public static void manageNavigationDrawerItems() {
+    public static void manageNavigationItems() {
+        LoggedInHelperService.mainActivity.supportInvalidateOptionsMenu();;
+
         String role = LoggedInHelperService.getRole();
 
         Menu menu = LoggedInHelperService.navigationView.getMenu();
 
-        menu.findItem(R.id.action_profile).setVisible(false);
-        menu.findItem(R.id.action_messages).setVisible(false);
-        menu.findItem(R.id.action_notifications).setVisible(false);
-        menu.findItem(R.id.action_logout).setVisible(false);
         menu.findItem(R.id.nav_login).setVisible(false);
         menu.findItem(R.id.nav_register).setVisible(false);
         menu.findItem(R.id.nav_add_service).setVisible(false);
@@ -63,13 +65,6 @@ public class LoggedInHelperService {
         menu.findItem(R.id.fast_registration).setVisible(false);
         menu.findItem(R.id.upgrade_profile).setVisible(false);
         menu.findItem(R.id.nav_category_management).setVisible(false);
-
-        if (role != null) {
-            menu.findItem(R.id.action_profile).setVisible(true);
-            menu.findItem(R.id.action_messages).setVisible(true);
-            menu.findItem(R.id.action_notifications).setVisible(true);
-            menu.findItem(R.id.action_logout).setVisible(true);
-        }
 
         // Example logic: Show/Hide items based on role
         if ("ROLE_Admin".equals(role)) {
