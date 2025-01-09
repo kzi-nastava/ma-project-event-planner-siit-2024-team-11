@@ -1,5 +1,9 @@
 package com.example.eventy;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,7 +17,15 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.eventy.databinding.ActivityMainBinding;
+import com.example.eventy.users.model.AuthResponse;
+import com.example.eventy.users.services.LoggedInHelperService;
+import com.example.eventy.utils.ClientUtils;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,9 +39,14 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        ClientUtils.init(getApplicationContext());
+
         setSupportActionBar(binding.appBarMain.toolbar);
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
+
+        LoggedInHelperService.init(getApplicationContext(), binding.navView, this);
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -50,12 +67,62 @@ public class MainActivity extends AppCompatActivity {
                 getSupportActionBar().setTitle("");
             }
         });
+
+        LoggedInHelperService.manageNavigationItems();
+
+        Intent intent = getIntent();
+        Uri data = intent.getData();
+
+        if (data != null && "confirm-registration".equals(data.getHost())) {
+            String id = data.getQueryParameter("id");
+            if (id != null) {
+                Call<AuthResponse> call = ClientUtils.authService.confirmRegistration(Long.valueOf(id));
+                call.enqueue(new Callback<AuthResponse>() {
+                    @Override
+                    public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("EventyPreferences", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("JWT_TOKEN", response.body().getAccessToken());
+                            editor.apply();
+
+                            LoggedInHelperService.manageNavigationItems();
+                        } else {
+                            new MaterialAlertDialogBuilder(getApplicationContext())
+                                    .setTitle("An error occured")
+                                    .setMessage("An error occured!")
+                                    .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                                    .setIcon(R.drawable.icon_error)
+                                    .show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<AuthResponse> call, Throwable t) {
+                        new MaterialAlertDialogBuilder(getApplicationContext())
+                                .setTitle("An error occured")
+                                .setMessage("An error occured!")
+                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                                .setIcon(R.drawable.icon_error)
+                                .show();
+                    }
+                });
+            }
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
+//        String role = LoggedInHelperService.getRole();
+//
+//        menu.findItem(R.id.action_profile).setVisible(role != null);
+//        menu.findItem(R.id.action_messages).setVisible(role != null);
+//        menu.findItem(R.id.action_notifications).setVisible(role != null);
+//        menu.findItem(R.id.action_logout).setVisible(role != null);
+
         return true;
     }
 
@@ -76,7 +143,19 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.action_notifications) {
 
             return true;
+        } else if(id == R.id.action_logout) {
+            this.logout();
+
+            LoggedInHelperService.manageNavigationItems();
+
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+
+            navController.popBackStack();
+
+            navController.navigate(R.id.nav_home);
+            return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -85,5 +164,12 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    private void logout() {
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("EventyPreferences", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("JWT_TOKEN");
+        editor.apply();
     }
 }
