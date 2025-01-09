@@ -14,7 +14,7 @@ import com.example.eventy.adapters.events.EventsSingleSelectionAdapter;
 import com.example.eventy.databinding.FragmentServiceReservationSelectEventRecyclerBinding;
 import com.example.eventy.model.enums.PrivacyType;
 import com.example.eventy.model.event.Event;
-import com.example.eventy.model.event.EventType;
+import com.example.eventy.events.model.EventType;
 import com.example.eventy.model.utils.Location;
 import com.example.eventy.services.ReservationSelectEventFragment;
 

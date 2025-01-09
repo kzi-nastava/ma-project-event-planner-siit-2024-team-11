@@ -1,7 +1,7 @@
 package com.example.eventy.model.solution;
 
 import com.example.eventy.model.enums.ReservationConfirmationType;
-import com.example.eventy.model.event.EventType;
+import com.example.eventy.events.model.EventType;
 
 import java.util.ArrayList;
 import java.util.Objects;

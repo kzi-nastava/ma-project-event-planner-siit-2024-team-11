@@ -1,5 +1,6 @@
 package com.example.eventy.model.event;
 
+import com.example.eventy.events.model.EventType;
 import com.example.eventy.model.enums.PrivacyType;
 import com.example.eventy.model.utils.Location;
 

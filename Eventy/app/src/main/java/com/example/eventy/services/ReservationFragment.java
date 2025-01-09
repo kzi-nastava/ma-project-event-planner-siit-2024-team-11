@@ -23,7 +23,7 @@ import com.example.eventy.events.EventDetailsDialog;
 import com.example.eventy.model.enums.ReservationConfirmationType;
 import com.example.eventy.model.enums.Status;
 import com.example.eventy.model.event.Event;
-import com.example.eventy.model.event.EventType;
+import com.example.eventy.events.model.EventType;
 import com.example.eventy.model.solution.Category;
 import com.example.eventy.model.solution.Reservation;
 import com.example.eventy.model.solution.Service;

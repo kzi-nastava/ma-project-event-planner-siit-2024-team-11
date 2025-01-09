@@ -15,7 +15,7 @@ import com.example.eventy.adapters.events.FeaturedEventsAdapter;
 import com.example.eventy.databinding.FragmentHomeFeaturedEventsBinding;
 import com.example.eventy.model.enums.PrivacyType;
 import com.example.eventy.model.event.Event;
-import com.example.eventy.model.event.EventType;
+import com.example.eventy.events.model.EventType;
 import com.example.eventy.model.utils.Location;
 
 import java.util.ArrayList;
