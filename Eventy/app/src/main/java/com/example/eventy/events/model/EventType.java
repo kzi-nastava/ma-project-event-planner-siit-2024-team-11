@@ -19,6 +19,11 @@ public class EventType {
         this.recommendedSolutionCategories = recommendedSolutionCategories;
     }
 
+    public EventType(String name, String description, boolean isActive) {
+        this.name = name;
+        this.description = description;
+    }
+
     public Long getId() {
         return id;
     }
