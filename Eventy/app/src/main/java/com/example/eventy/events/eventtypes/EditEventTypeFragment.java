@@ -1,5 +1,7 @@
 package com.example.eventy.events.eventtypes;
 
+import static android.content.Intent.getIntent;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,11 +17,24 @@ import android.view.ViewGroup;
 
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentEditEventTypeBinding;
+import com.example.eventy.events.model.CreatedEventType;
+import com.example.eventy.events.model.EventType;
+import com.example.eventy.events.model.EventTypeWithActivity;
+import com.example.eventy.events.model.UpdateEventType;
+import com.example.eventy.model.solution.CategoryWithID;
+import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class EditEventTypeFragment extends Fragment {
     private FragmentEditEventTypeBinding binding;
@@ -39,32 +54,72 @@ public class EditEventTypeFragment extends Fragment {
             navController.navigate(R.id.nav_event_type_details);
         });
 
-        TextInputEditText multiSelectEditText = binding.selectCategoriesInput;
-        String[] options = {"Option 1", "Option 2", "Option 3", "Option 4"};
-        boolean[] selectedOptions = new boolean[options.length];
+        Long typeId = getArguments().getLong("EventTypeID");
+        Call<EventTypeWithActivity> call = ClientUtils.eventTypeService.get(typeId);
+        call.enqueue(new Callback<EventTypeWithActivity>() {
+            @Override
+            public void onResponse(Call<EventTypeWithActivity> call, Response<EventTypeWithActivity> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // prefill with data, what about the multiple select
+                    binding.nameInput.setText(response.body().getName());
+                    binding.descriptionInput.setText(response.body().getDescription());
 
-        multiSelectEditText.setOnClickListener(v -> {
-            new MaterialAlertDialogBuilder(requireContext())
-                    .setTitle("Select Recommended Categories")
-                    .setMultiChoiceItems(options, selectedOptions, (dialog, which, isChecked) -> {
-                        selectedOptions[which] = isChecked; // Update selected options
-                    })
-                    .setPositiveButton("OK", (dialog, which) -> {
-                        // Collect selected options
-                        StringBuilder selected = new StringBuilder();
-                        for (int i = 0; i < options.length; i++) {
-                            if (selectedOptions[i]) {
-                                if (selected.length() > 0) {
-                                    selected.append(", ");
-                                }
-                                selected.append(options[i]);
+                    TextInputEditText multiSelectEditText = binding.selectCategoriesInput;
+                    String[] options = {"Option 1", "Option 2", "Option 3", "Option 4"};
+                    boolean[] selectedOptions = new boolean[options.length];
+
+                    List<CategoryWithID> recommendedSolutionCategories = response.body().getRecommendedSolutionCategories();
+                    for(int i = 0;i < options.length;i++) {
+                        for(int j = 0;j < recommendedSolutionCategories.size();j++) {
+                            if(options[i].equals(recommendedSolutionCategories.get(j).getName())) {
+                                selectedOptions[i] = true;
+                                break;
                             }
                         }
-                        // Display selected options
-                        multiSelectEditText.setText(selected.toString());
-                    })
-                    .setNegativeButton("Cancel", null)
-                    .show();
+                    }
+
+                    multiSelectEditText.setOnClickListener(v -> {
+                        new MaterialAlertDialogBuilder(requireContext())
+                                .setTitle("Select Recommended Categories")
+                                .setMultiChoiceItems(options, selectedOptions, (dialog, which, isChecked) -> {
+                                    selectedOptions[which] = isChecked; // Update selected options
+                                })
+                                .setPositiveButton("OK", (dialog, which) -> {
+                                    // Collect selected options
+                                    StringBuilder selected = new StringBuilder();
+                                    for (int i = 0; i < options.length; i++) {
+                                        if (selectedOptions[i]) {
+                                            if (selected.length() > 0) {
+                                                selected.append(", ");
+                                            }
+                                            selected.append(options[i]);
+                                        }
+                                    }
+                                    // Display selected options
+                                    multiSelectEditText.setText(selected.toString());
+                                })
+                                .setNegativeButton("Cancel", null)
+                                .show();
+                    });
+                } else {
+                    new MaterialAlertDialogBuilder(requireContext())
+                            .setTitle("Error while loading")
+                            .setMessage("Error while loading!")
+                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                            .setIcon(R.drawable.icon_error)
+                            .show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EventTypeWithActivity> call, Throwable t) {
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Error while loading")
+                        .setMessage("Error while loading!")
+                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                        .setIcon(R.drawable.icon_error)
+                        .show();
+            }
         });
 
         addValidation(binding.nameInputLayout, binding.nameInput, this::validateRequired);
@@ -76,12 +131,44 @@ public class EditEventTypeFragment extends Fragment {
 
             if(binding.nameInputLayout.getError() == null && binding.descriptionInputLayout.getError() == null &&
                     binding.selectCategoriesInputLayout.getError() == null) {
-                // do add
-                NavController navController = Navigation.findNavController(v);
+                Call<EventType> callEdit = ClientUtils.eventTypeService.update(new UpdateEventType(
+                        typeId,
+                        binding.nameInput.getText().toString(),
+                        binding.descriptionInput.getText().toString(),
+                        Arrays.stream(binding.selectCategoriesInput.getText().toString().trim().split(","))
+                                .map(String::trim) // Remove any extra spaces around the numbers
+                                .map(Long::parseLong) // Convert to Long
+                                .collect(Collectors.toList())
+                ));
+                callEdit.enqueue(new Callback<EventType>() {
+                    @Override
+                    public void onResponse(Call<EventType> call, Response<EventType> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            NavController navController = Navigation.findNavController(v);
 
-                navController.popBackStack();
+                            navController.popBackStack();
 
-                navController.navigate(R.id.nav_event_types);
+                            navController.navigate(R.id.nav_event_types);
+                        } else {
+                            new MaterialAlertDialogBuilder(requireContext())
+                                    .setTitle("Invalid input")
+                                    .setMessage("Invalid input data!")
+                                    .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                                    .setIcon(R.drawable.icon_error)
+                                    .show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<EventType> call, Throwable t) {
+                        new MaterialAlertDialogBuilder(requireContext())
+                                .setTitle("Invalid input")
+                                .setMessage("Invalid input data!")
+                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                                .setIcon(R.drawable.icon_error)
+                                .show();
+                    }
+                });
             } else {
                 new MaterialAlertDialogBuilder(requireContext())
                         .setTitle("Invalid input")
@@ -91,10 +178,6 @@ public class EditEventTypeFragment extends Fragment {
                         .show();
             }
         });
-
-        // prefill with data, what about the multiple select
-        binding.nameInput.setText("Wedding");
-        binding.descriptionInput.setText("This amazing event type is happening when two people are getting married! Celebrate their new life!");
 
         return root;
     }

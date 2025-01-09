@@ -12,10 +12,11 @@ public class UpdateEventType {
 
     }
 
-    public UpdateEventType(Long id, String name, String description) {
+    public UpdateEventType(Long id, String name, String description, List<Long> recommendedSolutionCategoriesIds) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.recommendedSolutionCategoriesIds = recommendedSolutionCategoriesIds;
     }
 
     public Long getId() {
