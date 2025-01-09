@@ -1,4 +1,4 @@
-package com.example.eventy.events;
+package com.example.eventy.events.eventtypes;
 
 import android.os.Bundle;
 
@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentEventTypeDetailsBinding;
+import com.example.eventy.events.CategoryCardAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

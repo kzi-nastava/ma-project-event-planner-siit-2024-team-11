@@ -11,9 +11,10 @@ public class CreatedEventType {
 
     }
 
-    public CreatedEventType(String name, String description) {
+    public CreatedEventType(String name, String description, List<Long> recommendedSolutionCategories) {
         this.name = name;
         this.description = description;
+        this.recommendedSolutionCategoriesIds = recommendedSolutionCategories;
     }
 
     public String getName() {

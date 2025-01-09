@@ -1,4 +1,4 @@
-package com.example.eventy.events;
+package com.example.eventy.events.eventtypes;
 
 import android.view.LayoutInflater;
 import android.view.View;

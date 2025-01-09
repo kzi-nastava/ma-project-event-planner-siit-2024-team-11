@@ -1,4 +1,4 @@
-package com.example.eventy.events;
+package com.example.eventy.events.eventtypes;
 
 import android.os.Bundle;
 
@@ -15,11 +15,20 @@ import android.view.ViewGroup;
 
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentAddEventTypeBinding;
+import com.example.eventy.events.model.CreatedEventType;
+import com.example.eventy.events.model.EventType;
+import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.Arrays;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AddEventTypeFragment extends Fragment {
 
@@ -77,12 +86,43 @@ public class AddEventTypeFragment extends Fragment {
 
             if(binding.nameInputLayout.getError() == null && binding.descriptionInputLayout.getError() == null &&
                     binding.selectCategoriesInputLayout.getError() == null) {
-                // do add
-                NavController navController = Navigation.findNavController(v);
+                Call<EventType> call = ClientUtils.eventTypeService.add(new CreatedEventType(
+                        binding.nameInput.getText().toString(),
+                        binding.descriptionInput.getText().toString(),
+                        Arrays.stream(binding.selectCategoriesInput.getText().toString().trim().split(","))
+                                .map(String::trim) // Remove any extra spaces around the numbers
+                                .map(Long::parseLong) // Convert to Long
+                                .collect(Collectors.toList())
+                ));
+                call.enqueue(new Callback<EventType>() {
+                    @Override
+                    public void onResponse(Call<EventType> call, Response<EventType> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            NavController navController = Navigation.findNavController(v);
 
-                navController.popBackStack();
+                            navController.popBackStack();
 
-                navController.navigate(R.id.nav_event_types);
+                            navController.navigate(R.id.nav_event_types);
+                        } else {
+                            new MaterialAlertDialogBuilder(requireContext())
+                                    .setTitle("Invalid input")
+                                    .setMessage("Invalid input data!")
+                                    .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                                    .setIcon(R.drawable.icon_error)
+                                    .show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<EventType> call, Throwable t) {
+                        new MaterialAlertDialogBuilder(requireContext())
+                                .setTitle("Invalid input")
+                                .setMessage("Invalid input data!")
+                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                                .setIcon(R.drawable.icon_error)
+                                .show();
+                    }
+                });
             } else {
                 new MaterialAlertDialogBuilder(requireContext())
                         .setTitle("Invalid input")

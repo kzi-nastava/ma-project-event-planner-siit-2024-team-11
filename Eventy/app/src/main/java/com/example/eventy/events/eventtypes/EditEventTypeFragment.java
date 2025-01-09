@@ -1,4 +1,4 @@
-package com.example.eventy.events;
+package com.example.eventy.events.eventtypes;
 
 import android.os.Bundle;
 
@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.eventy.R;
-import com.example.eventy.databinding.FragmentAddEventTypeBinding;
 import com.example.eventy.databinding.FragmentEditEventTypeBinding;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
