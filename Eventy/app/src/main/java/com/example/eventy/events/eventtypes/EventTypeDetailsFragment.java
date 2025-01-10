@@ -1,8 +1,12 @@
 package com.example.eventy.events.eventtypes;
 
+import static androidx.appcompat.content.res.AppCompatResources.getDrawable;
+
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -16,9 +20,18 @@ import android.view.ViewGroup;
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentEventTypeDetailsBinding;
 import com.example.eventy.events.CategoryCardAdapter;
+import com.example.eventy.events.model.EventTypeWithActivity;
+import com.example.eventy.model.solution.CategoryWithID;
+import com.example.eventy.utils.ClientUtils;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class EventTypeDetailsFragment extends Fragment {
     private FragmentEventTypeDetailsBinding binding;
@@ -58,7 +71,67 @@ public class EventTypeDetailsFragment extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recyclerView.setAdapter(adapter);
 
-        loadCategories();
+        Long typeId = getArguments().getLong("EventTypeID");
+        Call<EventTypeWithActivity> call = ClientUtils.eventTypeService.get(typeId);
+        call.enqueue(new Callback<EventTypeWithActivity>() {
+            @Override
+            public void onResponse(Call<EventTypeWithActivity> call, Response<EventTypeWithActivity> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // prefill with data, what about the multiple select
+                    binding.eventTypeName.setText(response.body().getName());
+                    binding.eventTypeDescription.setText(response.body().getDescription());
+                    setToggleActivityButton(!response.body().getIsActive());
+                    // category adapter setting
+                    loadCategories();
+                } else {
+                    new MaterialAlertDialogBuilder(requireContext())
+                            .setTitle("Error while loading")
+                            .setMessage("Error while loading!")
+                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                            .setIcon(R.drawable.icon_error)
+                            .show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EventTypeWithActivity> call, Throwable t) {
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Error while loading")
+                        .setMessage("Error while loading!")
+                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                        .setIcon(R.drawable.icon_error)
+                        .show();
+            }
+        });
+
+        binding.toggleActivityButton.setOnClickListener(v -> {
+            Call<EventTypeWithActivity> callToggleActivity = ClientUtils.eventTypeService.toggleActivate(typeId);
+            callToggleActivity.enqueue(new Callback<EventTypeWithActivity>() {
+                @Override
+                public void onResponse(Call<EventTypeWithActivity> call, Response<EventTypeWithActivity> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        setToggleActivityButton(!response.body().getIsActive());
+                    } else {
+                        new MaterialAlertDialogBuilder(requireContext())
+                                .setTitle("Error while changing activity")
+                                .setMessage("Error while changing activity!")
+                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                                .setIcon(R.drawable.icon_error)
+                                .show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<EventTypeWithActivity> call, Throwable t) {
+                    new MaterialAlertDialogBuilder(requireContext())
+                            .setTitle("Error while changing activity")
+                            .setMessage("Error while changing activity!")
+                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                            .setIcon(R.drawable.icon_error)
+                            .show();
+                }
+            });
+        });
 
         return root;
     }
@@ -77,5 +150,18 @@ public class EventTypeDetailsFragment extends Fragment {
             }
             adapter.notifyDataSetChanged();
         }, 50); // Simulate a network delay
+    }
+
+    private void setToggleActivityButton(boolean isActivate) {
+        if(isActivate) {
+            binding.toggleActivityButton.setText("Activate");
+            binding.toggleActivityButton.setIcon(AppCompatResources.getDrawable(requireContext(), R.drawable.icon_add));
+            binding.toggleActivityButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.green_button, null)));
+            return;
+        }
+
+        binding.toggleActivityButton.setText("Dectivate");
+        binding.toggleActivityButton.setIcon(AppCompatResources.getDrawable(requireContext(), R.drawable.icon_delete));
+        binding.toggleActivityButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.red_button, null)));
     }
 }
