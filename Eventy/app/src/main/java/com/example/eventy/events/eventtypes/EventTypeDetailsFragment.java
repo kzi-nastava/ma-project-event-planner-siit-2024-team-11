@@ -1,7 +1,5 @@
 package com.example.eventy.events.eventtypes;
 
-import static androidx.appcompat.content.res.AppCompatResources.getDrawable;
-
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 
@@ -21,10 +19,8 @@ import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentEventTypeDetailsBinding;
 import com.example.eventy.events.CategoryCardAdapter;
 import com.example.eventy.events.model.EventTypeWithActivity;
-import com.example.eventy.model.solution.CategoryWithID;
 import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +42,8 @@ public class EventTypeDetailsFragment extends Fragment {
         binding = FragmentEventTypeDetailsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        Long typeId = getArguments().getLong("EventTypeID");
+
         binding.backButton.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(v);
 
@@ -56,12 +54,15 @@ public class EventTypeDetailsFragment extends Fragment {
         });
 
         binding.editButton.setOnClickListener(v -> {
+            Bundle args = new Bundle();
+            args.putLong("EventTypeID", typeId);
+
             NavController navController = Navigation.findNavController(v);
 
             // Problem with back button so we clear the backstack
             navController.popBackStack();
 
-            navController.navigate(R.id.nav_edit_event_type);
+            navController.navigate(R.id.nav_edit_event_type, args);
         });
 
         recyclerView = binding.categoriesContainer;
@@ -71,7 +72,6 @@ public class EventTypeDetailsFragment extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recyclerView.setAdapter(adapter);
 
-        Long typeId = getArguments().getLong("EventTypeID");
         Call<EventTypeWithActivity> call = ClientUtils.eventTypeService.get(typeId);
         call.enqueue(new Callback<EventTypeWithActivity>() {
             @Override

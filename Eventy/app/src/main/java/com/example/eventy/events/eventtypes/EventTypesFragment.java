@@ -15,17 +15,26 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.eventy.R;
+import com.example.eventy.common.PagedResponse;
 import com.example.eventy.databinding.FragmentEventTypesBinding;
+import com.example.eventy.events.model.EventTypeCard;
+import com.example.eventy.events.model.EventTypeWithActivity;
+import com.example.eventy.utils.ClientUtils;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class EventTypesFragment extends Fragment {
     private FragmentEventTypesBinding binding;
 
     private RecyclerView recyclerView;
     private EventTypeCardAdapter adapter;
-    private List<String> namesList;
+    private List<EventTypeCard> namesList;
     private boolean isLoading = false;
     private int page = 1;
     private int pageSize = 10;
@@ -52,7 +61,7 @@ public class EventTypesFragment extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recyclerView.setAdapter(adapter);
 
-        loadNames(page);
+        loadNames("", page);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -60,7 +69,7 @@ public class EventTypesFragment extends Fragment {
                 super.onScrolled(recyclerView, dx, dy);
                 LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
                 if (!isLoading && layoutManager != null && layoutManager.findLastCompletelyVisibleItemPosition() == namesList.size() - 1) {
-                    loadNames(++page);
+                    loadNames(binding.searchInput.getText().toString(), ++page);
                 }
             }
         });
@@ -74,17 +83,39 @@ public class EventTypesFragment extends Fragment {
         binding = null;
     }
 
-    private void loadNames(int page) {
+    private void loadNames(String search, int page) {
         isLoading = true;
 
-        // Simulate fetching data (you can replace this with an API call or database query)
-        recyclerView.postDelayed(() -> {
-            int start = (page - 1) * pageSize;
-            for (int i = start; i < start + pageSize; i++) {
-                namesList.add("Name " + (i + 1));
+        Call<PagedResponse<EventTypeCard>> call = ClientUtils.eventTypeService.getEventTypes(search, page, pageSize);
+        call.enqueue(new Callback<PagedResponse<EventTypeCard>>() {
+            @Override
+            public void onResponse(Call<PagedResponse<EventTypeCard>> call, Response<PagedResponse<EventTypeCard>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    namesList.addAll(response.body().getContent());
+                    adapter.notifyDataSetChanged();
+                } else {
+                    new MaterialAlertDialogBuilder(requireContext())
+                            .setTitle("Error while loading")
+                            .setMessage("Error while loading event types!")
+                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                            .setIcon(R.drawable.icon_error)
+                            .show();
+                }
+
+                isLoading = false;
             }
-            adapter.notifyDataSetChanged();
-            isLoading = false;
-        }, 50); // Simulate a network delay
+
+            @Override
+            public void onFailure(Call<PagedResponse<EventTypeCard>> call, Throwable t) {
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Error while loading")
+                        .setMessage("Error while loading event types!")
+                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                        .setIcon(R.drawable.icon_error)
+                        .show();
+
+                isLoading = false;
+            }
+        });
     }
 }
