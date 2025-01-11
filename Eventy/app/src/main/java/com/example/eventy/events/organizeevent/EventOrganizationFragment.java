@@ -112,9 +112,64 @@ public class EventOrganizationFragment extends Fragment {
                 }
             } else if(eventOrganizationStage == EventOrganizationStage.AGENDA_CREATION) {
                 if(eventAgendaCreation.isValid()) {
-                    eventOrganizationStage = EventOrganizationStage.INVITATION_SENDING;
-                    fragment = eventInvitationSendingFragment;
-                    title = "Send invitations";
+                    if(this.isEventPublic) {
+                        Call<Event> call = ClientUtils.eventService.organizeEvent(
+                                new OrganizeEvent(
+                                        eventOrganizationBasicInformationFragmentFragment.getName(),
+                                        eventOrganizationBasicInformationFragmentFragment.getDescription(),
+                                        eventOrganizationBasicInformationFragmentFragment.getMaxNumberParticipants(),
+                                        eventOrganizationBasicInformationFragmentFragment.isPublic(),
+                                        eventOrganizationBasicInformationFragmentFragment.getEventTypeId(),
+                                        eventOrganizationBasicInformationFragmentFragment.getLocation(),
+                                        eventOrganizationBasicInformationFragmentFragment.getDate(),
+                                        eventAgendaCreation.getAgenda(),
+                                        new ArrayList<>(),
+                                        LoggedInHelperService.getId()
+                                ));
+                        call.enqueue(new Callback<Event>() {
+                            @Override
+                            public void onResponse(Call<Event> call, Response<Event> response) {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    new AlertDialog.Builder(getContext())
+                                            .setTitle(" Successful creation")
+                                            .setMessage("Your event has been created successfully! Invitations have been sent to the specified email addresses.")
+                                            .setIcon(R.drawable.icon_success_png)
+                                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int whichButton) {
+                                                    // this leads to home (for now), will lead to the event page or user profile
+                                                    NavController navController = Navigation.findNavController(v);
+                                                    navController.popBackStack();
+                                                    navController.navigate(R.id.nav_home);
+                                                }})
+                                            .show();
+
+                                    NavController navController = Navigation.findNavController(v);
+
+                                    navController.popBackStack();
+
+                                    navController.navigate(R.id.nav_home);
+                                } else {
+                                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while organizing an event!");
+                                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                    errorOkDialog.show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Event> call, Throwable t) {
+                                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while organizing an event!");
+                                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                errorOkDialog.show();
+                            }
+                        });
+
+                        return;
+                    }
+                    else {
+                        eventOrganizationStage = EventOrganizationStage.INVITATION_SENDING;
+                        fragment = eventInvitationSendingFragment;
+                        title = "Send invitations";
+                    }
                 }
                 else {
                     ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Please make sure that there is at least one activity added!");
