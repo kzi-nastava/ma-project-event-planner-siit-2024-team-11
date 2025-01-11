@@ -59,10 +59,19 @@ public class MainActivity extends AppCompatActivity {
         if(jwtToken != null) {
             DecodedJWT decodedJWT = JWT.decode(jwtToken);
 
-            if(decodedJWT.getExpiresAt().toInstant()
+            LocalDateTime tokenExpires = decodedJWT.getExpiresAt().toInstant()
                     .atZone(ZoneId.systemDefault())
-                    .toLocalDate().isBefore(LocalDate.now())) {
+                    .toLocalDateTime();
+            if(tokenExpires.isBefore(LocalDateTime.now())) {
                 this.logout();
+
+                LoggedInHelperService.manageNavigationItems();
+
+                NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+
+                navController.popBackStack();
+
+                navController.navigate(R.id.nav_home);
             }
         }
 
