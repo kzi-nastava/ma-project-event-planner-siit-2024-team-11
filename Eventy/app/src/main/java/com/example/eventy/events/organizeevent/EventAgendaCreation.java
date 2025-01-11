@@ -15,6 +15,7 @@ import com.example.eventy.events.model.CreateActivity;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class EventAgendaCreation extends Fragment {
 
@@ -74,5 +75,9 @@ public class EventAgendaCreation extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    public List<CreateActivity> getAgenda() {
+        return this.agenda;
     }
 }

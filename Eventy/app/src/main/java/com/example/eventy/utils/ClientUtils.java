@@ -5,6 +5,7 @@ import android.content.Context;
 import java.util.concurrent.TimeUnit;
 
 import com.example.eventy.BuildConfig;
+import com.example.eventy.events.services.EventService;
 import com.example.eventy.events.services.EventTypeService;
 import com.example.eventy.users.services.AuthService;
 
@@ -30,6 +31,7 @@ public class ClientUtils {
 
         authService = retrofit.create(AuthService.class);
         eventTypeService = retrofit.create(EventTypeService.class);
+        eventService = retrofit.create(EventService.class);
     }
 
     /*
@@ -60,4 +62,5 @@ public class ClientUtils {
 
     public static AuthService authService;
     public static EventTypeService eventTypeService;
+    public static EventService eventService;
 }

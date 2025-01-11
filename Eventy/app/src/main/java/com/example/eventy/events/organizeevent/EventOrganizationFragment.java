@@ -1,7 +1,9 @@
 package com.example.eventy.events.organizeevent;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -19,8 +21,19 @@ import android.widget.Toast;
 import com.example.eventy.R;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentEventOrganizationBinding;
+import com.example.eventy.events.model.OrganizeEvent;
+import com.example.eventy.model.event.Event;
+import com.example.eventy.users.model.AuthResponse;
+import com.example.eventy.users.model.LoginData;
+import com.example.eventy.users.services.LoggedInHelperService;
+import com.example.eventy.utils.ClientUtils;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 enum EventOrganizationStage {
     BASIC_INFORMATION,
@@ -43,8 +56,12 @@ public class EventOrganizationFragment extends Fragment {
         eventOrganizationStage = EventOrganizationStage.BASIC_INFORMATION;
         isEventPublic = true;
 
+        EventOrganizationBasicInformationFragment eventOrganizationBasicInformationFragmentFragment = new EventOrganizationBasicInformationFragment();
+        EventAgendaCreation eventAgendaCreation = new EventAgendaCreation();
+        EventInvitationSendingFragment eventInvitationSendingFragment = new EventInvitationSendingFragment();
+
         getChildFragmentManager().beginTransaction()
-                .replace(R.id.formContainer, new EventOrganizationBasicInformationFragment())
+                .replace(R.id.formContainer, eventOrganizationBasicInformationFragmentFragment)
                 .commit();
 
         binding.backButton.setOnClickListener(v -> {
@@ -53,12 +70,12 @@ public class EventOrganizationFragment extends Fragment {
 
             if(eventOrganizationStage == EventOrganizationStage.AGENDA_CREATION) {
                 eventOrganizationStage = EventOrganizationStage.BASIC_INFORMATION;
-                fragment = new EventOrganizationBasicInformationFragment();
+                fragment = eventOrganizationBasicInformationFragmentFragment;
                 title = "Organize an Event";
                 binding.backButton.setEnabled(false);
             } else if(eventOrganizationStage == EventOrganizationStage.INVITATION_SENDING) {
                 eventOrganizationStage = EventOrganizationStage.AGENDA_CREATION;
-                fragment = new EventAgendaCreation();
+                fragment = eventAgendaCreation;
                 title = "Add Agenda";
             } else {
                 return;
@@ -82,43 +99,64 @@ public class EventOrganizationFragment extends Fragment {
 
             if(eventOrganizationStage == EventOrganizationStage.BASIC_INFORMATION) {
                 eventOrganizationStage = EventOrganizationStage.AGENDA_CREATION;
-                fragment = new EventAgendaCreation();
+                fragment = eventAgendaCreation;
                 title = "Add Agenda";
+                this.isEventPublic = eventOrganizationBasicInformationFragmentFragment.isPublic();
                 binding.backButton.setEnabled(true);
             } else if(eventOrganizationStage == EventOrganizationStage.AGENDA_CREATION) {
                 eventOrganizationStage = EventOrganizationStage.INVITATION_SENDING;
-                fragment = new EventInvitationSendingFragment();
+                fragment = eventInvitationSendingFragment;
                 title = "Send invitations";
             } else {
-                EventInvitationSendingFragment invitationFragment = (EventInvitationSendingFragment) fragment;
-                ArrayList<String> invitedEmails = invitationFragment.getInvitedEmails();
+                Call<Event> call = ClientUtils.eventService.organizeEvent(
+                        new OrganizeEvent(
+                                eventOrganizationBasicInformationFragmentFragment.getName(),
+                                eventOrganizationBasicInformationFragmentFragment.getDescription(),
+                                eventOrganizationBasicInformationFragmentFragment.getMaxNumberParticipants(),
+                                eventOrganizationBasicInformationFragmentFragment.isPublic(),
+                                eventOrganizationBasicInformationFragmentFragment.getEventTypeId(),
+                                eventOrganizationBasicInformationFragmentFragment.getLocation(),
+                                eventOrganizationBasicInformationFragmentFragment.getDate(),
+                                eventAgendaCreation.getAgenda(),
+                                eventInvitationSendingFragment.getInvitedEmails(),
+                                LoggedInHelperService.getId()
+                        ));
+                call.enqueue(new Callback<Event>() {
+                    @Override
+                    public void onResponse(Call<Event> call, Response<Event> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            new AlertDialog.Builder(getContext())
+                                    .setTitle(" Successful creation")
+                                    .setMessage("Your event has been created successfully! Invitations have been sent to the specified email addresses.")
+                                    .setIcon(R.drawable.icon_success_png)
+                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            // this leads to home (for now), will lead to the event page or user profile
+                                            NavController navController = Navigation.findNavController(v);
+                                            navController.popBackStack();
+                                            navController.navigate(R.id.nav_home);
+                                        }})
+                                    .show();
 
-                if (invitedEmails.isEmpty()) {
-                    // event creation failed (no invited people)
-                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(this.getActivity(), "Error", "At least one person needs to be invited before proceeding!");
-                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    errorOkDialog.show();
-                } else {
-                    // event creation successful
-                    StringBuilder emails = new StringBuilder();
-                    for (String email : invitedEmails) {
-                        emails.append(email);
-                        emails.append(",");
+                            NavController navController = Navigation.findNavController(v);
+
+                            navController.popBackStack();
+
+                            navController.navigate(R.id.nav_home);
+                        } else {
+                            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while organizing an event!");
+                            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            errorOkDialog.show();
+                        }
                     }
-                    Toast.makeText(this.getContext(), emails.toString(), Toast.LENGTH_LONG).show();
-                    new AlertDialog.Builder(this.getContext())
-                        .setTitle(" Successful creation")
-                        .setMessage("Your event has been created successfully! Invitations have been sent to the specified email addresses.")
-                        .setIcon(R.drawable.icon_success_png)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                // this leads to home (for now), will lead to the event page or user profile
-                                NavController navController = Navigation.findNavController(v);
-                                navController.popBackStack();
-                                navController.navigate(R.id.nav_home);
-                            }})
-                        .show();
-                }
+
+                    @Override
+                    public void onFailure(Call<Event> call, Throwable t) {
+                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while organizing an event!");
+                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        errorOkDialog.show();
+                    }
+                });
 
                 return;
             }

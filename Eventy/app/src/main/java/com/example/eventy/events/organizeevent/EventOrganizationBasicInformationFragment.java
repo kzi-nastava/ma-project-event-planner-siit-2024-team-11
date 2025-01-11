@@ -1,5 +1,7 @@
 package com.example.eventy.events.organizeevent;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -19,7 +21,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import com.example.eventy.R;
+import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentEventOrganizationBasicInformationBinding;
+import com.example.eventy.events.model.CreateLocation;
+import com.example.eventy.events.model.EventTypeCard;
+import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -37,6 +43,9 @@ import org.osmdroid.views.overlay.Marker;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -44,9 +53,19 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.BiConsumer;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class EventOrganizationBasicInformationFragment extends Fragment {
     private FragmentEventOrganizationBasicInformationBinding binding;
     private Marker pinMarker;
+    private Long selectedEventTypeId = -1L;
+
+    private LocalDateTime selectedDate;
+
+    private double latitude = -1L;
+    private double longtitude = -1L;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -67,16 +86,38 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
             binding.radioPublic.setChecked(false);
             binding.radioPrivate.setChecked(true);
         });
+        Call<EventTypeCard[]> call = ClientUtils.eventTypeService.getActiveEventTypes();
+        call.enqueue(new Callback<EventTypeCard[]>() {
+            @Override
+            public void onResponse(Call<EventTypeCard[]> call, Response<EventTypeCard[]> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    MaterialAutoCompleteTextView eventTypeAutoCompleteTextView = binding.eventTypeAutoCompleteTextView;
+                    ArrayAdapter<EventTypeCard> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, response.body());
+                    eventTypeAutoCompleteTextView.setAdapter(adapter);
 
-        MaterialAutoCompleteTextView eventTypeAutoCompleteTextView = binding.eventTypeAutoCompleteTextView;
-        String[] eventTypes = {"Wedding", "Graduation", "Conference"};
+                    eventTypeAutoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
+                        // Get the selected EventTypeCard object
+                        EventTypeCard selectedCard = (EventTypeCard) parent.getItemAtPosition(position);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, eventTypes);
-        eventTypeAutoCompleteTextView.setAdapter(adapter);
+                        // Get the ID of the selected card
+                        selectedEventTypeId = selectedCard.getId();
 
-        eventTypeAutoCompleteTextView.setOnClickListener(v -> {
-            if (!eventTypeAutoCompleteTextView.isPopupShowing()) {
-                eventTypeAutoCompleteTextView.showDropDown();
+                        if (!eventTypeAutoCompleteTextView.isPopupShowing()) {
+                            eventTypeAutoCompleteTextView.showDropDown();
+                        }
+                    });
+                } else {
+                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while getting the event types!");
+                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    errorOkDialog.show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EventTypeCard[]> call, Throwable t) {
+                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while getting the event types!");
+                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                errorOkDialog.show();
             }
         });
 
@@ -137,6 +178,8 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
 
                 binding.mapview.getOverlays().add(pinMarker);
 
+                latitude = tappedPoint.getLatitude();
+                longtitude = tappedPoint.getLongitude();
                 getAddressFromCoordinates(tappedPoint.getLatitude(), tappedPoint.getLongitude());
 
                 binding.mapview.invalidate();
@@ -235,6 +278,8 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
 
                 binding.dateRangeInput.setText(formattedStart + " - " + formattedEnd);
                 binding.dateRangeInputLayout.setError(null);
+
+                selectedDate = Instant.ofEpochMilli(startDate).atZone(ZoneId.systemDefault()).toLocalDateTime();
             }
             else {
                 if(!binding.dateRangeInput.getText().toString().contains("-")) {
@@ -271,5 +316,42 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
                 binding.mapLocationText.setText("Address: " + finalAddressText);
             });
         });
+    }
+
+    public String getName() {
+        return this.binding.nameInput.getText().toString();
+    }
+
+    public String getDescription() {
+        return this.binding.descriptionInput.getText().toString();
+    }
+
+    public int getMaxNumberParticipants() {
+        return Integer.valueOf(this.binding.maxParticipantsInput.getText().toString());
+    }
+
+    public boolean isPublic() {
+        return this.binding.radioPublic.isChecked();
+    }
+
+    public Long getEventTypeId() {
+        return this.selectedEventTypeId;
+    }
+
+    public CreateLocation getLocation() {
+        return new CreateLocation(
+                this.binding.mapLocationText.getText().toString().substring(9),
+                this.binding.mapLocationText.getText().toString().substring(9),
+                this.latitude,
+                this.longtitude
+        );
+    }
+
+    public LocalDateTime getDate() {
+        if(this.binding.dateRangeInputLayout.getError() == null) {
+            return this.selectedDate;
+        }
+
+        return null;
     }
 }

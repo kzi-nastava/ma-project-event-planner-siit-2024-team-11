@@ -13,5 +13,5 @@ public interface EventService {
     String prefix = "events";
 
     @POST(prefix)
-    Call<Event> add(@Body OrganizeEvent organizeEvent);
+    Call<Event> organizeEvent(@Body OrganizeEvent organizeEvent);
 }
