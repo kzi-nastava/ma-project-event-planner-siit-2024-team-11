@@ -160,7 +160,7 @@ public class EventTypeDetailsFragment extends Fragment {
             return;
         }
 
-        binding.toggleActivityButton.setText("Dectivate");
+        binding.toggleActivityButton.setText("Deactivate");
         binding.toggleActivityButton.setIcon(AppCompatResources.getDrawable(requireContext(), R.drawable.icon_delete));
         binding.toggleActivityButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.red_button, null)));
     }
