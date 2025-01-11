@@ -16,12 +16,18 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.ui.NavigationUI;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.eventy.databinding.ActivityMainBinding;
 import com.example.eventy.users.model.AuthResponse;
 import com.example.eventy.users.services.LoggedInHelperService;
 import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,6 +52,19 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = binding.navView;
 
         LoggedInHelperService.init(getApplicationContext(), binding.navView, this);
+
+        String jwtToken = getApplicationContext().getSharedPreferences("EventyPreferences", Context.MODE_PRIVATE)
+                .getString("JWT_TOKEN", null);
+
+        if(jwtToken != null) {
+            DecodedJWT decodedJWT = JWT.decode(jwtToken);
+
+            if(decodedJWT.getExpiresAt().toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate().isBefore(LocalDate.now())) {
+                this.logout();
+            }
+        }
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
