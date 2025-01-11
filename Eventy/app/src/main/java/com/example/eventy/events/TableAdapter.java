@@ -8,15 +8,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventy.R;
-import com.example.eventy.events.model.Activity;
+import com.example.eventy.events.model.CreateActivity;
 
 import java.util.List;
 
 public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> {
 
-    private List<Activity> tableRows;
+    private List<CreateActivity> tableRows;
 
-    public TableAdapter(List<Activity> tableRows) {
+    public TableAdapter(List<CreateActivity> tableRows) {
         this.tableRows = tableRows;
     }
 
@@ -30,7 +30,7 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Activity row = tableRows.get(position);
+        CreateActivity row = tableRows.get(position);
         holder.nameText.setText("Name: " + row.getName());
         holder.descriptionText.setText("Description: " + row.getDescription());
         holder.locationText.setText("Location: " + row.getLocation());

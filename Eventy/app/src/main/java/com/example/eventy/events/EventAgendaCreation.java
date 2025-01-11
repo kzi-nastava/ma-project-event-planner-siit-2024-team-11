@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentEventAgendaCreationBinding;
-import com.example.eventy.events.model.Activity;
+import com.example.eventy.events.model.CreateActivity;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class EventAgendaCreation extends Fragment {
 
     private FragmentEventAgendaCreationBinding binding;
-    private ArrayList<Activity> agenda;
+    private ArrayList<CreateActivity> agenda;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {

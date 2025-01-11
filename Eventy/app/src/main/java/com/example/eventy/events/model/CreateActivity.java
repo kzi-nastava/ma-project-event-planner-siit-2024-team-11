@@ -1,13 +1,13 @@
 package com.example.eventy.events.model;
 
-public class Activity {
+public class CreateActivity {
     private String name;
     private String description;
     private String location;
     private String startTime;
     private String endTime;
 
-    public Activity(String name, String description, String location, String startTime, String endTime) {
+    public CreateActivity(String name, String description, String location, String startTime, String endTime) {
         this.name = name;
         this.description = description;
         this.location = location;

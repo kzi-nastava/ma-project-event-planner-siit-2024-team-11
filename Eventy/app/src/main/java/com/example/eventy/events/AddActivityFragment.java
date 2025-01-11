@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.eventy.databinding.FragmentAddActivityBinding;
-import com.example.eventy.events.model.Activity;
+import com.example.eventy.events.model.CreateActivity;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
@@ -29,11 +29,11 @@ import java.util.function.BiConsumer;
 public class AddActivityFragment extends Fragment {
 
     private FragmentAddActivityBinding binding;
-    private ArrayList<Activity> agenda;
+    private ArrayList<CreateActivity> agenda;
 
     private Date minDate;
 
-    public AddActivityFragment(ArrayList<Activity> agenda) {
+    public AddActivityFragment(ArrayList<CreateActivity> agenda) {
         this.agenda = agenda;
     }
 
@@ -52,7 +52,7 @@ public class AddActivityFragment extends Fragment {
 
         binding.addActivityButton.setOnClickListener(v -> {
             String[] dateTimeRange = binding.activityTimeRangeInput.getText().toString().split("-");
-            agenda.add(new Activity(binding.nameInput.getText().toString(), binding.descriptionInput.getText().toString(),
+            agenda.add(new CreateActivity(binding.nameInput.getText().toString(), binding.descriptionInput.getText().toString(),
                     binding.locationInput.getText().toString(), dateTimeRange[0], dateTimeRange[1]));
 
             binding.nameInput.setText("");
