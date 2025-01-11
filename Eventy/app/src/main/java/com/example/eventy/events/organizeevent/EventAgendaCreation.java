@@ -80,4 +80,8 @@ public class EventAgendaCreation extends Fragment {
     public List<CreateActivity> getAgenda() {
         return this.agenda;
     }
+
+    public boolean isValid() {
+        return !this.agenda.isEmpty();
+    }
 }

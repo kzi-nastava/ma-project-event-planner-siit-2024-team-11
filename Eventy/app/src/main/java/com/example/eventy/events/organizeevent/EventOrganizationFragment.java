@@ -94,19 +94,33 @@ public class EventOrganizationFragment extends Fragment {
         });
 
         binding.submitButton.setOnClickListener(v -> {
-            String title;
+            String title = "Organize an Event";
             String submitText = "NEXT";
 
             if(eventOrganizationStage == EventOrganizationStage.BASIC_INFORMATION) {
-                eventOrganizationStage = EventOrganizationStage.AGENDA_CREATION;
-                fragment = eventAgendaCreation;
-                title = "Add Agenda";
-                this.isEventPublic = eventOrganizationBasicInformationFragmentFragment.isPublic();
-                binding.backButton.setEnabled(true);
+                if(eventOrganizationBasicInformationFragmentFragment.isValid()) {
+                    eventOrganizationStage = EventOrganizationStage.AGENDA_CREATION;
+                    fragment = eventAgendaCreation;
+                    title = "Add Agenda";
+                    this.isEventPublic = eventOrganizationBasicInformationFragmentFragment.isPublic();
+                    binding.backButton.setEnabled(true);
+                }
+                else {
+                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Please make sure all fields are filled and filled with real values!");
+                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    errorOkDialog.show();
+                }
             } else if(eventOrganizationStage == EventOrganizationStage.AGENDA_CREATION) {
-                eventOrganizationStage = EventOrganizationStage.INVITATION_SENDING;
-                fragment = eventInvitationSendingFragment;
-                title = "Send invitations";
+                if(eventAgendaCreation.isValid()) {
+                    eventOrganizationStage = EventOrganizationStage.INVITATION_SENDING;
+                    fragment = eventInvitationSendingFragment;
+                    title = "Send invitations";
+                }
+                else {
+                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Please make sure that there is at least one activity added!");
+                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    errorOkDialog.show();
+                }
             } else {
                 Call<Event> call = ClientUtils.eventService.organizeEvent(
                         new OrganizeEvent(

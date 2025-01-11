@@ -62,7 +62,7 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
     private Marker pinMarker;
     private Long selectedEventTypeId = -1L;
 
-    private LocalDateTime selectedDate;
+    private LocalDateTime selectedDate = null;
 
     private double latitude = -1L;
     private double longtitude = -1L;
@@ -76,6 +76,7 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
         addValidation(binding.nameInputLayout, binding.nameInput, this::validateRequired);
         addValidation(binding.descriptionInputLayout, binding.descriptionInput, this::validateRequired);
         addValidation(binding.maxParticipantsInputLayout, binding.maxParticipantsInput, this::validateNumber);
+        addValidation(binding.dateRangeInputLayout, binding.dateRangeInput, this::validateRequired);
 
         binding.radioPublic.setOnClickListener(v -> {
             binding.radioPrivate.setChecked(false);
@@ -353,5 +354,14 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
         }
 
         return null;
+    }
+
+    public boolean isValid() {
+        return this.binding.nameInputLayout.getError() == null &&
+                this.binding.descriptionInputLayout.getError() == null &&
+                this.binding.maxParticipantsInputLayout.getError() == null &&
+                this.selectedEventTypeId != -1 &&
+                this.selectedDate != null &&
+                this.latitude > 0 && this.longtitude > 0;
     }
 }
