@@ -1,4 +1,4 @@
-package com.example.eventy.events;
+package com.example.eventy.events.organizeevent;
 
 import android.os.Bundle;
 
@@ -34,7 +34,7 @@ public class SeeAgendaFragment extends Fragment {
         RecyclerView recyclerView = binding.recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        TableAdapter adapter = new TableAdapter(this.agenda);
+        ActivityTableAdapter adapter = new ActivityTableAdapter(this.agenda);
         recyclerView.setAdapter(adapter);
 
         return root;

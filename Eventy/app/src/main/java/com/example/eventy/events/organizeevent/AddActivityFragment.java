@@ -1,4 +1,4 @@
-package com.example.eventy.events;
+package com.example.eventy.events.organizeevent;
 
 import android.icu.util.Calendar;
 import android.os.Bundle;

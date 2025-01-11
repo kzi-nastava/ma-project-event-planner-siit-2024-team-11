@@ -1,4 +1,4 @@
-package com.example.eventy.events;
+package com.example.eventy.events.organizeevent;
 
 import android.location.Address;
 import android.location.Geocoder;

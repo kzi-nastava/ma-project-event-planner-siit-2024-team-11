@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentEventTypeDetailsBinding;
-import com.example.eventy.events.CategoryCardAdapter;
 import com.example.eventy.events.model.EventTypeWithActivity;
 import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;

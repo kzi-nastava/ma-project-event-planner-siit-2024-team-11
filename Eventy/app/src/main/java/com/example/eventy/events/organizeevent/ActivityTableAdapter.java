@@ -1,4 +1,4 @@
-package com.example.eventy.events;
+package com.example.eventy.events.organizeevent;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +12,11 @@ import com.example.eventy.events.model.CreateActivity;
 
 import java.util.List;
 
-public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> {
+public class ActivityTableAdapter extends RecyclerView.Adapter<ActivityTableAdapter.ViewHolder> {
 
     private List<CreateActivity> tableRows;
 
-    public TableAdapter(List<CreateActivity> tableRows) {
+    public ActivityTableAdapter(List<CreateActivity> tableRows) {
         this.tableRows = tableRows;
     }
 
