@@ -102,7 +102,9 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
 
                         // Get the ID of the selected card
                         selectedEventTypeId = selectedCard.getId();
+                    });
 
+                    eventTypeAutoCompleteTextView.setOnClickListener(v -> {
                         if (!eventTypeAutoCompleteTextView.isPopupShowing()) {
                             eventTypeAutoCompleteTextView.showDropDown();
                         }

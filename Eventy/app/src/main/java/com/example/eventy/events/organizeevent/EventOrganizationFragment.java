@@ -238,7 +238,7 @@ public class EventOrganizationFragment extends Fragment {
                     .commit();
 
             if(eventOrganizationStage == EventOrganizationStage.INVITATION_SENDING ||
-                    (!isEventPublic && eventOrganizationStage == EventOrganizationStage.AGENDA_CREATION)) {
+                    (this.isEventPublic && eventOrganizationStage == EventOrganizationStage.AGENDA_CREATION)) {
                 submitText = "ADD EVENT";
                 binding.submitButton.setIconResource(R.drawable.icon_add);
             }
