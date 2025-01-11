@@ -36,8 +36,9 @@ public class EventTypesFragment extends Fragment {
     private EventTypeCardAdapter adapter;
     private List<EventTypeCard> namesList;
     private boolean isLoading = false;
-    private int page = 1;
+    private int page = 0;
     private int pageSize = 10;
+    private boolean canGoFurther = true;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -68,7 +69,7 @@ public class EventTypesFragment extends Fragment {
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-                if (!isLoading && layoutManager != null && layoutManager.findLastCompletelyVisibleItemPosition() == namesList.size() - 1) {
+                if (!isLoading && layoutManager != null && layoutManager.findLastCompletelyVisibleItemPosition() == namesList.size() - 1 && canGoFurther) {
                     loadNames(binding.searchInput.getText().toString(), ++page);
                 }
             }
@@ -93,6 +94,10 @@ public class EventTypesFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null) {
                     namesList.addAll(response.body().getContent());
                     adapter.notifyDataSetChanged();
+
+                    if(response.body().getContent().isEmpty()) {
+                        canGoFurther = false;
+                    }
                 } else {
                     new MaterialAlertDialogBuilder(requireContext())
                             .setTitle("Error while loading")
