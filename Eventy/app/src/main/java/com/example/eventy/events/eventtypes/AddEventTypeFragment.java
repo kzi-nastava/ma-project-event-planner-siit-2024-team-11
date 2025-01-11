@@ -91,6 +91,7 @@ public class AddEventTypeFragment extends Fragment {
                         binding.descriptionInput.getText().toString(),
                         Arrays.stream(binding.selectCategoriesInput.getText().toString().trim().split(","))
                                 .map(String::trim) // Remove any extra spaces around the numbers
+                                .filter(s -> !s.isEmpty())
                                 .map(Long::parseLong) // Convert to Long
                                 .collect(Collectors.toList())
                 ));

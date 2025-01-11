@@ -125,7 +125,7 @@ public class EditEventTypeFragment extends Fragment {
         addValidation(binding.nameInputLayout, binding.nameInput, this::validateRequired);
         addValidation(binding.descriptionInputLayout, binding.descriptionInput, this::validateRequired);
 
-        binding.addTypeButton.setOnClickListener(v -> {
+        binding.editTypeButton.setOnClickListener(v -> {
             binding.nameInput.setText(binding.nameInput.getText());
             binding.descriptionInput.setText(binding.descriptionInput.getText());
 
@@ -137,6 +137,7 @@ public class EditEventTypeFragment extends Fragment {
                         binding.descriptionInput.getText().toString(),
                         Arrays.stream(binding.selectCategoriesInput.getText().toString().trim().split(","))
                                 .map(String::trim) // Remove any extra spaces around the numbers
+                                .filter(s -> !s.isEmpty())
                                 .map(Long::parseLong) // Convert to Long
                                 .collect(Collectors.toList())
                 ));
