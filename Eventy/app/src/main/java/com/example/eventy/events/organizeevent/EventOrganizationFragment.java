@@ -109,6 +109,7 @@ public class EventOrganizationFragment extends Fragment {
                     ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Please make sure all fields are filled and filled with real values!");
                     errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     errorOkDialog.show();
+                    return;
                 }
             } else if(eventOrganizationStage == EventOrganizationStage.AGENDA_CREATION) {
                 if(eventAgendaCreation.isValid()) {
@@ -175,6 +176,7 @@ public class EventOrganizationFragment extends Fragment {
                     ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Please make sure that there is at least one activity added!");
                     errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     errorOkDialog.show();
+                    return;
                 }
             } else {
                 Call<Event> call = ClientUtils.eventService.organizeEvent(
