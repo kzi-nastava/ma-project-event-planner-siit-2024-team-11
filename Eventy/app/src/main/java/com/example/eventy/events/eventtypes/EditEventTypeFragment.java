@@ -45,7 +45,12 @@ public class EditEventTypeFragment extends Fragment {
         binding = FragmentEditEventTypeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        Long typeId = getArguments().getLong("EventTypeID");
+
         binding.backButton.setOnClickListener(v -> {
+            Bundle args = new Bundle();
+            args.putLong("EventTypeID", typeId);
+
             NavController navController = Navigation.findNavController(v);
 
             // Problem with back button so we clear the backstack
@@ -54,7 +59,6 @@ public class EditEventTypeFragment extends Fragment {
             navController.navigate(R.id.nav_event_type_details);
         });
 
-        Long typeId = getArguments().getLong("EventTypeID");
         Call<EventTypeWithActivity> call = ClientUtils.eventTypeService.get(typeId);
         call.enqueue(new Callback<EventTypeWithActivity>() {
             @Override
