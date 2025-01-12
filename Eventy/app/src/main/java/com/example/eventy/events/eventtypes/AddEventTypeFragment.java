@@ -1,4 +1,4 @@
-package com.example.eventy.events;
+package com.example.eventy.events.eventtypes;
 
 import android.os.Bundle;
 
@@ -15,20 +15,29 @@ import android.view.ViewGroup;
 
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentAddEventTypeBinding;
-import com.example.eventy.databinding.FragmentEditEventTypeBinding;
+import com.example.eventy.events.model.CreatedEventType;
+import com.example.eventy.events.model.EventType;
+import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.Arrays;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
-public class EditEventTypeFragment extends Fragment {
-    private FragmentEditEventTypeBinding binding;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class AddEventTypeFragment extends Fragment {
+
+    private FragmentAddEventTypeBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentEditEventTypeBinding.inflate(inflater, container, false);
+        binding = FragmentAddEventTypeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         binding.backButton.setOnClickListener(v -> {
@@ -37,7 +46,7 @@ public class EditEventTypeFragment extends Fragment {
             // Problem with back button so we clear the backstack
             navController.popBackStack();
 
-            navController.navigate(R.id.nav_event_type_details);
+            navController.navigate(R.id.nav_event_types);
         });
 
         TextInputEditText multiSelectEditText = binding.selectCategoriesInput;
@@ -77,12 +86,44 @@ public class EditEventTypeFragment extends Fragment {
 
             if(binding.nameInputLayout.getError() == null && binding.descriptionInputLayout.getError() == null &&
                     binding.selectCategoriesInputLayout.getError() == null) {
-                // do add
-                NavController navController = Navigation.findNavController(v);
+                Call<EventType> call = ClientUtils.eventTypeService.add(new CreatedEventType(
+                        binding.nameInput.getText().toString(),
+                        binding.descriptionInput.getText().toString(),
+                        Arrays.stream(binding.selectCategoriesInput.getText().toString().trim().split(","))
+                                .map(String::trim) // Remove any extra spaces around the numbers
+                                .filter(s -> !s.isEmpty())
+                                .map(Long::parseLong) // Convert to Long
+                                .collect(Collectors.toList())
+                ));
+                call.enqueue(new Callback<EventType>() {
+                    @Override
+                    public void onResponse(Call<EventType> call, Response<EventType> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            NavController navController = Navigation.findNavController(v);
 
-                navController.popBackStack();
+                            navController.popBackStack();
 
-                navController.navigate(R.id.nav_event_types);
+                            navController.navigate(R.id.nav_event_types);
+                        } else {
+                            new MaterialAlertDialogBuilder(requireContext())
+                                    .setTitle("Invalid input")
+                                    .setMessage("Invalid input data!")
+                                    .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                                    .setIcon(R.drawable.icon_error)
+                                    .show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<EventType> call, Throwable t) {
+                        new MaterialAlertDialogBuilder(requireContext())
+                                .setTitle("Invalid input")
+                                .setMessage("Invalid input data!")
+                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                                .setIcon(R.drawable.icon_error)
+                                .show();
+                    }
+                });
             } else {
                 new MaterialAlertDialogBuilder(requireContext())
                         .setTitle("Invalid input")
@@ -92,10 +133,6 @@ public class EditEventTypeFragment extends Fragment {
                         .show();
             }
         });
-
-        // prefill with data, what about the multiple select
-        binding.nameInput.setText("Wedding");
-        binding.descriptionInput.setText("This amazing event type is happening when two people are getting married! Celebrate their new life!");
 
         return root;
     }

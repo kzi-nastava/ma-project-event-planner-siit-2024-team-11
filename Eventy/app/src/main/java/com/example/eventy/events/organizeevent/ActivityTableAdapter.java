@@ -1,4 +1,4 @@
-package com.example.eventy.events;
+package com.example.eventy.events.organizeevent;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,15 +8,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventy.R;
-import com.example.eventy.events.model.Activity;
+import com.example.eventy.events.model.CreateActivity;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> {
+public class ActivityTableAdapter extends RecyclerView.Adapter<ActivityTableAdapter.ViewHolder> {
 
-    private List<Activity> tableRows;
+    private List<CreateActivity> tableRows;
 
-    public TableAdapter(List<Activity> tableRows) {
+    public ActivityTableAdapter(List<CreateActivity> tableRows) {
         this.tableRows = tableRows;
     }
 
@@ -30,12 +31,14 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Activity row = tableRows.get(position);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+        CreateActivity row = tableRows.get(position);
         holder.nameText.setText("Name: " + row.getName());
         holder.descriptionText.setText("Description: " + row.getDescription());
         holder.locationText.setText("Location: " + row.getLocation());
-        holder.startTimeText.setText("Start Time: " + row.getStartTime());
-        holder.endTimeText.setText("End Time: " + row.getEndTime());
+        holder.startTimeText.setText("Start Time: " + row.getStartTime().format(formatter));
+        holder.endTimeText.setText("End Time: " + row.getEndTime().format(formatter));
     }
 
     @Override

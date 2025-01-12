@@ -30,7 +30,7 @@ import com.example.eventy.databinding.FragmentOrganizerEventsBinding;
 import com.example.eventy.home.events.EventsViewModel;
 import com.example.eventy.model.enums.PrivacyType;
 import com.example.eventy.model.event.Event;
-import com.example.eventy.model.event.EventType;
+import com.example.eventy.events.model.EventType;
 import com.example.eventy.model.utils.Location;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.datepicker.MaterialDatePicker;

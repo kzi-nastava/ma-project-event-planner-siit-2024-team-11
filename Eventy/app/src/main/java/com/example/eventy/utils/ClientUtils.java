@@ -5,11 +5,16 @@ import android.content.Context;
 import java.util.concurrent.TimeUnit;
 
 import com.example.eventy.BuildConfig;
+import com.example.eventy.events.services.EventService;
+import com.example.eventy.events.services.EventTypeService;
 import com.example.eventy.users.services.AuthService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 public class ClientUtils {
 
@@ -21,13 +26,19 @@ public class ClientUtils {
     public static void init(Context context) {
         appContext = context.getApplicationContext(); // Store application context
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
         retrofit = new Retrofit.Builder()
                 .baseUrl(SERVICE_API_PATH)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(JacksonConverterFactory.create(objectMapper))
                 .client(client())
                 .build();
 
         authService = retrofit.create(AuthService.class);
+        eventTypeService = retrofit.create(EventTypeService.class);
+        eventService = retrofit.create(EventService.class);
     }
 
     /*
@@ -57,4 +68,6 @@ public class ClientUtils {
      * */
 
     public static AuthService authService;
+    public static EventTypeService eventTypeService;
+    public static EventService eventService;
 }

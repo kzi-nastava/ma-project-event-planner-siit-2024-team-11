@@ -16,12 +16,18 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.ui.NavigationUI;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.eventy.databinding.ActivityMainBinding;
 import com.example.eventy.users.model.AuthResponse;
 import com.example.eventy.users.services.LoggedInHelperService;
 import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,6 +52,28 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = binding.navView;
 
         LoggedInHelperService.init(getApplicationContext(), binding.navView, this);
+
+        String jwtToken = getApplicationContext().getSharedPreferences("EventyPreferences", Context.MODE_PRIVATE)
+                .getString("JWT_TOKEN", null);
+
+        if(jwtToken != null) {
+            DecodedJWT decodedJWT = JWT.decode(jwtToken);
+
+            LocalDateTime tokenExpires = decodedJWT.getExpiresAt().toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime();
+            if(tokenExpires.isBefore(LocalDateTime.now())) {
+                this.logout();
+
+                LoggedInHelperService.manageNavigationItems();
+
+                NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+
+                navController.popBackStack();
+
+                navController.navigate(R.id.nav_home);
+            }
+        }
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -116,12 +144,12 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
 
-//        String role = LoggedInHelperService.getRole();
-//
-//        menu.findItem(R.id.action_profile).setVisible(role != null);
-//        menu.findItem(R.id.action_messages).setVisible(role != null);
-//        menu.findItem(R.id.action_notifications).setVisible(role != null);
-//        menu.findItem(R.id.action_logout).setVisible(role != null);
+        String role = LoggedInHelperService.getRole();
+
+        menu.findItem(R.id.action_profile).setVisible(role != null);
+        menu.findItem(R.id.action_messages).setVisible(role != null);
+        menu.findItem(R.id.action_notifications).setVisible(role != null);
+        menu.findItem(R.id.action_logout).setVisible(role != null);
 
         return true;
     }
