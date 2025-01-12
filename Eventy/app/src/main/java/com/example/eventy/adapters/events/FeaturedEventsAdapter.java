@@ -18,14 +18,14 @@ import java.text.SimpleDateFormat;
 
 import com.example.eventy.R;
 import com.example.eventy.model.enums.PrivacyType;
-import com.example.eventy.model.event.Event;
+import com.example.eventy.events.model.EventCard;
 
 public class FeaturedEventsAdapter extends RecyclerView.Adapter<FeaturedEventsAdapter.EventViewHolder> {
-    private ArrayList<Event> featuredEvents;
+    private ArrayList<EventCard> featuredEventCards;
     private LayoutInflater layoutInflater;
 
-    public FeaturedEventsAdapter(Context context, ArrayList<Event> featuredEvents) {
-        this.featuredEvents = featuredEvents;
+    public FeaturedEventsAdapter(Context context, ArrayList<EventCard> featuredEventCards) {
+        this.featuredEventCards = featuredEventCards;
         this.layoutInflater = LayoutInflater.from(context);
     }
 
@@ -45,9 +45,9 @@ public class FeaturedEventsAdapter extends RecyclerView.Adapter<FeaturedEventsAd
 
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
-        Event event = featuredEvents.get(position);
-        if (event != null) {
-            holder.eventName.setText('"' + event.getName() + '"');
+        EventCard eventCard = featuredEventCards.get(position);
+        if (eventCard != null) {
+            holder.eventName.setText('"' + eventCard.getName() + '"');
 
             if (position % 2 == 0) {
                 View eventCardLeft = holder.itemView.findViewById(R.id.event_card_left);
@@ -71,32 +71,32 @@ public class FeaturedEventsAdapter extends RecyclerView.Adapter<FeaturedEventsAd
                 });
             }
 
-            String eventTypeString = "Type: " + event.getEventType().getName();
+            String eventTypeString = "Type: " + eventCard.getEventType().getName();
             holder.eventType.setText(eventTypeString);
 
-            String maxParticipantsString = "Max people: " + event.getMaxParticipants();
+            String maxParticipantsString = "Max people: " + eventCard.getMaxParticipants();
             holder.maxParticipants.setText(maxParticipantsString);
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy.");
-            String formattedDate = dateFormat.format(event.getDate());
+            String formattedDate = dateFormat.format(eventCard.getDate());
             holder.eventDate.setText(formattedDate);
 
-            holder.eventLocation.setText(event.getLocation().getName());
+            holder.eventLocation.setText(eventCard.getLocation().getName());
 
-            String openOrFullString = (event.getPrivacyType() == PrivacyType.PRIVATE ? "FULL EVENT" : "OPEN EVENT") + "!";
+            String openOrFullString = (eventCard.getPrivacyType() == PrivacyType.PRIVATE ? "FULL EVENT" : "OPEN EVENT") + "!";
             holder.openOrFull.setText(openOrFullString);
-            holder.openOrFull.setTextColor(event.getPrivacyType() == PrivacyType.PRIVATE ? Color.parseColor("#E91A1A") : Color.parseColor("#3ED34F"));
+            holder.openOrFull.setTextColor(eventCard.getPrivacyType() == PrivacyType.PRIVATE ? Color.parseColor("#E91A1A") : Color.parseColor("#3ED34F"));
 
-            holder.description.setText(event.getDescription());
+            holder.description.setText(eventCard.getDescription());
 
             Button seeMoreButton = holder.itemView.findViewById(R.id.see_more_button);
             seeMoreButton.setOnClickListener(v -> {
-                Toast.makeText(holder.itemView.getContext(), "See more: " + event.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(holder.itemView.getContext(), "See more: " + eventCard.getName(), Toast.LENGTH_SHORT).show();
             });
 
             Button favoriteButton = holder.itemView.findViewById(R.id.favorite_button);
             favoriteButton.setOnClickListener(v -> {
-                Toast.makeText(holder.itemView.getContext(), "Favorite: " + event.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(holder.itemView.getContext(), "Favorite: " + eventCard.getName(), Toast.LENGTH_SHORT).show();
             });
         }
     }
@@ -107,7 +107,7 @@ public class FeaturedEventsAdapter extends RecyclerView.Adapter<FeaturedEventsAd
 
     @Override
     public int getItemCount() {
-        return featuredEvents.size();
+        return featuredEventCards.size();
     }
 
     @Override

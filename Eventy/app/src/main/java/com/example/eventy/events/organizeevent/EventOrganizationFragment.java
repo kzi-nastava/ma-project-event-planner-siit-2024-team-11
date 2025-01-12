@@ -66,7 +66,7 @@ public class EventOrganizationFragment extends Fragment {
             if(eventOrganizationStage == EventOrganizationStage.AGENDA_CREATION) {
                 eventOrganizationStage = EventOrganizationStage.BASIC_INFORMATION;
                 fragment = eventOrganizationBasicInformationFragmentFragment;
-                title = "Organize an Event";
+                title = "Organize an EventCard";
                 binding.backButton.setEnabled(false);
             } else if(eventOrganizationStage == EventOrganizationStage.INVITATION_SENDING) {
                 eventOrganizationStage = EventOrganizationStage.AGENDA_CREATION;
@@ -89,7 +89,7 @@ public class EventOrganizationFragment extends Fragment {
         });
 
         binding.submitButton.setOnClickListener(v -> {
-            String title = "Organize an Event";
+            String title = "Organize an EventCard";
             String submitText = "NEXT";
 
             if(eventOrganizationStage == EventOrganizationStage.BASIC_INFORMATION) {

@@ -2,13 +2,13 @@ package com.example.eventy.model.solution;
 
 import androidx.annotation.NonNull;
 
-import com.example.eventy.model.event.Event;
+import com.example.eventy.events.model.EventCard;
 
 import java.util.Calendar;
 
 public class Reservation {
     private Long id;
-    private Event selectedEvent;
+    private EventCard selectedEventCard;
     private Solution selectedService;
     private Calendar reservationStartDateTime;
     private Calendar reservationEndDateTime;
@@ -16,9 +16,9 @@ public class Reservation {
     public Reservation() {
     }
 
-    public Reservation(Long id, Event selectedEvent, Solution selectedService, Calendar reservationStartDateTime, Calendar reservationEndDateTime) {
+    public Reservation(Long id, EventCard selectedEventCard, Solution selectedService, Calendar reservationStartDateTime, Calendar reservationEndDateTime) {
         this.id = id;
-        this.selectedEvent = selectedEvent;
+        this.selectedEventCard = selectedEventCard;
         this.selectedService = selectedService;
         this.reservationStartDateTime = reservationStartDateTime;
         this.reservationEndDateTime = reservationEndDateTime;
@@ -32,12 +32,12 @@ public class Reservation {
         this.id = id;
     }
 
-    public Event getSelectedEvent() {
-        return selectedEvent;
+    public EventCard getSelectedEvent() {
+        return selectedEventCard;
     }
 
-    public void setSelectedEvent(Event selectedEvent) {
-        this.selectedEvent = selectedEvent;
+    public void setSelectedEvent(EventCard selectedEventCard) {
+        this.selectedEventCard = selectedEventCard;
     }
 
     public Solution getSelectedService() {
@@ -83,7 +83,7 @@ public class Reservation {
 
         return "Reservation{" +
                 "id=" + id +
-                ", selectedEvent=" + selectedEvent.getName() +
+                ", selectedEventCard=" + selectedEventCard.getName() +
                 ", selectedService=" + selectedService.getName() +
                 ", reservationStartDateTime=" + startDateTimeString +
                 ", reservationEndDateTime=" + endDateTimeString +

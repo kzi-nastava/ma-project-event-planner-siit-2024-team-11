@@ -107,7 +107,7 @@ public class PUPOwnServicesFragment extends Fragment implements MultiSpinner.Mul
         );
 
         Service service3 = new Service(
-                "Event Catering - The best",
+                "EventCard Catering - The best",
                 new Category("catering", "Neki description", Status.ACCEPTED),
                 "Delicious catering service for all types of events.",
                 1200.0, 15,
@@ -118,7 +118,7 @@ public class PUPOwnServicesFragment extends Fragment implements MultiSpinner.Mul
         );
 
         Service service4 = new Service(
-                "Event Decor",
+                "EventCard Decor",
                 new Category("decor", "Neki description", Status.ACCEPTED),
                 "Luxurious event decor for any theme.",
                 1000.0, 12,
@@ -241,7 +241,7 @@ public class PUPOwnServicesFragment extends Fragment implements MultiSpinner.Mul
         ArrayList<String> categories = new ArrayList<>();
         categories.add("Food"); categories.add("Music"); categories.add("Catering");
         categories.add("Flowers"); categories.add("Formal attires"); categories.add("Party");
-        solutionCategoryMultiSpinner.setItems(categories, "-", this , "Event types");
+        solutionCategoryMultiSpinner.setItems(categories, "-", this , "EventCard types");
     }
 
     private void setupSolutionFilterEventTypes(BottomSheetDialog bottomSheetDialog) {
@@ -250,7 +250,7 @@ public class PUPOwnServicesFragment extends Fragment implements MultiSpinner.Mul
         ArrayList<String> eventTypes = new ArrayList<>();
         eventTypes.add("Wedding"); eventTypes.add("Sport"); eventTypes.add("Conference");
         eventTypes.add("Party"); eventTypes.add("Prom"); eventTypes.add("Big party");
-        eventTypeMultiSpinner.setItems(eventTypes, "-", this, "Event types");
+        eventTypeMultiSpinner.setItems(eventTypes, "-", this, "EventCard types");
     }
 
     private void setupSolutionFilterCompany(BottomSheetDialog bottomSheetDialog) {

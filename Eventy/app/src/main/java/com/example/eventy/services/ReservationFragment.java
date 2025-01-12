@@ -22,7 +22,7 @@ import com.example.eventy.databinding.FragmentServiceReservationBinding;
 import com.example.eventy.events.EventDetailsDialog;
 import com.example.eventy.model.enums.ReservationConfirmationType;
 import com.example.eventy.model.enums.Status;
-import com.example.eventy.model.event.Event;
+import com.example.eventy.events.model.EventCard;
 import com.example.eventy.events.model.EventType;
 import com.example.eventy.model.solution.Category;
 import com.example.eventy.model.solution.Reservation;
@@ -42,7 +42,7 @@ import java.util.Locale;
 public class ReservationFragment extends Fragment {
     private FragmentServiceReservationBinding binding;
     // event & service
-    private Event selectedEvent = null;
+    private EventCard selectedEventCard = null;
     private Service selectedService = null;
     // date
     private boolean isDatePickerOpened = false;
@@ -64,8 +64,8 @@ public class ReservationFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public ReservationFragment(Event selectedEvent) {
-        this.selectedEvent = selectedEvent;
+    public ReservationFragment(EventCard selectedEventCard) {
+        this.selectedEventCard = selectedEventCard;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class ReservationFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentServiceReservationBinding.inflate(inflater, container, false);
 
-        if (selectedEvent == null) {
+        if (selectedEventCard == null) {
             NavController navController = Navigation.findNavController(container);
             navController.popBackStack();
             navController.navigate(R.id.service_reservation);
@@ -144,7 +144,7 @@ public class ReservationFragment extends Fragment {
                 Toast.makeText(this.getContext(), endDateTimeString, Toast.LENGTH_SHORT).show();
                 Reservation newReservation = new Reservation();
                 newReservation.setId(1L);
-                newReservation.setSelectedEvent(selectedEvent);
+                newReservation.setSelectedEvent(selectedEventCard);
                 newReservation.setSelectedService(selectedService);
                 newReservation.setReservationStartDateTime(startDateTime);
                 newReservation.setReservationEndDateTime(endDateTime);
@@ -231,7 +231,7 @@ public class ReservationFragment extends Fragment {
     private void setupSeeEventButton() {
         Button seeEventButton = binding.seeEventButton;
         seeEventButton.setOnClickListener(v -> {
-            EventDetailsDialog cdd = new EventDetailsDialog(this.getActivity(), selectedEvent);
+            EventDetailsDialog cdd = new EventDetailsDialog(this.getActivity(), selectedEventCard);
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
         });

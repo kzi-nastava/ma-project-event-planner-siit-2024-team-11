@@ -29,7 +29,7 @@ import com.example.eventy.custom.MultiSpinner;
 import com.example.eventy.databinding.FragmentOrganizerEventsBinding;
 import com.example.eventy.home.events.EventsViewModel;
 import com.example.eventy.model.enums.PrivacyType;
-import com.example.eventy.model.event.Event;
+import com.example.eventy.events.model.EventCard;
 import com.example.eventy.events.model.EventType;
 import com.example.eventy.model.utils.Location;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -61,17 +61,17 @@ public class OrganizerEventsFragment extends Fragment implements MultiSpinner.Mu
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ArrayList<Event> events = getEvents();
+        ArrayList<EventCard> eventCards = getEvents();
 
-        eventsAdapter = new EventsAdapter(requireContext(), events);
+        eventsAdapter = new EventsAdapter(requireContext(), eventCards);
 
         binding.eventsRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.eventsRecycler.setAdapter(eventsAdapter);
     }
 
     @NonNull
-    private static ArrayList<Event> getEvents() {
-        ArrayList<Event> events = new ArrayList<>();
+    private static ArrayList<EventCard> getEvents() {
+        ArrayList<EventCard> eventCards = new ArrayList<>();
 
         // event types
         EventType weddingType = new EventType("Wedding", "An unforgettable celebration of love and commitment", true);
@@ -82,8 +82,8 @@ public class OrganizerEventsFragment extends Fragment implements MultiSpinner.Mu
         EventType workshopType = new EventType("Workshop", "An interactive session focused on skill development", true);
         EventType seminarType = new EventType("Seminar", "An educational event with expert speakers", true);
         EventType festivalType = new EventType("Festival", "A lively celebration with cultural activities", true);
-        EventType sportsEventType = new EventType("Sports Event", "A competition showcasing athletic talent", true);
-        EventType charityEventType = new EventType("Charity Event", "A fundraising event for a noble cause", true);
+        EventType sportsEventType = new EventType("Sports EventCard", "A competition showcasing athletic talent", true);
+        EventType charityEventType = new EventType("Charity EventCard", "A fundraising event for a noble cause", true);
 
         // locations
         Location weddingLocation = new Location("Grand Hall", "123 Wedding St, Cityville", 40.7128, -74.0060);
@@ -97,19 +97,19 @@ public class OrganizerEventsFragment extends Fragment implements MultiSpinner.Mu
         Location sportsEventLocation = new Location("Olympic Stadium", "101 Sport Ave, Game City", 48.8566, 2.3522);
         Location charityEventLocation = new Location("Community Center", "500 Giving Ln, Charity Village", 40.7306, -73.9352);
 
-        // add to events
-        events.add(new Event("Mark & Jana's Wedding", "An unforgettable celebration of love and commitment", 200, PrivacyType.PUBLIC, new Date(), weddingLocation, weddingType));
-        events.add(new Event("Tech Conference", "A tech conference with industry leaders", 500, PrivacyType.PRIVATE, new Date(), conferenceLocation, conferenceType));
-        events.add(new Event("Summer Music Concert", "Enjoy the best live music performances", 1000, PrivacyType.PUBLIC, new Date(), concertLocation, concertType));
-        events.add(new Event("VIP PartyLounge", "An exclusive party for select guests", 100, PrivacyType.PRIVATE, new Date(), partyLocation, partyType));
-        events.add(new Event("Business Meeting", "Discussing the upcoming quarter's goals", 30, PrivacyType.PUBLIC, new Date(), meetingLocation, meetingType));
-        events.add(new Event("Art of Coding Workshop", "A hands-on coding workshop for developers", 50, PrivacyType.PUBLIC, new Date(), workshopLocation, workshopType));
-        events.add(new Event("Science & Health Seminar", "A seminar exploring the latest in science and health", 300, PrivacyType.PRIVATE, new Date(), seminarLocation, seminarType));
-        events.add(new Event("Cultural Fest 2024", "A celebration of cultures with music, food, and art", 1500, PrivacyType.PUBLIC, new Date(), festivalLocation, festivalType));
-        events.add(new Event("Championship Finals", "The most exciting sports event of the season", 5000, PrivacyType.PUBLIC, new Date(), sportsEventLocation, sportsEventType));
-        events.add(new Event("Hope Foundation Gala", "A charity gala supporting local communities", 200, PrivacyType.PRIVATE, new Date(), charityEventLocation, charityEventType));
+        // add to eventCards
+        eventCards.add(new EventCard("Mark & Jana's Wedding", "An unforgettable celebration of love and commitment", 200, PrivacyType.PUBLIC, new Date(), weddingLocation, weddingType));
+        eventCards.add(new EventCard("Tech Conference", "A tech conference with industry leaders", 500, PrivacyType.PRIVATE, new Date(), conferenceLocation, conferenceType));
+        eventCards.add(new EventCard("Summer Music Concert", "Enjoy the best live music performances", 1000, PrivacyType.PUBLIC, new Date(), concertLocation, concertType));
+        eventCards.add(new EventCard("VIP PartyLounge", "An exclusive party for select guests", 100, PrivacyType.PRIVATE, new Date(), partyLocation, partyType));
+        eventCards.add(new EventCard("Business Meeting", "Discussing the upcoming quarter's goals", 30, PrivacyType.PUBLIC, new Date(), meetingLocation, meetingType));
+        eventCards.add(new EventCard("Art of Coding Workshop", "A hands-on coding workshop for developers", 50, PrivacyType.PUBLIC, new Date(), workshopLocation, workshopType));
+        eventCards.add(new EventCard("Science & Health Seminar", "A seminar exploring the latest in science and health", 300, PrivacyType.PRIVATE, new Date(), seminarLocation, seminarType));
+        eventCards.add(new EventCard("Cultural Fest 2024", "A celebration of cultures with music, food, and art", 1500, PrivacyType.PUBLIC, new Date(), festivalLocation, festivalType));
+        eventCards.add(new EventCard("Championship Finals", "The most exciting sports event of the season", 5000, PrivacyType.PUBLIC, new Date(), sportsEventLocation, sportsEventType));
+        eventCards.add(new EventCard("Hope Foundation Gala", "A charity gala supporting local communities", 200, PrivacyType.PRIVATE, new Date(), charityEventLocation, charityEventType));
 
-        return events;
+        return eventCards;
     }
 
     @Override
@@ -141,7 +141,7 @@ public class OrganizerEventsFragment extends Fragment implements MultiSpinner.Mu
 
     private void setupEventFilters() {
         binding.filterButton.setOnClickListener(v -> {
-            Toast.makeText(this.getContext(), "Event Filter button clicked!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.getContext(), "EventCard Filter button clicked!", Toast.LENGTH_SHORT).show();
 
             BottomSheetDialog bottomSheetDialog = loadAndGetEventBottomSheetFilterDialog();
 
@@ -169,7 +169,7 @@ public class OrganizerEventsFragment extends Fragment implements MultiSpinner.Mu
         ArrayList<String> eventTypes = new ArrayList<>();
         eventTypes.add("Wedding"); eventTypes.add("Sport"); eventTypes.add("Conference");
         eventTypes.add("Party"); eventTypes.add("Prom"); eventTypes.add("Big party");
-        eventTypeMultiSpinner.setItems(eventTypes, "-", this, "Event types");
+        eventTypeMultiSpinner.setItems(eventTypes, "-", this, "EventCard types");
     }
 
     private void setupEventFilterLocation(BottomSheetDialog bottomSheetDialog) {

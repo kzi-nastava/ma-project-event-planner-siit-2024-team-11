@@ -91,7 +91,7 @@ public class SolutionsFragment extends Fragment {
         );
 
         Service service3 = new Service(
-                "Event Catering - The best",
+                "EventCard Catering - The best",
                 new Category("catering", "Neki description", Status.ACCEPTED),
                 "Delicious catering service for all types of events.",
                 1200.0, 15,
@@ -125,7 +125,7 @@ public class SolutionsFragment extends Fragment {
         solutions.add(product2);
 
         Service service4 = new Service(
-                "Event Decor",
+                "EventCard Decor",
                 new Category("decor", "Neki description", Status.ACCEPTED),
                 "Luxurious event decor for any theme.",
                 1000.0, 12,

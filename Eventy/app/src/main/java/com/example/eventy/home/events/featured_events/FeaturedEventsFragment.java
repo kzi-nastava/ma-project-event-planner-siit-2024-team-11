@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import com.example.eventy.adapters.events.FeaturedEventsAdapter;
 import com.example.eventy.databinding.FragmentHomeFeaturedEventsBinding;
 import com.example.eventy.model.enums.PrivacyType;
-import com.example.eventy.model.event.Event;
+import com.example.eventy.events.model.EventCard;
 import com.example.eventy.events.model.EventType;
 import com.example.eventy.model.utils.Location;
 
@@ -40,17 +40,17 @@ public class FeaturedEventsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ArrayList<Event> featuredEvents = getFeaturedEvents();
+        ArrayList<EventCard> featuredEventCards = getFeaturedEvents();
 
-        featuredEventsAdapter = new FeaturedEventsAdapter(requireContext(), featuredEvents);
+        featuredEventsAdapter = new FeaturedEventsAdapter(requireContext(), featuredEventCards);
 
         binding.featuredEventsRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.featuredEventsRecycler.setAdapter(featuredEventsAdapter);
     }
 
     @NonNull
-    private static ArrayList<Event> getFeaturedEvents() {
-        ArrayList<Event> featuredEvents = new ArrayList<>();
+    private static ArrayList<EventCard> getFeaturedEvents() {
+        ArrayList<EventCard> featuredEventCards = new ArrayList<>();
 
         // event types
         EventType weddingType = new EventType("Wedding", "A celebration of marriage", true);
@@ -67,13 +67,13 @@ public class FeaturedEventsFragment extends Fragment {
         Location meetingLocation = new Location("Boardroom", "200 Corporate Rd, Business Park", 42.3601, -71.0589);
 
         // add to featured events
-        featuredEvents.add(new Event("M & J's Wedding", "An elegant wedding celebration of joining 2 people into one soul, very beautiful very demure.", 200, PrivacyType.PUBLIC, new Date(), weddingLocation, weddingType));
-        featuredEvents.add(new Event("Tech Conference", "A tech conference with industry leaders", 500, PrivacyType.PRIVATE, new Date(), conferenceLocation, conferenceType));
-        featuredEvents.add(new Event("Summer Music Concert", "Enjoy the best live music performances", 1000, PrivacyType.PUBLIC, new Date(), concertLocation, concertType));
-        featuredEvents.add(new Event("VIP PartyLounge", "An exclusive party for select guests", 100, PrivacyType.PRIVATE, new Date(), partyLocation, partyType));
-        featuredEvents.add(new Event("Business Meeting", "Discussing the upcoming quarter's goals", 30, PrivacyType.PUBLIC, new Date(), meetingLocation, meetingType));
+        featuredEventCards.add(new EventCard("M & J's Wedding", "An elegant wedding celebration of joining 2 people into one soul, very beautiful very demure.", 200, PrivacyType.PUBLIC, new Date(), weddingLocation, weddingType));
+        featuredEventCards.add(new EventCard("Tech Conference", "A tech conference with industry leaders", 500, PrivacyType.PRIVATE, new Date(), conferenceLocation, conferenceType));
+        featuredEventCards.add(new EventCard("Summer Music Concert", "Enjoy the best live music performances", 1000, PrivacyType.PUBLIC, new Date(), concertLocation, concertType));
+        featuredEventCards.add(new EventCard("VIP PartyLounge", "An exclusive party for select guests", 100, PrivacyType.PRIVATE, new Date(), partyLocation, partyType));
+        featuredEventCards.add(new EventCard("Business Meeting", "Discussing the upcoming quarter's goals", 30, PrivacyType.PUBLIC, new Date(), meetingLocation, meetingType));
 
-        return featuredEvents;
+        return featuredEventCards;
     }
 
     @Override

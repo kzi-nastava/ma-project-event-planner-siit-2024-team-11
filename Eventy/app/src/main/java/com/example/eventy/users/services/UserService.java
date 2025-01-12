@@ -1,7 +1,7 @@
 package com.example.eventy.users.services;
 
 import com.example.eventy.common.PagedResponse;
-import com.example.eventy.model.event.Event;
+import com.example.eventy.events.model.EventCard;
 import com.example.eventy.model.solution.Solution;
 import com.example.eventy.users.model.CalendarOccupancy;
 import com.example.eventy.users.model.UpdateUser;
@@ -36,16 +36,16 @@ public interface UserService {
                                             @Query("endDate") LocalDate endDate);
 
     @GET(eventsPrefix + "/favorite/{userId}")
-    Call<PagedResponse<Event>> getMyFavoriteEvents(@Path("userId") Long userId, @Query("search") String search,
-                                                   @Query("page") int page, @Query("size") int size);
+    Call<PagedResponse<EventCard>> getMyFavoriteEvents(@Path("userId") Long userId, @Query("search") String search,
+                                                       @Query("page") int page, @Query("size") int size);
 
     @GET(solutionsPrefix + "/favorite/{userId}")
     Call<PagedResponse<Solution>> getMyFavoriteSolutions(@Path("userId") Long userId, @Query("search") String search,
                                                          @Query("page") int page, @Query("size") int size);
 
     @GET(eventsPrefix + "/organized/{userId}")
-    Call<PagedResponse<Event>> getMyEvents(@Path("userId") Long userId, @Query("search") String search,
-                                                       @Query("page") int page, @Query("size") int size);
+    Call<PagedResponse<EventCard>> getMyEvents(@Path("userId") Long userId, @Query("search") String search,
+                                               @Query("page") int page, @Query("size") int size);
 
     @GET(eventsPrefix + "/catalog/{userId}")
     Call<PagedResponse<Solution>> getMySolutions(@Path("userId") Long userId, @Query("search") String search,

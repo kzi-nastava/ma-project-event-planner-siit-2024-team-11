@@ -139,7 +139,7 @@ public class HomeFragment extends Fragment implements MultiSpinner.MultiSpinnerL
 
     private void setupEventFilters() {
         binding.filterButton.setOnClickListener(v -> {
-            Toast.makeText(this.getContext(), "Event Filter button clicked!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.getContext(), "EventCard Filter button clicked!", Toast.LENGTH_SHORT).show();
 
             BottomSheetDialog bottomSheetDialog = loadAndGetEventBottomSheetFilterDialog();
 
@@ -176,7 +176,7 @@ public class HomeFragment extends Fragment implements MultiSpinner.MultiSpinnerL
         ArrayList<String> eventTypes = new ArrayList<>();
         eventTypes.add("Wedding"); eventTypes.add("Sport"); eventTypes.add("Conference");
         eventTypes.add("Party"); eventTypes.add("Prom"); eventTypes.add("Big party");
-        eventTypeMultiSpinner.setItems(eventTypes, "-", this, "Event types");
+        eventTypeMultiSpinner.setItems(eventTypes, "-", this, "EventCard types");
     }
 
     private void setupEventFilterLocation(BottomSheetDialog bottomSheetDialog) {
@@ -401,7 +401,7 @@ public class HomeFragment extends Fragment implements MultiSpinner.MultiSpinnerL
         ArrayList<String> categories = new ArrayList<>();
         categories.add("Food"); categories.add("Music"); categories.add("Catering");
         categories.add("Flowers"); categories.add("Formal attires"); categories.add("Party");
-        solutionCategoryMultiSpinner.setItems(categories, "-", this, "Event types");
+        solutionCategoryMultiSpinner.setItems(categories, "-", this, "EventCard types");
     }
 
     private void setupSolutionFilterEventTypes(BottomSheetDialog bottomSheetDialog) {
@@ -410,7 +410,7 @@ public class HomeFragment extends Fragment implements MultiSpinner.MultiSpinnerL
         ArrayList<String> eventTypes = new ArrayList<>();
         eventTypes.add("Wedding"); eventTypes.add("Sport"); eventTypes.add("Conference");
         eventTypes.add("Party"); eventTypes.add("Prom"); eventTypes.add("Big party");
-        eventTypeMultiSpinner.setItems(eventTypes, "-", this, "Event types");
+        eventTypeMultiSpinner.setItems(eventTypes, "-", this, "EventCard types");
     }
 
     private void setupSolutionFilterCompany(BottomSheetDialog bottomSheetDialog) {

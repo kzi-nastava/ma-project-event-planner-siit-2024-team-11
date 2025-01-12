@@ -12,18 +12,18 @@ import android.widget.TextView;
 
 import com.example.eventy.R;
 import com.example.eventy.model.enums.PrivacyType;
-import com.example.eventy.model.event.Event;
+import com.example.eventy.events.model.EventCard;
 
 import java.text.SimpleDateFormat;
 
 public class EventDetailsDialog extends Dialog implements
         android.view.View.OnClickListener {
     public ImageView closeButton;
-    private Event selectedEvent;
+    private EventCard selectedEventCard;
 
-    public EventDetailsDialog(Activity a, Event selectedEvent) {
+    public EventDetailsDialog(Activity a, EventCard selectedEventCard) {
         super(a);
-        this.selectedEvent = selectedEvent;
+        this.selectedEventCard = selectedEventCard;
     }
 
     @Override
@@ -40,29 +40,29 @@ public class EventDetailsDialog extends Dialog implements
     @SuppressLint("SetTextI18n")
     private void setupEventDetails() {
         TextView eventNameTextView = findViewById(R.id.event_name);
-        eventNameTextView.setText('"' + selectedEvent.getName() + '"');
+        eventNameTextView.setText('"' + selectedEventCard.getName() + '"');
 
         TextView eventTypeTextView = findViewById(R.id.event_type);
-        eventTypeTextView.setText("Type: " + selectedEvent.getEventType().getName());
+        eventTypeTextView.setText("Type: " + selectedEventCard.getEventType().getName());
 
         TextView maxParticipantsTextView = findViewById(R.id.max_participants);
-        maxParticipantsTextView.setText("Max participants: " + selectedEvent.getMaxParticipants());
+        maxParticipantsTextView.setText("Max participants: " + selectedEventCard.getMaxParticipants());
 
         TextView eventDateTextView = findViewById(R.id.event_date);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy.");
-        String formattedDate = dateFormat.format(selectedEvent.getDate());
+        String formattedDate = dateFormat.format(selectedEventCard.getDate());
         eventDateTextView.setText(formattedDate);
 
         TextView eventLocationTextView = findViewById(R.id.event_location);
-        eventLocationTextView.setText(selectedEvent.getLocation().getName());
+        eventLocationTextView.setText(selectedEventCard.getLocation().getName());
 
         TextView openOrFullTextView = findViewById(R.id.open_or_full);
-        String openOrFullString = (selectedEvent.getPrivacyType() == PrivacyType.PRIVATE ? "FULL EVENT" : "OPEN EVENT") + "!";
+        String openOrFullString = (selectedEventCard.getPrivacyType() == PrivacyType.PRIVATE ? "FULL EVENT" : "OPEN EVENT") + "!";
         openOrFullTextView.setText(openOrFullString);
-        openOrFullTextView.setTextColor(selectedEvent.getPrivacyType() == PrivacyType.PRIVATE ? Color.parseColor("#E91A1A") : Color.parseColor("#3ED34F"));
+        openOrFullTextView.setTextColor(selectedEventCard.getPrivacyType() == PrivacyType.PRIVATE ? Color.parseColor("#E91A1A") : Color.parseColor("#3ED34F"));
 
         TextView descriptionTextView = findViewById(R.id.description);
-        descriptionTextView.setText(selectedEvent.getDescription());
+        descriptionTextView.setText(selectedEventCard.getDescription());
     }
 
     @Override
