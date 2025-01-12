@@ -10,10 +10,8 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.eventy.R;
-import com.example.eventy.databinding.FragmentOtherUserProfilePageBinding;
 import com.example.eventy.databinding.FragmentUserMyProfilePageBinding;
 import com.example.eventy.users.BasicInformationFragment;
 import com.example.eventy.users.MyCardsFragment;
@@ -40,7 +38,7 @@ public class UserMyProfilePageFragment extends Fragment {
         this.user = new User(UserType.ORGANIZER, new ArrayList<>(), "organizer@gmail.com", "Some address 23",
                 "+381 34 24 53 243", "Organizer", "Ofevents", null, null);
 
-        if(user.getAccountType() != UserType.AUTH_USER) {
+        if(user.getUserType() != UserType.AUTHENTICATED) {
             binding.upgradeButton.setVisibility(View.GONE);
         }
 
@@ -48,9 +46,9 @@ public class UserMyProfilePageFragment extends Fragment {
 
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_info));
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_organize_event));
-        if(user.getAccountType() == UserType.ORGANIZER || user.getAccountType() == UserType.PROVIDER) {
+        if(user.getUserType() == UserType.ORGANIZER || user.getUserType() == UserType.PROVIDER) {
             tabLayout.addTab(tabLayout.newTab().setText("My")
-                    .setIcon(user.getAccountType() == UserType.ORGANIZER ? R.drawable.icon_event_seat : R.drawable.icon_service));
+                    .setIcon(user.getUserType() == UserType.ORGANIZER ? R.drawable.icon_event_seat : R.drawable.icon_service));
         }
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_favorite).setText("Events"));
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_favorite).setText("Solutions"));
@@ -94,11 +92,11 @@ public class UserMyProfilePageFragment extends Fragment {
             }
         });
 
-        if(user.getAccountType() != UserType.ORGANIZER && user.getAccountType() != UserType.PROVIDER) {
+        if(user.getUserType() != UserType.ORGANIZER && user.getUserType() != UserType.PROVIDER) {
             tabLayout.setVisibility(View.GONE);
         }
 
-        if(user.getAccountType() == UserType.PROVIDER) {
+        if(user.getUserType() == UserType.PROVIDER) {
             binding.nameText.setText(user.getName());
         }
         else {

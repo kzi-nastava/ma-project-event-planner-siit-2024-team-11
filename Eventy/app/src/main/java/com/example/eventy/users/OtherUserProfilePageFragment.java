@@ -34,7 +34,7 @@ public class OtherUserProfilePageFragment extends Fragment {
         TabLayout tabLayout = binding.tabLayout;
 
         tabLayout.addTab(tabLayout.newTab().setText("Basic information"));
-        tabLayout.addTab(tabLayout.newTab().setText(user.getAccountType() == UserType.ORGANIZER ? "My Events" : "My Products/Services"));
+        tabLayout.addTab(tabLayout.newTab().setText(user.getUserType() == UserType.ORGANIZER ? "My Events" : "My Products/Services"));
 
         // Default fragment
         getParentFragmentManager()
@@ -69,11 +69,11 @@ public class OtherUserProfilePageFragment extends Fragment {
             }
         });
 
-        if(user.getAccountType() != UserType.ORGANIZER && user.getAccountType() != UserType.PROVIDER) {
+        if(user.getUserType() != UserType.ORGANIZER && user.getUserType() != UserType.PROVIDER) {
             tabLayout.setVisibility(View.GONE);
         }
 
-        if(user.getAccountType() == UserType.PROVIDER) {
+        if(user.getUserType() == UserType.PROVIDER) {
             binding.nameText.setText(user.getName());
         }
         else {

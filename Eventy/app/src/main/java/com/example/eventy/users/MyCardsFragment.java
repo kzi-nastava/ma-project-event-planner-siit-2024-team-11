@@ -35,7 +35,7 @@ public class MyCardsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if(this.user.getAccountType() == UserType.ORGANIZER) {
+        if(this.user.getUserType() == UserType.ORGANIZER) {
             getParentFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragmentContainer, new OrganizerEventsFragment())

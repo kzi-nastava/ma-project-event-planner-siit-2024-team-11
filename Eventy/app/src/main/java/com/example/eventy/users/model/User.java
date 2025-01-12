@@ -1,10 +1,11 @@
 package com.example.eventy.users.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class User {
-    private UserType accountType;
-    private ArrayList<String> profilePictures;
+    private UserType userType;
+    private List<String> profilePictures;
     private String email;
     private String address;
     private String phoneNumber;
@@ -18,7 +19,7 @@ public class User {
     }
 
     public User(UserType accountType, ArrayList<String> profilePictures, String email, String address, String phoneNumber, String firstName, String lastName, String name, String description) {
-        this.accountType = accountType;
+        this.userType = accountType;
         this.profilePictures = profilePictures;
         this.email = email;
         this.address = address;
@@ -29,15 +30,15 @@ public class User {
         this.description = description;
     }
 
-    public UserType getAccountType() {
-        return accountType;
+    public UserType getUserType() {
+        return userType;
     }
 
-    public void setAccountType(UserType accountType) {
-        this.accountType = accountType;
+    public void setUserType(UserType userType) {
+        this.userType = userType;
     }
 
-    public ArrayList<String> getProfilePictures() {
+    public List<String> getProfilePictures() {
         return profilePictures;
     }
 

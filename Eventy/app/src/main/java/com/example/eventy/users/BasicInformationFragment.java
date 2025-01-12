@@ -40,7 +40,7 @@ public class BasicInformationFragment extends Fragment {
         binding = FragmentBasicInformationBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        if(user.getAccountType() != UserType.PROVIDER) {
+        if(user.getUserType() != UserType.PROVIDER) {
             binding.descriptionText.setVisibility(View.GONE);
         }
         else {

@@ -29,14 +29,14 @@ public class UserEditFragment extends Fragment {
         this.user = new User(UserType.ORGANIZER, new ArrayList<>(), "organizer@gmail.com", "Some address 23",
                 "+381 34 24 53 243", "Organizer", "Ofevents", null, null);
 
-        if(this.user.getAccountType() != UserType.PROVIDER) {
+        if(this.user.getUserType() != UserType.PROVIDER) {
             binding.editTitle.setText("Edit " + this.user.getFirstName() + " " + this.user.getLastName());
         }
         else {
             binding.editTitle.setText("Edit " + this.user.getName());
         }
 
-        if(this.user.getAccountType() == UserType.PROVIDER) {
+        if(this.user.getUserType() == UserType.PROVIDER) {
             UserProviderEditFragment userProviderEditFragment = new UserProviderEditFragment(user);
             getChildFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, userProviderEditFragment)
