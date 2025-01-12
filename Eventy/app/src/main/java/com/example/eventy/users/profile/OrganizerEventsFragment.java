@@ -47,8 +47,10 @@ public class OrganizerEventsFragment extends Fragment implements MultiSpinner.Mu
     private Button dateRangeButton;
     private TextView showSelectedDateText;
     private Long userId;
-    public OrganizerEventsFragment(Long userId) {
+    private boolean isMyCards;
+    public OrganizerEventsFragment(Long userId, boolean isMyCards) {
         this.userId = userId;
+        this.isMyCards = isMyCards;
     }
 
 

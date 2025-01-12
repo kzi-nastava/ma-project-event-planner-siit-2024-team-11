@@ -44,9 +44,11 @@ public class PUPOwnServicesFragment extends Fragment implements MultiSpinner.Mul
     private TextView showSelectedDateText;
     private Button dateRangeButton;
     private Long userId;
+    private boolean isMyCards;
 
-    public PUPOwnServicesFragment(Long userId) {
+    public PUPOwnServicesFragment(Long userId, boolean isMyCards) {
         this.userId = userId;
+        this.isMyCards = isMyCards;
     }
 
     @Override

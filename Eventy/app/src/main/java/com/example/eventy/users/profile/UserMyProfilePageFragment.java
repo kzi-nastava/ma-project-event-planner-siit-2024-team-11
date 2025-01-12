@@ -83,9 +83,9 @@ public class UserMyProfilePageFragment extends Fragment {
                         } else if(tab.getPosition() == 2) {
                             selectedFragment = new MyCardsFragment(user);
                         } else if(tab.getPosition() == 3) {
-                            selectedFragment = new OrganizerEventsFragment(user.getId());
+                            selectedFragment = new OrganizerEventsFragment(user.getId(), false);
                         } else {
-                            selectedFragment = new PUPOwnServicesFragment(user.getId());
+                            selectedFragment = new PUPOwnServicesFragment(user.getId(), false);
                         }
 
                         getParentFragmentManager()
