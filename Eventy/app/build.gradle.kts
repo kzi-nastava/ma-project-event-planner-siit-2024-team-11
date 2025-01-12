@@ -65,7 +65,9 @@ dependencies {
     implementation("org.osmdroid:osmdroid-android:6.1.10")
     implementation("com.github.prolificinteractive:material-calendarview:2.0.0")
     implementation("com.squareup.retrofit2:retrofit:2.3.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.3.0")
+    implementation("com.squareup.retrofit2:converter-jackson:2.3.0")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.15.0")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.0")
     implementation("com.squareup.okhttp3:logging-interceptor:3.12.1")
     implementation("com.auth0:java-jwt:4.4.0")
 }
