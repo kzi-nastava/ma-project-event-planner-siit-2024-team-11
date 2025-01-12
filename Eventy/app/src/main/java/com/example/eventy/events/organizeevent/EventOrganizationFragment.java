@@ -45,6 +45,7 @@ public class EventOrganizationFragment extends Fragment {
     private FragmentEventOrganizationBinding binding;
     private EventOrganizationStage eventOrganizationStage;
     private boolean isEventPublic;
+    private OrganizeEvent organizeEvent;
     Fragment fragment;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -104,6 +105,18 @@ public class EventOrganizationFragment extends Fragment {
                     title = "Add Agenda";
                     this.isEventPublic = eventOrganizationBasicInformationFragmentFragment.isPublic();
                     binding.backButton.setEnabled(true);
+                    this.organizeEvent = new OrganizeEvent(
+                            eventOrganizationBasicInformationFragmentFragment.getName(),
+                            eventOrganizationBasicInformationFragmentFragment.getDescription(),
+                            eventOrganizationBasicInformationFragmentFragment.getMaxNumberParticipants(),
+                            eventOrganizationBasicInformationFragmentFragment.isPublic(),
+                            eventOrganizationBasicInformationFragmentFragment.getEventTypeId(),
+                            eventOrganizationBasicInformationFragmentFragment.getLocation(),
+                            eventOrganizationBasicInformationFragmentFragment.getDate(),
+                            new ArrayList<>(),
+                            new ArrayList<>(),
+                            LoggedInHelperService.getId()
+                    );
                 }
                 else {
                     ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Please make sure all fields are filled and filled with real values!");
@@ -113,20 +126,9 @@ public class EventOrganizationFragment extends Fragment {
                 }
             } else if(eventOrganizationStage == EventOrganizationStage.AGENDA_CREATION) {
                 if(eventAgendaCreation.isValid()) {
+                    this.organizeEvent.setAgenda(eventAgendaCreation.getAgenda());
                     if(this.isEventPublic) {
-                        Call<Event> call = ClientUtils.eventService.organizeEvent(
-                                new OrganizeEvent(
-                                        eventOrganizationBasicInformationFragmentFragment.getName(),
-                                        eventOrganizationBasicInformationFragmentFragment.getDescription(),
-                                        eventOrganizationBasicInformationFragmentFragment.getMaxNumberParticipants(),
-                                        eventOrganizationBasicInformationFragmentFragment.isPublic(),
-                                        eventOrganizationBasicInformationFragmentFragment.getEventTypeId(),
-                                        eventOrganizationBasicInformationFragmentFragment.getLocation(),
-                                        eventOrganizationBasicInformationFragmentFragment.getDate(),
-                                        eventAgendaCreation.getAgenda(),
-                                        new ArrayList<>(),
-                                        LoggedInHelperService.getId()
-                                ));
+                        Call<Event> call = ClientUtils.eventService.organizeEvent(organizeEvent);
                         call.enqueue(new Callback<Event>() {
                             @Override
                             public void onResponse(Call<Event> call, Response<Event> response) {
@@ -179,19 +181,8 @@ public class EventOrganizationFragment extends Fragment {
                     return;
                 }
             } else {
-                Call<Event> call = ClientUtils.eventService.organizeEvent(
-                        new OrganizeEvent(
-                                eventOrganizationBasicInformationFragmentFragment.getName(),
-                                eventOrganizationBasicInformationFragmentFragment.getDescription(),
-                                eventOrganizationBasicInformationFragmentFragment.getMaxNumberParticipants(),
-                                eventOrganizationBasicInformationFragmentFragment.isPublic(),
-                                eventOrganizationBasicInformationFragmentFragment.getEventTypeId(),
-                                eventOrganizationBasicInformationFragmentFragment.getLocation(),
-                                eventOrganizationBasicInformationFragmentFragment.getDate(),
-                                eventAgendaCreation.getAgenda(),
-                                eventInvitationSendingFragment.getInvitedEmails(),
-                                LoggedInHelperService.getId()
-                        ));
+                this.organizeEvent.setEmails(eventInvitationSendingFragment.getInvitedEmails());
+                Call<Event> call = ClientUtils.eventService.organizeEvent(organizeEvent);
                 call.enqueue(new Callback<Event>() {
                     @Override
                     public void onResponse(Call<Event> call, Response<Event> response) {
