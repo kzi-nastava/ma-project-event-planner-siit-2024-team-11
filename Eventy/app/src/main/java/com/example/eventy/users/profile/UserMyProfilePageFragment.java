@@ -1,5 +1,11 @@
 package com.example.eventy.users.profile;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,21 +13,31 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.eventy.R;
+import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentUserMyProfilePageBinding;
 import com.example.eventy.users.BasicInformationFragment;
 import com.example.eventy.users.MyCardsFragment;
 import com.example.eventy.users.OrganizerEventsFragment;
+import com.example.eventy.users.model.UpdateUser;
 import com.example.eventy.users.model.User;
 import com.example.eventy.users.model.UserType;
 import com.example.eventy.users.pup.PUPOwnServicesFragment;
+import com.example.eventy.users.services.LoggedInHelperService;
+import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class UserMyProfilePageFragment extends Fragment {
 
@@ -109,6 +125,47 @@ public class UserMyProfilePageFragment extends Fragment {
             navController.popBackStack();
 
             navController.navigate(R.id.nav_edit_user);
+        });
+
+        binding.deactivateButton.setOnClickListener(v -> {
+            Call<Void> call = ClientUtils.userService.deactivate(LoggedInHelperService.getId());
+            call.enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        new AlertDialog.Builder(getContext())
+                                .setTitle(" Successful deactivation")
+                                .setMessage("User is now deactivated.")
+                                .setIcon(R.drawable.icon_success_png)
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        // this is like logout
+                                        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("EventyPreferences", Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        editor.remove("JWT_TOKEN");
+                                        editor.apply();
+
+                                        LoggedInHelperService.manageNavigationItems();
+
+                                        NavController navController = Navigation.findNavController(v);
+                                        navController.popBackStack();
+                                        navController.navigate(R.id.nav_home);
+                                    }})
+                                .show();
+                    } else {
+                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while deactivating account!");
+                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        errorOkDialog.show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while deactivating account!");
+                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    errorOkDialog.show();
+                }
+            });
         });
 
         return root;
