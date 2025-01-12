@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventy.R;
 import com.example.eventy.events.model.CreateActivity;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ActivityTableAdapter extends RecyclerView.Adapter<ActivityTableAdapter.ViewHolder> {
@@ -30,12 +31,14 @@ public class ActivityTableAdapter extends RecyclerView.Adapter<ActivityTableAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
         CreateActivity row = tableRows.get(position);
         holder.nameText.setText("Name: " + row.getName());
         holder.descriptionText.setText("Description: " + row.getDescription());
         holder.locationText.setText("Location: " + row.getLocation());
-        holder.startTimeText.setText("Start Time: " + row.getStartTime());
-        holder.endTimeText.setText("End Time: " + row.getEndTime());
+        holder.startTimeText.setText("Start Time: " + row.getStartTime().format(formatter));
+        holder.endTimeText.setText("End Time: " + row.getEndTime().format(formatter));
     }
 
     @Override
