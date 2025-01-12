@@ -1,9 +1,7 @@
 package com.example.eventy.events.services;
 
-import com.example.eventy.events.model.CreatedEventType;
-import com.example.eventy.events.model.EventType;
 import com.example.eventy.events.model.OrganizeEvent;
-import com.example.eventy.model.event.Event;
+import com.example.eventy.events.model.Event;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

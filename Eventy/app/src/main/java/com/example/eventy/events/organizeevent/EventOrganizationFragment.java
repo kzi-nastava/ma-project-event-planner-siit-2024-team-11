@@ -1,9 +1,7 @@
 package com.example.eventy.events.organizeevent;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -16,18 +14,14 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.eventy.R;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentEventOrganizationBinding;
 import com.example.eventy.events.model.OrganizeEvent;
-import com.example.eventy.model.event.Event;
-import com.example.eventy.users.model.AuthResponse;
-import com.example.eventy.users.model.LoginData;
+import com.example.eventy.events.model.Event;
 import com.example.eventy.users.services.LoggedInHelperService;
 import com.example.eventy.utils.ClientUtils;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 
@@ -145,12 +139,6 @@ public class EventOrganizationFragment extends Fragment {
                                                     navController.navigate(R.id.nav_home);
                                                 }})
                                             .show();
-
-                                    NavController navController = Navigation.findNavController(v);
-
-                                    navController.popBackStack();
-
-                                    navController.navigate(R.id.nav_home);
                                 } else {
                                     ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while organizing an event!");
                                     errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -199,12 +187,6 @@ public class EventOrganizationFragment extends Fragment {
                                             navController.navigate(R.id.nav_home);
                                         }})
                                     .show();
-
-                            NavController navController = Navigation.findNavController(v);
-
-                            navController.popBackStack();
-
-                            navController.navigate(R.id.nav_home);
                         } else {
                             ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while organizing an event!");
                             errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
