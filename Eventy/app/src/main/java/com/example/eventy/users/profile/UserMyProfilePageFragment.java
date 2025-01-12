@@ -45,121 +45,133 @@ public class UserMyProfilePageFragment extends Fragment {
         binding = FragmentUserMyProfilePageBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        this.user = new User(UserType.ORGANIZER, new ArrayList<>(), "organizer@gmail.com", "Some address 23",
-                "+381 34 24 53 243", "Organizer", "Ofevents", null, null);
-
-        if(user.getUserType() != UserType.AUTHENTICATED) {
-            binding.upgradeButton.setVisibility(View.GONE);
-        }
-
-        TabLayout tabLayout = binding.tabLayout;
-
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_info));
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_organize_event));
-        if(user.getUserType() == UserType.ORGANIZER || user.getUserType() == UserType.PROVIDER) {
-            tabLayout.addTab(tabLayout.newTab().setText("My")
-                    .setIcon(user.getUserType() == UserType.ORGANIZER ? R.drawable.icon_event_seat : R.drawable.icon_service));
-        }
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_favorite).setText("Events"));
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_favorite).setText("Solutions"));
-
-        // Default fragment
-        getParentFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, new BasicInformationFragment(this.user))
-                .commit();
-
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        Call<User> call = ClientUtils.userService.get(LoggedInHelperService.getId());
+        call.enqueue(new Callback<User>() {
             @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                Fragment selectedFragment;
-                if (tab.getPosition() == 0) {
-                    selectedFragment = new BasicInformationFragment(user);
-                } else if(tab.getPosition() == 1) {
-                    selectedFragment = new UserCalendarFragment();
-                } else if(tab.getPosition() == 2) {
-                    selectedFragment = new MyCardsFragment(user);
-                } else if(tab.getPosition() == 3) {
-                    selectedFragment = new OrganizerEventsFragment(user.getId());
-                } else {
-                    selectedFragment = new PUPOwnServicesFragment(user.getId());
+            public void onResponse(Call<User> call, Response<User> response) {
+                user = response.body();
+
+                if(user.getUserType() != UserType.AUTHENTICATED) {
+                    binding.upgradeButton.setVisibility(View.GONE);
                 }
 
+                TabLayout tabLayout = binding.tabLayout;
+
+                tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_info));
+                tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_organize_event));
+                if(user.getUserType() == UserType.ORGANIZER || user.getUserType() == UserType.PROVIDER) {
+                    tabLayout.addTab(tabLayout.newTab().setText("My")
+                            .setIcon(user.getUserType() == UserType.ORGANIZER ? R.drawable.icon_event_seat : R.drawable.icon_service));
+                }
+                tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_favorite).setText("Events"));
+                tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_favorite).setText("Solutions"));
+
+                // Default fragment
                 getParentFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragmentContainer, selectedFragment)
+                        .replace(R.id.fragmentContainer, new BasicInformationFragment(user))
                         .commit();
-            }
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
+                tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+                        Fragment selectedFragment;
+                        if (tab.getPosition() == 0) {
+                            selectedFragment = new BasicInformationFragment(user);
+                        } else if(tab.getPosition() == 1) {
+                            selectedFragment = new UserCalendarFragment();
+                        } else if(tab.getPosition() == 2) {
+                            selectedFragment = new MyCardsFragment(user);
+                        } else if(tab.getPosition() == 3) {
+                            selectedFragment = new OrganizerEventsFragment(user.getId());
+                        } else {
+                            selectedFragment = new PUPOwnServicesFragment(user.getId());
+                        }
 
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-        if(user.getUserType() != UserType.ORGANIZER && user.getUserType() != UserType.PROVIDER) {
-            tabLayout.setVisibility(View.GONE);
-        }
-
-        if(user.getUserType() == UserType.PROVIDER) {
-            binding.nameText.setText(user.getName());
-        }
-        else {
-            binding.nameText.setText(user.getFirstName() + " " + user.getLastName());
-        }
-
-        binding.editButton.setOnClickListener(v -> {
-            NavController navController = Navigation.findNavController(v);
-
-            navController.popBackStack();
-
-            navController.navigate(R.id.nav_edit_user);
-        });
-
-        binding.deactivateButton.setOnClickListener(v -> {
-            Call<Void> call = ClientUtils.userService.deactivate(LoggedInHelperService.getId());
-            call.enqueue(new Callback<Void>() {
-                @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        new AlertDialog.Builder(getContext())
-                                .setTitle(" Successful deactivation")
-                                .setMessage("User is now deactivated.")
-                                .setIcon(R.drawable.icon_success_png)
-                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-                                        // this is like logout
-                                        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("EventyPreferences", Context.MODE_PRIVATE);
-                                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                                        editor.remove("JWT_TOKEN");
-                                        editor.apply();
-
-                                        LoggedInHelperService.manageNavigationItems();
-
-                                        NavController navController = Navigation.findNavController(v);
-                                        navController.popBackStack();
-                                        navController.navigate(R.id.nav_home);
-                                    }})
-                                .show();
-                    } else {
-                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while deactivating account!");
-                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                        errorOkDialog.show();
+                        getParentFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.fragmentContainer, selectedFragment)
+                                .commit();
                     }
+
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
+
+                    }
+
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
+
+                    }
+                });
+
+                if(user.getUserType() != UserType.ORGANIZER && user.getUserType() != UserType.PROVIDER) {
+                    tabLayout.setVisibility(View.GONE);
                 }
 
-                @Override
-                public void onFailure(Call<Void> call, Throwable t) {
-                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while deactivating account!");
-                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    errorOkDialog.show();
+                if(user.getUserType() == UserType.PROVIDER) {
+                    binding.nameText.setText(user.getName());
                 }
-            });
+                else {
+                    binding.nameText.setText(user.getFirstName() + " " + user.getLastName());
+                }
+
+                binding.editButton.setOnClickListener(v -> {
+                    NavController navController = Navigation.findNavController(v);
+
+                    navController.popBackStack();
+
+                    navController.navigate(R.id.nav_edit_user);
+                });
+
+                binding.deactivateButton.setOnClickListener(v -> {
+                    Call<Void> callDeactivate = ClientUtils.userService.deactivate(LoggedInHelperService.getId());
+                    callDeactivate.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+                                new AlertDialog.Builder(getContext())
+                                        .setTitle(" Successful deactivation")
+                                        .setMessage("User is now deactivated.")
+                                        .setIcon(R.drawable.icon_success_png)
+                                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int whichButton) {
+                                                // this is like logout
+                                                SharedPreferences sharedPreferences = requireContext().getSharedPreferences("EventyPreferences", Context.MODE_PRIVATE);
+                                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                editor.remove("JWT_TOKEN");
+                                                editor.apply();
+
+                                                LoggedInHelperService.manageNavigationItems();
+
+                                                NavController navController = Navigation.findNavController(v);
+                                                navController.popBackStack();
+                                                navController.navigate(R.id.nav_home);
+                                            }})
+                                        .show();
+                            } else {
+                                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while deactivating account!");
+                                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                errorOkDialog.show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while deactivating account!");
+                            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            errorOkDialog.show();
+                        }
+                    });
+                });
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while getting user profile!");
+                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                errorOkDialog.show();
+            }
         });
 
         return root;
