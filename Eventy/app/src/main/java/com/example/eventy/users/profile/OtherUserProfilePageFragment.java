@@ -1,4 +1,4 @@
-package com.example.eventy.users;
+package com.example.eventy.users.profile;
 
 import android.os.Bundle;
 

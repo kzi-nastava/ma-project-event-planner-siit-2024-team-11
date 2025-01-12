@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +20,6 @@ import android.view.ViewGroup;
 import com.example.eventy.R;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentUserMyProfilePageBinding;
-import com.example.eventy.users.BasicInformationFragment;
-import com.example.eventy.users.MyCardsFragment;
-import com.example.eventy.users.OrganizerEventsFragment;
-import com.example.eventy.users.model.UpdateUser;
 import com.example.eventy.users.model.User;
 import com.example.eventy.users.model.UserType;
 import com.example.eventy.users.pup.PUPOwnServicesFragment;
@@ -33,7 +28,6 @@ import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;

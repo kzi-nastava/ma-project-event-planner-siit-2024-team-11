@@ -1,4 +1,4 @@
-package com.example.eventy.users;
+package com.example.eventy.users.profile;
 
 import android.annotation.SuppressLint;
 import android.icu.text.SimpleDateFormat;
