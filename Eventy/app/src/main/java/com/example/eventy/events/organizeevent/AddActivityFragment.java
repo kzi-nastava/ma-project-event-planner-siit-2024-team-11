@@ -21,6 +21,8 @@ import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
@@ -51,9 +53,14 @@ public class AddActivityFragment extends Fragment {
         binding.activityTimeRangeInput.setOnClickListener(v -> showDateRangePicker());
 
         binding.addActivityButton.setOnClickListener(v -> {
-            String[] dateTimeRange = binding.activityTimeRangeInput.getText().toString().split("-");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+            String[] dateTimeRange = binding.activityTimeRangeInput.getText().toString().split(" - ");
+            LocalDateTime start = LocalDateTime.parse(dateTimeRange[0], formatter);
+            LocalDateTime end = LocalDateTime.parse(dateTimeRange[1], formatter);
+
+
             agenda.add(new CreateActivity(binding.nameInput.getText().toString(), binding.descriptionInput.getText().toString(),
-                    binding.locationInput.getText().toString(), dateTimeRange[0], dateTimeRange[1]));
+                    binding.locationInput.getText().toString(), start, end));
 
             binding.nameInput.setText("");
             binding.nameInputLayout.setError(null);

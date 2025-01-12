@@ -1,13 +1,15 @@
 package com.example.eventy.events.model;
 
+import java.time.LocalDateTime;
+
 public class CreateActivity {
     private String name;
     private String description;
     private String location;
-    private String startTime;
-    private String endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 
-    public CreateActivity(String name, String description, String location, String startTime, String endTime) {
+    public CreateActivity(String name, String description, String location, LocalDateTime startTime, LocalDateTime endTime) {
         this.name = name;
         this.description = description;
         this.location = location;
@@ -27,11 +29,11 @@ public class CreateActivity {
         return location;
     }
 
-    public String getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public String getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 }
