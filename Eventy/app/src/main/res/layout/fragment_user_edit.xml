@@ -15,7 +15,7 @@ tools:context=".users.edit.UserEditFragment">
     android:gravity="center"
     android:padding="40dp"
     android:background="@color/background_color"
-    tools:context="register.RegisterFragment">
+    tools:context=".users.register.RegisterFragment">
     <TextView
         android:id="@+id/edit_title"
         android:layout_width="wrap_content"

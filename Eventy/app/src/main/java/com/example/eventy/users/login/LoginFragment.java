@@ -1,4 +1,4 @@
-package com.example.eventy.login;
+package com.example.eventy.users.login;
 
 import android.content.Context;
 import android.content.SharedPreferences;

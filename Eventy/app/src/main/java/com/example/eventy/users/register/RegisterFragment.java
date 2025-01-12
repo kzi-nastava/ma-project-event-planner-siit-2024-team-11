@@ -1,4 +1,4 @@
-package com.example.eventy.register;
+package com.example.eventy.users.register;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

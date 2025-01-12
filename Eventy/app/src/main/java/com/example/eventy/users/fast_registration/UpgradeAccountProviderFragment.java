@@ -21,7 +21,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentUserFastRegistrationUpgradeAccountProviderBinding;
-import com.example.eventy.register.CarouselAdapter;
+import com.example.eventy.users.register.CarouselAdapter;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;

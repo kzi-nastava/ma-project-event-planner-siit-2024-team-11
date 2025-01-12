@@ -22,9 +22,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.eventy.R;
-import com.example.eventy.databinding.FragmentRegisterProviderBinding;
 import com.example.eventy.databinding.FragmentUserProviderEditBinding;
-import com.example.eventy.register.CarouselAdapter;
+import com.example.eventy.users.register.CarouselAdapter;
 import com.example.eventy.users.model.User;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;

@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentBasicInformationBinding;
-import com.example.eventy.register.CarouselAdapter;
+import com.example.eventy.users.register.CarouselAdapter;
 import com.example.eventy.users.model.User;
 import com.example.eventy.users.model.UserType;
 

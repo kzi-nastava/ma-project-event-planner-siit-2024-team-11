@@ -1,9 +1,9 @@
-package com.example.eventy.register;
+package com.example.eventy.users.register;
 
-import static android.app.Activity.RESULT_OK;
-
-import android.content.ClipData;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -12,18 +12,21 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.viewpager2.widget.ViewPager2;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.eventy.R;
-import com.example.eventy.databinding.FragmentRegisterProviderBinding;
+import com.example.eventy.databinding.FragmentRegisterOrganiserBinding;
+import com.example.eventy.users.model.AuthResponse;
+import com.example.eventy.users.model.LoginData;
 import com.example.eventy.users.model.RegisterData;
+import com.example.eventy.users.services.LoggedInHelperService;
 import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
@@ -31,7 +34,6 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.function.BiConsumer;
 
 import okhttp3.ResponseBody;
@@ -39,89 +41,68 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RegisterProviderFragment extends Fragment {
-    private FragmentRegisterProviderBinding binding;
-    private CarouselAdapter carouselAdapter;
-
-    private List<Uri> images = Arrays.asList(
-            Uri.parse("android.resource://com.example.eventy/" + R.mipmap.logo)
-    );
-
-    private ActivityResultLauncher<Intent> imagePickerLauncher;
+public class RegisterOrganiserFragment extends Fragment {
+    private FragmentRegisterOrganiserBinding binding;
+    private ActivityResultLauncher<Intent> galleryPickerLauncher;
+    private String profilePictureUri =
+            "/Users/rogan003/Desktop/Fakultet/5. semestar/Inzenjerstvo klijentskog sloja/Projekat/iks-project-event-planner-siit-2024-team-11/Eventy/public/ProfilePicture.png";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentRegisterProviderBinding.inflate(inflater, container, false);
+        binding = FragmentRegisterOrganiserBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        addValidation(binding.emailInputLayout, binding.emailInput, this::validateEmail);
-        addValidation(binding.passwordInputLayout, binding.passwordInput, this::validateRequired);
-        addValidation(binding.confirmPasswordInputLayout, binding.confirmPasswordInput, this::validateConfirmPassword);
-        addValidation(binding.nameInputLayout, binding.nameInput, this::validateRequired);
-        addValidation(binding.descriptionInputLayout, binding.descriptionInput, this::validateRequired);
-        addValidation(binding.addressInputLayout, binding.addressInput, this::validateRequired);
-        addValidation(binding.phoneNumberInputLayout, binding.phoneNumberInput, this::validatePhoneNumber);
-
-        ViewPager2 viewPager = binding.viewPager;
-
-        carouselAdapter = new CarouselAdapter(images);
-        viewPager.setAdapter(carouselAdapter);
-
-        imagePickerLauncher = registerForActivityResult(
+        galleryPickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    List<Uri> newImages = new ArrayList<>();
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        if (result.getData().getClipData() != null) {
-                            ClipData clipData = result.getData().getClipData();
-                            for (int i = 0; i < clipData.getItemCount(); i++) {
-                                Uri imageUri = clipData.getItemAt(i).getUri();
-                                newImages.add(imageUri);
-                            }
-                        } else if (result.getData().getData() != null) {
-                            Uri imageUri = result.getData().getData();
-                            newImages.add(imageUri);
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            Uri imageUri = data.getData();
+                            binding.profilePicture.setImageURI(imageUri);
+                            this.profilePictureUri = imageUri.toString();
                         }
-
-                        carouselAdapter.updateImages(newImages);
-                        images = newImages;
                     }
                 }
         );
 
-        binding.addPhotosButton.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setType("image/*");
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-            imagePickerLauncher.launch(intent);
-        });
+        binding.profilePicture.setOnClickListener(v -> openGalleryPicker());
+
+        addValidation(binding.emailInputLayout, binding.emailInput, this::validateEmail);
+        addValidation(binding.passwordInputLayout, binding.passwordInput, this::validateRequired);
+        addValidation(binding.confirmPasswordInputLayout, binding.confirmPasswordInput, this::validateConfirmPassword);
+        addValidation(binding.firstNameInputLayout, binding.firstNameInput, this::validateRequired);
+        addValidation(binding.lastNameInputLayout, binding.lastNameInput, this::validateRequired);
+        addValidation(binding.addressInputLayout, binding.addressInput, this::validateRequired);
+        addValidation(binding.phoneNumberInputLayout, binding.phoneNumberInput, this::validatePhoneNumber);
 
         binding.registerButton.setOnClickListener(v -> {
             binding.emailInput.setText(binding.emailInput.getText());
             binding.passwordInput.setText(binding.passwordInput.getText());
             binding.confirmPasswordInput.setText(binding.confirmPasswordInput.getText());
-            binding.nameInput.setText(binding.nameInput.getText());
-            binding.descriptionInput.setText(binding.descriptionInput.getText());
+            binding.firstNameInput.setText(binding.firstNameInput.getText());
+            binding.lastNameInput.setText(binding.lastNameInput.getText());
             binding.addressInput.setText(binding.addressInput.getText());
             binding.phoneNumberInput.setText(binding.phoneNumberInput.getText());
 
             if(binding.emailInputLayout.getError() == null &&
                     binding.passwordInputLayout.getError() == null &&
-                    binding.confirmPasswordInputLayout.getError() == null &&
-                    binding.nameInputLayout.getError() == null &&
-                    binding.descriptionInputLayout.getError() == null &&
-                    binding.addressInputLayout.getError() == null &&
-                    binding.phoneNumberInputLayout.getError() == null) {
+                binding.confirmPasswordInputLayout.getError() == null &&
+                binding.firstNameInputLayout.getError() == null &&
+                binding.lastNameInputLayout.getError() == null &&
+                binding.addressInputLayout.getError() == null &&
+                binding.phoneNumberInputLayout.getError() == null) {
+
                 Call<ResponseBody> call = ClientUtils.authService.register(
-                        new RegisterData(this.urisToStringList(),
+                        new RegisterData(new ArrayList<String>(Arrays.asList(this.profilePictureUri)),
                                 binding.emailInput.getText().toString(),
                                 binding.passwordInput.getText().toString(),
                                 binding.confirmPasswordInput.getText().toString(),
+                                binding.firstNameInput.getText().toString(),
+                                binding.lastNameInput.getText().toString(),
                                 null,
                                 null,
-                                binding.nameInput.getText().toString(),
-                                binding.descriptionInput.getText().toString(),
                                 binding.addressInput.getText().toString(),
                                 binding.phoneNumberInput.getText().toString()));
                 call.enqueue(new Callback<ResponseBody>() {
@@ -170,7 +151,6 @@ public class RegisterProviderFragment extends Fragment {
             }
         });
 
-
         return root;
     }
 
@@ -180,24 +160,22 @@ public class RegisterProviderFragment extends Fragment {
         binding = null;
     }
 
+    private void openGalleryPicker() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        galleryPickerLauncher.launch(intent);
+    }
+
     private void addValidation(TextInputLayout textInputLayout, TextInputEditText textInputEditText, BiConsumer<String, TextInputLayout> action) {
-        // Real-time field validation
         textInputEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // No action needed here
-            }
-
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Validate input as the user types
                 action.accept(s.toString(), textInputLayout);
             }
-
             @Override
-            public void afterTextChanged(Editable s) {
-                // No action needed here
-            }
+            public void afterTextChanged(Editable s) { }
         });
 
         textInputEditText.setOnFocusChangeListener((v, hasFocus) -> {
@@ -241,15 +219,5 @@ public class RegisterProviderFragment extends Fragment {
         } else {
             textInputLayout.setError(null);
         }
-    }
-
-    private List<String> urisToStringList() {
-        List<String> uriStrings = new ArrayList<>();
-
-        for(Uri uri : images) {
-            uriStrings.add(uri.toString());
-        }
-
-        return uriStrings;
     }
 }
