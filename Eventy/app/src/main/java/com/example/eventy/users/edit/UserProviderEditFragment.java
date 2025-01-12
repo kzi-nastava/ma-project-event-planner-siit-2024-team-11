@@ -2,8 +2,12 @@ package com.example.eventy.users.edit;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.app.AlertDialog;
 import android.content.ClipData;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -22,9 +26,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.eventy.R;
+import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentUserProviderEditBinding;
+import com.example.eventy.users.model.UpdateUser;
 import com.example.eventy.users.register.CarouselAdapter;
 import com.example.eventy.users.model.User;
+import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -34,6 +41,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class UserProviderEditFragment extends Fragment {
 
@@ -205,18 +216,54 @@ public class UserProviderEditFragment extends Fragment {
                 binding.descriptionInputLayout.getError() == null &&
                 binding.addressInputLayout.getError() == null &&
                 binding.phoneNumberInputLayout.getError() == null) {
-            NavController navController = Navigation.findNavController(v);
+            Call<User> call = ClientUtils.userService.update(new UpdateUser(
+                    this.user.getId(),
+                    images.stream().map(Uri::toString).toList(),
+                    binding.emailInput.getText().toString(),
+                    binding.oldPasswordInput.getText().toString(),
+                    binding.passwordInput.getText().toString(),
+                    binding.confirmPasswordInput.getText().toString(),
+                    null,
+                    null,
+                    binding.nameInput.getText().toString(),
+                    binding.descriptionInput.getText().toString(),
+                    binding.addressInput.getText().toString(),
+                    binding.phoneNumberInput.getText().toString()
+            ));
+            call.enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, Response<User> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        new AlertDialog.Builder(getContext())
+                                .setTitle(" Successful edit")
+                                .setMessage("User is now edited successfully.")
+                                .setIcon(R.drawable.icon_success_png)
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        // this leads to home (for now), will lead to the event page or user profile
+                                        NavController navController = Navigation.findNavController(v);
+                                        navController.popBackStack();
+                                        navController.navigate(R.id.nav_my_profile);
+                                    }})
+                                .show();
+                    } else {
+                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while editing user! Please check you data!");
+                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        errorOkDialog.show();
+                    }
+                }
 
-            navController.popBackStack();
-
-            navController.navigate(R.id.nav_home);
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while editing user! Please check you data!");
+                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    errorOkDialog.show();
+                }
+            });
         } else {
-            new MaterialAlertDialogBuilder(requireContext())
-                    .setTitle("Invalid input")
-                    .setMessage("Invalid input data!")
-                    .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                    .setIcon(R.drawable.icon_error)
-                    .show();
+            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while editing user! Please check you data!");
+            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            errorOkDialog.show();
         }
     }
 }

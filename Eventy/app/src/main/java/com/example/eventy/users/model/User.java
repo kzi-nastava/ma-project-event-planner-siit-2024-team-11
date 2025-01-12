@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class User {
+    Long id;
     private UserType userType;
     private List<String> profilePictures;
     private String email;
@@ -100,5 +101,13 @@ public class User {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
