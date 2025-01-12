@@ -218,7 +218,7 @@ public class UserProviderEditFragment extends Fragment {
                 binding.phoneNumberInputLayout.getError() == null) {
             Call<User> call = ClientUtils.userService.update(new UpdateUser(
                     this.user.getId(),
-                    images.stream().map(Uri::toString).toList(),
+                    images.stream().map(Uri::toString).collect(Collectors.toList()),
                     binding.emailInput.getText().toString(),
                     binding.oldPasswordInput.getText().toString(),
                     binding.passwordInput.getText().toString(),

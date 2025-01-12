@@ -38,13 +38,13 @@ public class MyCardsFragment extends Fragment {
         if(this.user.getUserType() == UserType.ORGANIZER) {
             getParentFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragmentContainer, new OrganizerEventsFragment())
+                    .replace(R.id.fragmentContainer, new OrganizerEventsFragment(this.user.getId()))
                     .commit();
         }
         else {
             getParentFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragmentContainer, new PUPOwnServicesFragment())
+                    .replace(R.id.fragmentContainer, new PUPOwnServicesFragment(this.user.getId()))
                     .commit();
         }
     }

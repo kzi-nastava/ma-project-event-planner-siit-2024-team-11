@@ -46,6 +46,11 @@ public class OrganizerEventsFragment extends Fragment implements MultiSpinner.Mu
     // private SolutionsViewModel solutionsViewModel;
     private Button dateRangeButton;
     private TextView showSelectedDateText;
+    private Long userId;
+    public OrganizerEventsFragment(Long userId) {
+        this.userId = userId;
+    }
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,

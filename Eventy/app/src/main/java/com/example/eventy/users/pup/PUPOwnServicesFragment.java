@@ -43,6 +43,11 @@ public class PUPOwnServicesFragment extends Fragment implements MultiSpinner.Mul
     private SolutionsAdapter solutionsAdapter;
     private TextView showSelectedDateText;
     private Button dateRangeButton;
+    private Long userId;
+
+    public PUPOwnServicesFragment(Long userId) {
+        this.userId = userId;
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
