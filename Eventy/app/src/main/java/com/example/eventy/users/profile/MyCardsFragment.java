@@ -14,7 +14,6 @@ import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentMyCardsBinding;
 import com.example.eventy.users.model.User;
 import com.example.eventy.users.model.UserType;
-import com.example.eventy.users.pup.PUPOwnServicesFragment;
 
 public class MyCardsFragment extends Fragment {
     private FragmentMyCardsBinding binding;
