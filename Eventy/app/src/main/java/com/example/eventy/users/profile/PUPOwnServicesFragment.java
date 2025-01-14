@@ -1,48 +1,24 @@
 package com.example.eventy.users.profile;
 
-import android.annotation.SuppressLint;
-import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventy.R;
-import com.example.eventy.adapters.events.EventsAdapter;
 import com.example.eventy.adapters.solutions.SolutionsAdapter;
 import com.example.eventy.common.PagedResponse;
-import com.example.eventy.custom.MultiSpinner;
 import com.example.eventy.databinding.FragmentPupOwnServicesBinding;
-import com.example.eventy.events.model.EventCard;
-import com.example.eventy.model.enums.ReservationConfirmationType;
-import com.example.eventy.model.enums.Status;
-import com.example.eventy.events.model.EventType;
-import com.example.eventy.model.solution.Category;
-import com.example.eventy.model.solution.Service;
 import com.example.eventy.model.solution.Solution;
 import com.example.eventy.utils.ClientUtils;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,8 +27,6 @@ import retrofit2.Response;
 public class PUPOwnServicesFragment extends Fragment {
     private FragmentPupOwnServicesBinding binding;
     private SolutionsAdapter solutionsAdapter;
-    private TextView showSelectedDateText;
-    private Button dateRangeButton;
     private Long userId;
     private boolean isMyCards;
     private int page = 0;
@@ -71,6 +45,7 @@ public class PUPOwnServicesFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentPupOwnServicesBinding.inflate(inflater, container, false);
 
+        solutionCards = new ArrayList<>();
         solutionsAdapter = new SolutionsAdapter(requireContext(), solutionCards);
 
         binding.solutionsRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -89,18 +64,13 @@ public class PUPOwnServicesFragment extends Fragment {
             }
         });
 
-        binding.searchButton.setOnClickListener(v -> {
+        binding.searchSolutionsButton.setOnClickListener(v -> {
             page = 0;
             solutionCards = new ArrayList<>();
             loadCards(binding.searchInput.getQuery().toString(), page);
         });
 
         return binding.getRoot();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
