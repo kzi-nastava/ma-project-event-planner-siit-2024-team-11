@@ -123,7 +123,7 @@ public class UserCalendarFragment extends Fragment {
 
                             while (!iterDate.isAfter(occupancy.getOccupationEndDate())) {
                                 eventDates.add(CalendarDay.from(iterDate.getYear(), iterDate.getMonthValue(), iterDate.getDayOfMonth()));
-                                iterDate.plusDays(1);
+                                iterDate = iterDate.plusDays(1);
                             }
                         }
                         else if(occupancy.getOccupancyType() == OccupancyType.PRODUCT) {
@@ -131,7 +131,7 @@ public class UserCalendarFragment extends Fragment {
 
                             while (!iterDate.isAfter(occupancy.getOccupationEndDate())) {
                                 productDates.add(CalendarDay.from(iterDate.getYear(), iterDate.getMonthValue(), iterDate.getDayOfMonth()));
-                                iterDate.plusDays(1);
+                                iterDate = iterDate.plusDays(1);
                             }
                         }
                         else {
@@ -139,7 +139,7 @@ public class UserCalendarFragment extends Fragment {
 
                             while (!iterDate.isAfter(occupancy.getOccupationEndDate())) {
                                 serviceDates.add(CalendarDay.from(iterDate.getYear(), iterDate.getMonthValue(), iterDate.getDayOfMonth()));
-                                iterDate.plusDays(1);
+                                iterDate = iterDate.plusDays(1);
                             }
                         }
                     }
