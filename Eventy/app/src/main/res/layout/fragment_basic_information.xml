@@ -8,7 +8,7 @@ android:layout_height="match_parent"
 android:orientation="vertical"
     android:layout_marginTop="16dp"
 android:background="@color/background_color"
-tools:context=".users.BasicInformationFragment"
+tools:context=".users.profile.BasicInformationFragment"
     android:gravity="center_horizontal">
 
     <androidx.viewpager2.widget.ViewPager2

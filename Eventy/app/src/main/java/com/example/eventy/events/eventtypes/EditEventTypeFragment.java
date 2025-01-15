@@ -2,6 +2,8 @@ package com.example.eventy.events.eventtypes;
 
 import static android.content.Intent.getIntent;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.eventy.R;
+import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentEditEventTypeBinding;
 import com.example.eventy.events.model.CreatedEventType;
 import com.example.eventy.events.model.EventType;
@@ -45,7 +48,12 @@ public class EditEventTypeFragment extends Fragment {
         binding = FragmentEditEventTypeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        Long typeId = getArguments().getLong("EventTypeID");
+
         binding.backButton.setOnClickListener(v -> {
+            Bundle args = new Bundle();
+            args.putLong("EventTypeID", typeId);
+
             NavController navController = Navigation.findNavController(v);
 
             // Problem with back button so we clear the backstack
@@ -54,7 +62,6 @@ public class EditEventTypeFragment extends Fragment {
             navController.navigate(R.id.nav_event_type_details);
         });
 
-        Long typeId = getArguments().getLong("EventTypeID");
         Call<EventTypeWithActivity> call = ClientUtils.eventTypeService.get(typeId);
         call.enqueue(new Callback<EventTypeWithActivity>() {
             @Override
@@ -102,23 +109,17 @@ public class EditEventTypeFragment extends Fragment {
                                 .show();
                     });
                 } else {
-                    new MaterialAlertDialogBuilder(requireContext())
-                            .setTitle("Error while loading")
-                            .setMessage("Error while loading!")
-                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                            .setIcon(R.drawable.icon_error)
-                            .show();
+                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while loading!");
+                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    errorOkDialog.show();
                 }
             }
 
             @Override
             public void onFailure(Call<EventTypeWithActivity> call, Throwable t) {
-                new MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("Error while loading")
-                        .setMessage("Error while loading!")
-                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                        .setIcon(R.drawable.icon_error)
-                        .show();
+                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while loading!");
+                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                errorOkDialog.show();
             }
         });
 
@@ -151,32 +152,23 @@ public class EditEventTypeFragment extends Fragment {
 
                             navController.navigate(R.id.nav_event_types);
                         } else {
-                            new MaterialAlertDialogBuilder(requireContext())
-                                    .setTitle("Invalid input")
-                                    .setMessage("Invalid input data!")
-                                    .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                                    .setIcon(R.drawable.icon_error)
-                                    .show();
+                            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Invalid input data!");
+                            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            errorOkDialog.show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<EventType> call, Throwable t) {
-                        new MaterialAlertDialogBuilder(requireContext())
-                                .setTitle("Invalid input")
-                                .setMessage("Invalid input data!")
-                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                                .setIcon(R.drawable.icon_error)
-                                .show();
+                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Invalid input data!");
+                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        errorOkDialog.show();
                     }
                 });
             } else {
-                new MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("Invalid input")
-                        .setMessage("Name and description are required are required!")
-                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                        .setIcon(R.drawable.icon_error)
-                        .show();
+                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Invalid input data!");
+                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                errorOkDialog.show();
             }
         });
 

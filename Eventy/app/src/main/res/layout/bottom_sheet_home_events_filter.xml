@@ -58,7 +58,7 @@
             android:layout_marginRight="2dp"
             android:layout_marginBottom="13dp"/>
 
-        <!-- Event Type Spinner -->
+        <!-- EventCard Type Spinner -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

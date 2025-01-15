@@ -91,7 +91,7 @@ public class FeaturedSolutionsFragment extends Fragment {
         );
 
         Service service3 = new Service(
-            "Event Catering - The best",
+            "EventCard Catering - The best",
             new Category("catering", "Neki description", Status.ACCEPTED),
             "Delicious catering service for all types of events.",
             1200.0, 15,

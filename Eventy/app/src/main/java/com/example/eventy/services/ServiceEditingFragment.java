@@ -18,7 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentServiceEditingBinding;
-import com.example.eventy.register.CarouselAdapter;
+import com.example.eventy.users.register.CarouselAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;

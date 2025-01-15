@@ -1,4 +1,4 @@
-package com.example.eventy.users;
+package com.example.eventy.users.profile;
 
 import android.os.Bundle;
 
@@ -14,7 +14,6 @@ import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentMyCardsBinding;
 import com.example.eventy.users.model.User;
 import com.example.eventy.users.model.UserType;
-import com.example.eventy.users.pup.PUPOwnServicesFragment;
 
 public class MyCardsFragment extends Fragment {
     private FragmentMyCardsBinding binding;
@@ -35,16 +34,16 @@ public class MyCardsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if(this.user.getAccountType() == UserType.ORGANIZER) {
+        if(this.user.getUserType() == UserType.ORGANIZER) {
             getParentFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragmentContainer, new OrganizerEventsFragment())
+                    .replace(R.id.fragmentContainer, new OrganizerEventsFragment(this.user.getId(), true))
                     .commit();
         }
         else {
             getParentFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragmentContainer, new PUPOwnServicesFragment())
+                    .replace(R.id.fragmentContainer, new PUPOwnServicesFragment(this.user.getId(), true))
                     .commit();
         }
     }

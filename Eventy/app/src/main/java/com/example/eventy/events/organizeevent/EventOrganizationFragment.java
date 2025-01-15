@@ -89,7 +89,7 @@ public class EventOrganizationFragment extends Fragment {
         });
 
         binding.submitButton.setOnClickListener(v -> {
-            String title = "Organize an Event";
+            String title = "Organize an EventCard";
             String submitText = "NEXT";
 
             if(eventOrganizationStage == EventOrganizationStage.BASIC_INFORMATION) {

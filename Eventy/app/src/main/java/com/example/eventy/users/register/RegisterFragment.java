@@ -1,4 +1,4 @@
-package com.example.eventy.register;
+package com.example.eventy.users.register;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -36,8 +36,8 @@ public class RegisterFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();
             isOrganiser = !isOrganiser;
-            binding.switchFragmentButton.setText(isOrganiser ? "Register as Product/Service Provider" : "Register as Event Organiser");
-            binding.registerLabel.setText(isOrganiser ? "Register as Event Organiser" : "Register as Product/Service Provider");
+            binding.switchFragmentButton.setText(isOrganiser ? "Register as Product/Service Provider" : "Register as EventCard Organiser");
+            binding.registerLabel.setText(isOrganiser ? "Register as EventCard Organiser" : "Register as Product/Service Provider");
         });
 
         binding.loginHereButton.setOnClickListener(v -> {

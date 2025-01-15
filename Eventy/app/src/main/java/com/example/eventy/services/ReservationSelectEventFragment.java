@@ -27,7 +27,7 @@ import com.example.eventy.custom.MultiSpinner;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentServiceReservationSelectEventBinding;
 import com.example.eventy.events.SelectEventFragment;
-import com.example.eventy.model.event.Event;
+import com.example.eventy.events.model.EventCard;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
@@ -37,7 +37,7 @@ import java.util.Locale;
 
 public class ReservationSelectEventFragment extends Fragment implements MultiSpinner.MultiSpinnerListener  {
     private FragmentServiceReservationSelectEventBinding binding;
-    private Event selectedEvent = null;
+    private EventCard selectedEventCard = null;
     private Button dateRangeButton;
     private TextView showSelectedDateText;
 
@@ -60,13 +60,13 @@ public class ReservationSelectEventFragment extends Fragment implements MultiSpi
 
         AppCompatButton continueButton = binding.confirmReservationButton;
         continueButton.setOnClickListener(v1 -> {
-            if (selectedEvent == null) {
+            if (selectedEventCard == null) {
                 ErrorOkDialog errorOkDialog = new ErrorOkDialog(this.getActivity(), "Event Not Selected", "Please choose an event to proceed to the next step.");
                 errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 errorOkDialog.show();
             } else {
                 getChildFragmentManager().beginTransaction()
-                    .replace(R.id.main_container, new ReservationFragment(selectedEvent))
+                    .replace(R.id.main_container, new ReservationFragment(selectedEventCard))
                     .addToBackStack(null)
                     .commit();
             }
@@ -83,7 +83,7 @@ public class ReservationSelectEventFragment extends Fragment implements MultiSpi
 
     private void setupEventFilters() {
         binding.filterButton.setOnClickListener(v -> {
-            Toast.makeText(this.getContext(), "Event Filter button clicked!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.getContext(), "EventCard Filter button clicked!", Toast.LENGTH_SHORT).show();
 
             BottomSheetDialog bottomSheetDialog = loadAndGetEventBottomSheetFilterDialog();
 
@@ -237,7 +237,7 @@ public class ReservationSelectEventFragment extends Fragment implements MultiSpi
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //ArrayList<Event> events = getEvents();
+        //ArrayList<EventCard> events = getEvents();
 
         //eventsAdapter = new EventsAdapter(requireContext(), events);
 
@@ -246,9 +246,9 @@ public class ReservationSelectEventFragment extends Fragment implements MultiSpi
     }
 
     @NonNull
-    private static ArrayList<Event> getEvents() {
-        ArrayList<Event> events = new ArrayList<>();
-        return events;
+    private static ArrayList<EventCard> getEvents() {
+        ArrayList<EventCard> eventCards = new ArrayList<>();
+        return eventCards;
     }
 
     @Override
@@ -267,7 +267,7 @@ public class ReservationSelectEventFragment extends Fragment implements MultiSpi
         }
     }
 
-    public void setSelectedEvent(Event selectedEvent) {
-        this.selectedEvent = selectedEvent;
+    public void setSelectedEvent(EventCard selectedEventCard) {
+        this.selectedEventCard = selectedEventCard;
     }
 }

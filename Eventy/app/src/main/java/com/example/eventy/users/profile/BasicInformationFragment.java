@@ -1,4 +1,4 @@
-package com.example.eventy.users;
+package com.example.eventy.users.profile;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentBasicInformationBinding;
-import com.example.eventy.register.CarouselAdapter;
+import com.example.eventy.users.register.CarouselAdapter;
 import com.example.eventy.users.model.User;
 import com.example.eventy.users.model.UserType;
 
@@ -40,7 +40,7 @@ public class BasicInformationFragment extends Fragment {
         binding = FragmentBasicInformationBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        if(user.getAccountType() != UserType.PROVIDER) {
+        if(user.getUserType() != UserType.PROVIDER) {
             binding.descriptionText.setVisibility(View.GONE);
         }
         else {

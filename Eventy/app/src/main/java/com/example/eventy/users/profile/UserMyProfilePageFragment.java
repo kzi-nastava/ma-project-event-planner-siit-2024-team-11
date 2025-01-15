@@ -1,5 +1,11 @@
 package com.example.eventy.users.profile;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,20 +16,19 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.eventy.R;
-import com.example.eventy.databinding.FragmentOtherUserProfilePageBinding;
+import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentUserMyProfilePageBinding;
-import com.example.eventy.users.BasicInformationFragment;
-import com.example.eventy.users.MyCardsFragment;
-import com.example.eventy.users.OrganizerEventsFragment;
 import com.example.eventy.users.model.User;
 import com.example.eventy.users.model.UserType;
-import com.example.eventy.users.pup.PUPOwnServicesFragment;
+import com.example.eventy.users.services.LoggedInHelperService;
+import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.tabs.TabLayout;
 
-import java.util.ArrayList;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class UserMyProfilePageFragment extends Fragment {
 
@@ -37,80 +42,133 @@ public class UserMyProfilePageFragment extends Fragment {
         binding = FragmentUserMyProfilePageBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        this.user = new User(UserType.ORGANIZER, new ArrayList<>(), "organizer@gmail.com", "Some address 23",
-                "+381 34 24 53 243", "Organizer", "Ofevents", null, null);
-
-        if(user.getAccountType() != UserType.AUTH_USER) {
-            binding.upgradeButton.setVisibility(View.GONE);
-        }
-
-        TabLayout tabLayout = binding.tabLayout;
-
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_info));
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_organize_event));
-        if(user.getAccountType() == UserType.ORGANIZER || user.getAccountType() == UserType.PROVIDER) {
-            tabLayout.addTab(tabLayout.newTab().setText("My")
-                    .setIcon(user.getAccountType() == UserType.ORGANIZER ? R.drawable.icon_event_seat : R.drawable.icon_service));
-        }
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_favorite).setText("Events"));
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_favorite).setText("Solutions"));
-
-        // Default fragment
-        getParentFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, new BasicInformationFragment(this.user))
-                .commit();
-
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        Call<User> call = ClientUtils.userService.get(LoggedInHelperService.getId());
+        call.enqueue(new Callback<User>() {
             @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                Fragment selectedFragment;
-                if (tab.getPosition() == 0) {
-                    selectedFragment = new BasicInformationFragment(user);
-                } else if(tab.getPosition() == 1) {
-                    selectedFragment = new UserCalendarFragment();
-                } else if(tab.getPosition() == 2) {
-                    selectedFragment = new MyCardsFragment(user);
-                } else if(tab.getPosition() == 3) {
-                    selectedFragment = new OrganizerEventsFragment();
-                } else {
-                    selectedFragment = new PUPOwnServicesFragment();
+            public void onResponse(Call<User> call, Response<User> response) {
+                user = response.body();
+
+                if(user.getUserType() != UserType.AUTHENTICATED) {
+                    binding.upgradeButton.setVisibility(View.GONE);
                 }
 
+                TabLayout tabLayout = binding.tabLayout;
+
+                tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_info));
+                tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_organize_event));
+                if(user.getUserType() == UserType.ORGANIZER || user.getUserType() == UserType.PROVIDER) {
+                    tabLayout.addTab(tabLayout.newTab().setText("My")
+                            .setIcon(user.getUserType() == UserType.ORGANIZER ? R.drawable.icon_event_seat : R.drawable.icon_service));
+                }
+                tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_favorite).setText("Events"));
+                tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_favorite).setText("Solutions"));
+
+                // Default fragment
                 getParentFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragmentContainer, selectedFragment)
+                        .replace(R.id.fragmentContainer, new BasicInformationFragment(user))
                         .commit();
+
+                tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+                        Fragment selectedFragment;
+                        if (tab.getPosition() == 0) {
+                            selectedFragment = new BasicInformationFragment(user);
+                        } else if(tab.getPosition() == 1) {
+                            selectedFragment = new UserCalendarFragment();
+                        } else if(tab.getPosition() == 2) {
+                            selectedFragment = new MyCardsFragment(user);
+                        } else if(tab.getPosition() == 3) {
+                            selectedFragment = new OrganizerEventsFragment(user.getId(), false);
+                        } else {
+                            selectedFragment = new PUPOwnServicesFragment(user.getId(), false);
+                        }
+
+                        getParentFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.fragmentContainer, selectedFragment)
+                                .commit();
+                    }
+
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
+
+                    }
+
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
+
+                    }
+                });
+
+                if(user.getUserType() != UserType.ORGANIZER && user.getUserType() != UserType.PROVIDER) {
+                    tabLayout.setVisibility(View.GONE);
+                }
+
+                if(user.getUserType() == UserType.PROVIDER) {
+                    binding.nameText.setText(user.getName());
+                }
+                else {
+                    binding.nameText.setText(user.getFirstName() + " " + user.getLastName());
+                }
+
+                binding.editButton.setOnClickListener(v -> {
+                    NavController navController = Navigation.findNavController(v);
+
+                    navController.popBackStack();
+
+                    navController.navigate(R.id.nav_edit_user);
+                });
+
+                binding.deactivateButton.setOnClickListener(v -> {
+                    Call<Void> callDeactivate = ClientUtils.userService.deactivate(LoggedInHelperService.getId());
+                    callDeactivate.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+                                new AlertDialog.Builder(getContext())
+                                        .setTitle(" Successful deactivation")
+                                        .setMessage("User is now deactivated.")
+                                        .setIcon(R.drawable.icon_success_png)
+                                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int whichButton) {
+                                                // this is like logout
+                                                SharedPreferences sharedPreferences = requireContext().getSharedPreferences("EventyPreferences", Context.MODE_PRIVATE);
+                                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                editor.remove("JWT_TOKEN");
+                                                editor.apply();
+
+                                                LoggedInHelperService.manageNavigationItems();
+
+                                                NavController navController = Navigation.findNavController(v);
+                                                navController.popBackStack();
+                                                navController.navigate(R.id.nav_home);
+                                            }})
+                                        .show();
+                            } else {
+                                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while deactivating account!");
+                                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                errorOkDialog.show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while deactivating account!");
+                            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            errorOkDialog.show();
+                        }
+                    });
+                });
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
+            public void onFailure(Call<User> call, Throwable t) {
+                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while getting user profile!");
+                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                errorOkDialog.show();
             }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-        if(user.getAccountType() != UserType.ORGANIZER && user.getAccountType() != UserType.PROVIDER) {
-            tabLayout.setVisibility(View.GONE);
-        }
-
-        if(user.getAccountType() == UserType.PROVIDER) {
-            binding.nameText.setText(user.getName());
-        }
-        else {
-            binding.nameText.setText(user.getFirstName() + " " + user.getLastName());
-        }
-
-        binding.editButton.setOnClickListener(v -> {
-            NavController navController = Navigation.findNavController(v);
-
-            navController.popBackStack();
-
-            navController.navigate(R.id.nav_edit_user);
         });
 
         return root;

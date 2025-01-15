@@ -7,6 +7,10 @@ public class PagedResponse<T> {
     private int totalPages;
     private long totalElements;
 
+    public PagedResponse() {
+
+    }
+
     public PagedResponse(List<T> content, int totalPages, long totalElements) {
         this.content = content;
         this.totalPages = totalPages;

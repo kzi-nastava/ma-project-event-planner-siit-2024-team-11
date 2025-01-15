@@ -13,7 +13,7 @@
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:background="@color/background_color"
-        tools:context="register.RegisterFragment">
+        tools:context=".users.register.RegisterFragment">
 
         <TextView
             android:id="@+id/title_text"

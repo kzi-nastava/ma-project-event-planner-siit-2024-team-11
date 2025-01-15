@@ -1,13 +1,12 @@
-package com.example.eventy.model.event;
+package com.example.eventy.events.model;
 
-import com.example.eventy.events.model.EventType;
 import com.example.eventy.model.enums.PrivacyType;
 import com.example.eventy.model.utils.Location;
 
 import java.util.Date;
 import java.util.Objects;
 
-public class Event {
+public class EventCard {
     private String name;
     private String description;
     private Integer maxParticipants;
@@ -16,9 +15,9 @@ public class Event {
     private Location location;
     private EventType eventType;
 
-    public Event() { }
+    public EventCard() { }
 
-    public Event(String name, String description, Integer maxParticipants, PrivacyType privacyType, Date date, Location location, EventType eventType) {
+    public EventCard(String name, String description, Integer maxParticipants, PrivacyType privacyType, Date date, Location location, EventType eventType) {
         this.name = name;
         this.description = description;
         this.maxParticipants = maxParticipants;
@@ -28,7 +27,7 @@ public class Event {
         this.eventType = eventType;
     }
 
-    public Event(String businessMeeting, EventType meetingType, String s, int i, PrivacyType privacyType, Date date) {
+    public EventCard(String businessMeeting, EventType meetingType, String s, int i, PrivacyType privacyType, Date date) {
     }
 
     public String getName() {
@@ -91,8 +90,8 @@ public class Event {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Event event = (Event) o;
-        return Objects.equals(name, event.name) && Objects.equals(description, event.description) && Objects.equals(maxParticipants, event.maxParticipants) && privacyType == event.privacyType && Objects.equals(date, event.date) && Objects.equals(location, event.location) && Objects.equals(eventType, event.eventType);
+        EventCard eventCard = (EventCard) o;
+        return Objects.equals(name, eventCard.name) && Objects.equals(description, eventCard.description) && Objects.equals(maxParticipants, eventCard.maxParticipants) && privacyType == eventCard.privacyType && Objects.equals(date, eventCard.date) && Objects.equals(location, eventCard.location) && Objects.equals(eventType, eventCard.eventType);
     }
 
     @Override
@@ -102,7 +101,7 @@ public class Event {
 
     @Override
     public String toString() {
-        return "Event{" +
+        return "EventCard{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", maxParticipants=" + maxParticipants +

@@ -1,5 +1,7 @@
 package com.example.eventy.events.eventtypes;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.eventy.R;
+import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentAddEventTypeBinding;
 import com.example.eventy.events.model.CreatedEventType;
 import com.example.eventy.events.model.EventType;
@@ -105,32 +108,23 @@ public class AddEventTypeFragment extends Fragment {
 
                             navController.navigate(R.id.nav_event_types);
                         } else {
-                            new MaterialAlertDialogBuilder(requireContext())
-                                    .setTitle("Invalid input")
-                                    .setMessage("Invalid input data!")
-                                    .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                                    .setIcon(R.drawable.icon_error)
-                                    .show();
+                            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Invalid input data!");
+                            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            errorOkDialog.show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<EventType> call, Throwable t) {
-                        new MaterialAlertDialogBuilder(requireContext())
-                                .setTitle("Invalid input")
-                                .setMessage("Invalid input data!")
-                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                                .setIcon(R.drawable.icon_error)
-                                .show();
+                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Invalid input data!");
+                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        errorOkDialog.show();
                     }
                 });
             } else {
-                new MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("Invalid input")
-                        .setMessage("Name and description are required are required!")
-                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                        .setIcon(R.drawable.icon_error)
-                        .show();
+                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Invalid input data!");
+                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                errorOkDialog.show();
             }
         });
 
