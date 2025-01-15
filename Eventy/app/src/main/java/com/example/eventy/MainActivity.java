@@ -144,12 +144,12 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
 
-        String role = LoggedInHelperService.getRole();
-
-        menu.findItem(R.id.action_profile).setVisible(role != null);
-        menu.findItem(R.id.action_messages).setVisible(role != null);
-        menu.findItem(R.id.action_notifications).setVisible(role != null);
-        menu.findItem(R.id.action_logout).setVisible(role != null);
+//        String role = LoggedInHelperService.getRole();
+//
+//        menu.findItem(R.id.action_profile).setVisible(role != null);
+//        menu.findItem(R.id.action_messages).setVisible(role != null);
+//        menu.findItem(R.id.action_notifications).setVisible(role != null);
+//        menu.findItem(R.id.action_logout).setVisible(role != null);
 
         return true;
     }
