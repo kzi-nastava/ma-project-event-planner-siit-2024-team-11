@@ -68,7 +68,6 @@ public class UserCalendarFragment extends Fragment {
             productDates.clear();
             serviceDates.clear();
             addEventsForCurrentMonth(date);
-            calendarView.invalidateDecorators();
         });
         return root;
     }
@@ -143,6 +142,8 @@ public class UserCalendarFragment extends Fragment {
                             }
                         }
                     }
+
+                    binding.calendarView.invalidateDecorators();
                 } else {
                     ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while getting your calendar!");
                     errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
