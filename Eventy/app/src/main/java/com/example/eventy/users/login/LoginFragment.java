@@ -2,6 +2,8 @@ package com.example.eventy.users.login;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,12 +15,12 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.eventy.R;
+import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentLoginBinding;
 import com.example.eventy.users.model.AuthResponse;
 import com.example.eventy.users.model.LoginData;
 import com.example.eventy.users.services.LoggedInHelperService;
 import com.example.eventy.utils.ClientUtils;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -64,23 +66,17 @@ public class LoginFragment extends Fragment {
 
                         navController.navigate(R.id.nav_home);
                     } else {
-                        new MaterialAlertDialogBuilder(requireContext())
-                                .setTitle("Invalid input")
-                                .setMessage("Email and password don't match!")
-                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                                .setIcon(R.drawable.icon_error)
-                                .show();
+                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Email and password don't match!");
+                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        errorOkDialog.show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<AuthResponse> call, Throwable t) {
-                    new MaterialAlertDialogBuilder(requireContext())
-                            .setTitle("Invalid input")
-                            .setMessage("Email and password don't match!")
-                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                            .setIcon(R.drawable.icon_error)
-                            .show();
+                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Email and password don't match!");
+                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    errorOkDialog.show();
                 }
             });
         });

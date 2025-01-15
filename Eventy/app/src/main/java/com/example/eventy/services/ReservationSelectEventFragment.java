@@ -61,7 +61,7 @@ public class ReservationSelectEventFragment extends Fragment implements MultiSpi
         AppCompatButton continueButton = binding.confirmReservationButton;
         continueButton.setOnClickListener(v1 -> {
             if (selectedEventCard == null) {
-                ErrorOkDialog errorOkDialog = new ErrorOkDialog(this.getActivity(), "EventCard Not Selected", "Please choose an event to proceed to the next step.");
+                ErrorOkDialog errorOkDialog = new ErrorOkDialog(this.getActivity(), "Event Not Selected", "Please choose an event to proceed to the next step.");
                 errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 errorOkDialog.show();
             } else {
@@ -120,7 +120,7 @@ public class ReservationSelectEventFragment extends Fragment implements MultiSpi
         ArrayList<String> eventTypes = new ArrayList<>();
         eventTypes.add("Wedding"); eventTypes.add("Sport"); eventTypes.add("Conference");
         eventTypes.add("Party"); eventTypes.add("Prom"); eventTypes.add("Big party");
-        eventTypeMultiSpinner.setItems(eventTypes, "-", this, "EventCard types");
+        eventTypeMultiSpinner.setItems(eventTypes, "-", this, "Event types");
     }
 
     private void setupEventFilterLocation(BottomSheetDialog bottomSheetDialog) {

@@ -1,5 +1,7 @@
 package com.example.eventy.users.profile;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,14 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.eventy.R;
 import com.example.eventy.adapters.events.EventsAdapter;
 import com.example.eventy.common.PagedResponse;
+import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentOrganizerEventsBinding;
 import com.example.eventy.events.model.EventCard;
 
 import com.example.eventy.utils.ClientUtils;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 
@@ -96,12 +97,9 @@ public class OrganizerEventsFragment extends Fragment {
                             canGoFurther = false;
                         }
                     } else {
-                        new MaterialAlertDialogBuilder(requireContext())
-                                .setTitle("Error while loading")
-                                .setMessage("Error while loading my events!")
-                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                                .setIcon(R.drawable.icon_error)
-                                .show();
+                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while loading my events!");
+                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        errorOkDialog.show();
                     }
 
                     isLoading = false;
@@ -109,12 +107,9 @@ public class OrganizerEventsFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<PagedResponse<EventCard>> call, Throwable t) {
-                    new MaterialAlertDialogBuilder(requireContext())
-                            .setTitle("Error while loading")
-                            .setMessage("Error while loading my events!")
-                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                            .setIcon(R.drawable.icon_error)
-                            .show();
+                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while loading my events!");
+                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    errorOkDialog.show();
 
                     isLoading = false;
                 }
@@ -135,12 +130,9 @@ public class OrganizerEventsFragment extends Fragment {
                             canGoFurther = false;
                         }
                     } else {
-                        new MaterialAlertDialogBuilder(requireContext())
-                                .setTitle("Error while loading")
-                                .setMessage("Error while loading favorite events!")
-                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                                .setIcon(R.drawable.icon_error)
-                                .show();
+                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while loading favorite events!");
+                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        errorOkDialog.show();
                     }
 
                     isLoading = false;
@@ -148,12 +140,9 @@ public class OrganizerEventsFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<PagedResponse<EventCard>> call, Throwable t) {
-                    new MaterialAlertDialogBuilder(requireContext())
-                            .setTitle("Error while loading")
-                            .setMessage("Error while loading favorite events!")
-                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                            .setIcon(R.drawable.icon_error)
-                            .show();
+                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while loading favorite events!");
+                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    errorOkDialog.show();
 
                     isLoading = false;
                 }

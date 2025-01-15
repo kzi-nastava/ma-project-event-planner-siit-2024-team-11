@@ -36,7 +36,7 @@ public class UpgradeAccountFragment extends Fragment {
                 .addToBackStack(null)
                 .commit();
             isOrganiser = !isOrganiser;
-            binding.registerLabel.setText(isOrganiser ? "EventCard Organiser" : "Solution Provider");
+            binding.registerLabel.setText(isOrganiser ? "Event Organiser" : "Solution Provider");
         });
 
         binding.loginHereButton.setOnClickListener(v -> {

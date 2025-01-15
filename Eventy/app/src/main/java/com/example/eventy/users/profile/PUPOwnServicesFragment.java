@@ -1,5 +1,7 @@
 package com.example.eventy.users.profile;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,13 +12,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.eventy.R;
 import com.example.eventy.adapters.solutions.SolutionsAdapter;
 import com.example.eventy.common.PagedResponse;
+import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentPupOwnServicesBinding;
 import com.example.eventy.model.solution.Solution;
 import com.example.eventy.utils.ClientUtils;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 
@@ -95,12 +96,9 @@ public class PUPOwnServicesFragment extends Fragment {
                             canGoFurther = false;
                         }
                     } else {
-                        new MaterialAlertDialogBuilder(requireContext())
-                                .setTitle("Error while loading")
-                                .setMessage("Error while loading my solutions!")
-                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                                .setIcon(R.drawable.icon_error)
-                                .show();
+                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while loading my solutions!");
+                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        errorOkDialog.show();
                     }
 
                     isLoading = false;
@@ -108,12 +106,9 @@ public class PUPOwnServicesFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<PagedResponse<Solution>> call, Throwable t) {
-                    new MaterialAlertDialogBuilder(requireContext())
-                            .setTitle("Error while loading")
-                            .setMessage("Error while loading my solutions!")
-                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                            .setIcon(R.drawable.icon_error)
-                            .show();
+                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while loading my solutions!");
+                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    errorOkDialog.show();
 
                     isLoading = false;
                 }
@@ -134,12 +129,9 @@ public class PUPOwnServicesFragment extends Fragment {
                             canGoFurther = false;
                         }
                     } else {
-                        new MaterialAlertDialogBuilder(requireContext())
-                                .setTitle("Error while loading")
-                                .setMessage("Error while loading favorite solutions!")
-                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                                .setIcon(R.drawable.icon_error)
-                                .show();
+                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while loading favorite solutions!");
+                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        errorOkDialog.show();
                     }
 
                     isLoading = false;
@@ -147,12 +139,9 @@ public class PUPOwnServicesFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<PagedResponse<Solution>> call, Throwable t) {
-                    new MaterialAlertDialogBuilder(requireContext())
-                            .setTitle("Error while loading")
-                            .setMessage("Error while loading favorite solutions!")
-                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                            .setIcon(R.drawable.icon_error)
-                            .show();
+                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while loading favorite solutions!");
+                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    errorOkDialog.show();
 
                     isLoading = false;
                 }

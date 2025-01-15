@@ -66,7 +66,7 @@ public class EventOrganizationFragment extends Fragment {
             if(eventOrganizationStage == EventOrganizationStage.AGENDA_CREATION) {
                 eventOrganizationStage = EventOrganizationStage.BASIC_INFORMATION;
                 fragment = eventOrganizationBasicInformationFragmentFragment;
-                title = "Organize an EventCard";
+                title = "Organize an Event";
                 binding.backButton.setEnabled(false);
             } else if(eventOrganizationStage == EventOrganizationStage.INVITATION_SENDING) {
                 eventOrganizationStage = EventOrganizationStage.AGENDA_CREATION;

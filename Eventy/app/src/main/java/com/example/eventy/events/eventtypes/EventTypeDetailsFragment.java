@@ -1,6 +1,8 @@
 package com.example.eventy.events.eventtypes;
 
 import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.eventy.R;
+import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentEventTypeDetailsBinding;
 import com.example.eventy.events.model.EventTypeWithActivity;
 import com.example.eventy.utils.ClientUtils;
@@ -83,23 +86,17 @@ public class EventTypeDetailsFragment extends Fragment {
                     // category adapter setting
                     loadCategories();
                 } else {
-                    new MaterialAlertDialogBuilder(requireContext())
-                            .setTitle("Error while loading")
-                            .setMessage("Error while loading!")
-                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                            .setIcon(R.drawable.icon_error)
-                            .show();
+                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while loading!");
+                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    errorOkDialog.show();
                 }
             }
 
             @Override
             public void onFailure(Call<EventTypeWithActivity> call, Throwable t) {
-                new MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("Error while loading")
-                        .setMessage("Error while loading!")
-                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                        .setIcon(R.drawable.icon_error)
-                        .show();
+                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while loading!");
+                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                errorOkDialog.show();
             }
         });
 
@@ -111,23 +108,17 @@ public class EventTypeDetailsFragment extends Fragment {
                     if (response.isSuccessful() && response.body() != null) {
                         setToggleActivityButton(!response.body().getIsActive());
                     } else {
-                        new MaterialAlertDialogBuilder(requireContext())
-                                .setTitle("Error while changing activity")
-                                .setMessage("Error while changing activity!")
-                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                                .setIcon(R.drawable.icon_error)
-                                .show();
+                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while changing activity!");
+                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        errorOkDialog.show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<EventTypeWithActivity> call, Throwable t) {
-                    new MaterialAlertDialogBuilder(requireContext())
-                            .setTitle("Error while changing activity")
-                            .setMessage("Error while changing activity!")
-                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                            .setIcon(R.drawable.icon_error)
-                            .show();
+                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while changing activity!");
+                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    errorOkDialog.show();
                 }
             });
         });

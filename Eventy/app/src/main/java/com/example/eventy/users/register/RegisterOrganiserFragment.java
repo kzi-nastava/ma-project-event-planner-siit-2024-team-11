@@ -1,9 +1,11 @@
 package com.example.eventy.users.register;
 
 import android.app.Activity;
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -15,20 +17,16 @@ import androidx.navigation.Navigation;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.eventy.R;
+import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentRegisterOrganiserBinding;
-import com.example.eventy.users.model.AuthResponse;
-import com.example.eventy.users.model.LoginData;
 import com.example.eventy.users.model.RegisterData;
-import com.example.eventy.users.services.LoggedInHelperService;
 import com.example.eventy.utils.ClientUtils;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -109,45 +107,36 @@ public class RegisterOrganiserFragment extends Fragment {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
-                            new MaterialAlertDialogBuilder(requireContext())
+                            new AlertDialog.Builder(getContext())
                                     .setTitle("Confirmation email sent")
                                     .setMessage("Please check your email and confirm the registration!")
-                                    .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                                    .setIcon(R.drawable.icon_info)
+                                    .setIcon(R.drawable.icon_success_png)
+                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            // this leads to home (for now), will lead to the event page or user profile
+                                            NavController navController = Navigation.findNavController(v);
+                                            navController.popBackStack();
+                                            navController.navigate(R.id.nav_home);
+                                        }})
                                     .show();
-
-                            NavController navController = Navigation.findNavController(v);
-
-                            navController.popBackStack();
-
-                            navController.navigate(R.id.nav_home);
                         } else {
-                            new MaterialAlertDialogBuilder(requireContext())
-                                    .setTitle("Invalid input")
-                                    .setMessage("Invalid input data!")
-                                    .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                                    .setIcon(R.drawable.icon_error)
-                                    .show();
+                            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Invalid input data!");
+                            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            errorOkDialog.show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        new MaterialAlertDialogBuilder(requireContext())
-                                .setTitle("Invalid input")
-                                .setMessage("Invalid input data!")
-                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                                .setIcon(R.drawable.icon_error)
-                                .show();
+                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Invalid input data!");
+                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        errorOkDialog.show();
                     }
                 });
             } else {
-                new MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("Invalid input")
-                        .setMessage("Invalid input data!")
-                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                        .setIcon(R.drawable.icon_error)
-                        .show();
+                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Invalid input data!");
+                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                errorOkDialog.show();
             }
         });
 

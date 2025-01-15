@@ -1,5 +1,7 @@
 package com.example.eventy.events.eventtypes;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,7 @@ import android.view.ViewGroup;
 
 import com.example.eventy.R;
 import com.example.eventy.common.PagedResponse;
+import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentEventTypesBinding;
 import com.example.eventy.events.model.EventTypeCard;
 import com.example.eventy.events.model.EventTypeWithActivity;
@@ -99,12 +102,9 @@ public class EventTypesFragment extends Fragment {
                         canGoFurther = false;
                     }
                 } else {
-                    new MaterialAlertDialogBuilder(requireContext())
-                            .setTitle("Error while loading")
-                            .setMessage("Error while loading event types!")
-                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                            .setIcon(R.drawable.icon_error)
-                            .show();
+                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while loading event types!");
+                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    errorOkDialog.show();
                 }
 
                 isLoading = false;
@@ -112,12 +112,9 @@ public class EventTypesFragment extends Fragment {
 
             @Override
             public void onFailure(Call<PagedResponse<EventTypeCard>> call, Throwable t) {
-                new MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("Error while loading")
-                        .setMessage("Error while loading event types!")
-                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                        .setIcon(R.drawable.icon_error)
-                        .show();
+                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while loading event types!");
+                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                errorOkDialog.show();
 
                 isLoading = false;
             }
