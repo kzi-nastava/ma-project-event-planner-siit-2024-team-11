@@ -1,33 +1,44 @@
 package com.example.eventy.events.model;
 
-import com.example.eventy.model.enums.PrivacyType;
-import com.example.eventy.model.utils.Location;
-
-import java.util.Date;
-import java.util.Objects;
+import java.time.LocalDateTime;
 
 public class EventCard {
+    private Long eventId;
     private String name;
     private String description;
-    private Integer maxParticipants;
-    private PrivacyType privacyType;
-    private Date date;
-    private Location location;
-    private EventType eventType;
+    private int maxNumberParticipants;
+    private boolean isOpen;
+    private String eventTypeName;
+    private String locationName;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+    private Long organiserId; // when we click on picture/name it shows organiser profile
+    private String organiserName;
+    private String organiserImage;
 
     public EventCard() { }
 
-    public EventCard(String name, String description, Integer maxParticipants, PrivacyType privacyType, Date date, Location location, EventType eventType) {
+    public EventCard(Long eventId, String name, String description, int maxNumberParticipants, boolean isOpen, String eventTypeName, String locationName, LocalDateTime startDate, LocalDateTime endDate, Long organiserId, String organiserName, String organiserImage) {
+        this.eventId = eventId;
         this.name = name;
         this.description = description;
-        this.maxParticipants = maxParticipants;
-        this.privacyType = privacyType;
-        this.date = date;
-        this.location = location;
-        this.eventType = eventType;
+        this.maxNumberParticipants = maxNumberParticipants;
+        this.isOpen = isOpen;
+        this.eventTypeName = eventTypeName;
+        this.locationName = locationName;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.organiserId = organiserId;
+        this.organiserName = organiserName;
+        this.organiserImage = organiserImage;
     }
 
-    public EventCard(String businessMeeting, EventType meetingType, String s, int i, PrivacyType privacyType, Date date) {
+    public Long getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(Long eventId) {
+        this.eventId = eventId;
     }
 
     public String getName() {
@@ -46,69 +57,93 @@ public class EventCard {
         this.description = description;
     }
 
-    public Integer getMaxParticipants() {
-        return maxParticipants;
+    public int getMaxNumberParticipants() {
+        return maxNumberParticipants;
     }
 
-    public void setMaxParticipants(Integer maxParticipants) {
-        this.maxParticipants = maxParticipants;
+    public void setMaxNumberParticipants(int maxNumberParticipants) {
+        this.maxNumberParticipants = maxNumberParticipants;
     }
 
-    public PrivacyType getPrivacyType() {
-        return privacyType;
+    public boolean isOpen() {
+        return isOpen;
     }
 
-    public void setPrivacyType(PrivacyType privacyType) {
-        this.privacyType = privacyType;
+    public void setOpen(boolean open) {
+        isOpen = open;
     }
 
-    public Date getDate() {
-        return date;
+    public String getEventTypeName() {
+        return eventTypeName;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setEventTypeName(String eventTypeName) {
+        this.eventTypeName = eventTypeName;
     }
 
-    public Location getLocation() {
-        return location;
+    public String getLocationName() {
+        return locationName;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setLocationName(String locationName) {
+        this.locationName = locationName;
     }
 
-    public EventType getEventType() {
-        return eventType;
+    public LocalDateTime getStartDate() {
+        return startDate;
     }
 
-    public void setEventType(EventType eventType) {
-        this.eventType = eventType;
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        EventCard eventCard = (EventCard) o;
-        return Objects.equals(name, eventCard.name) && Objects.equals(description, eventCard.description) && Objects.equals(maxParticipants, eventCard.maxParticipants) && privacyType == eventCard.privacyType && Objects.equals(date, eventCard.date) && Objects.equals(location, eventCard.location) && Objects.equals(eventType, eventCard.eventType);
+    public LocalDateTime getEndDate() {
+        return endDate;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, description, maxParticipants, privacyType, date, location, eventType);
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
+
+    public Long getOrganiserId() {
+        return organiserId;
+    }
+
+    public void setOrganiserId(Long organiserId) {
+        this.organiserId = organiserId;
+    }
+
+    public String getOrganiserName() {
+        return organiserName;
+    }
+
+    public void setOrganiserName(String organiserName) {
+        this.organiserName = organiserName;
+    }
+
+    public String getOrganiserImage() {
+        return organiserImage;
+    }
+
+    public void setOrganiserImage(String organiserImage) {
+        this.organiserImage = organiserImage;
     }
 
     @Override
     public String toString() {
         return "EventCard{" +
-                "name='" + name + '\'' +
+                "eventId=" + eventId +
+                ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", maxParticipants=" + maxParticipants +
-                ", privacyType=" + privacyType +
-                ", date=" + date +
-                ", location=" + location +
-                ", eventType=" + eventType +
+                ", maxNumberParticipants=" + maxNumberParticipants +
+                ", isOpen=" + isOpen +
+                ", eventTypeName='" + eventTypeName + '\'' +
+                ", locationName='" + locationName + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", organiserId=" + organiserId +
+                ", organiserName='" + organiserName + '\'' +
+                ", organiserImage='" + organiserImage + '\'' +
                 '}';
     }
 }
