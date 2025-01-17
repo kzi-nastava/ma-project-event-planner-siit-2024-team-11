@@ -52,27 +52,6 @@ public class FeaturedEventsFragment extends Fragment {
     private static ArrayList<EventCard> getFeaturedEvents() {
         ArrayList<EventCard> featuredEventCards = new ArrayList<>();
 
-        // event types
-        EventType weddingType = new EventType("Wedding", "A celebration of marriage", true);
-        EventType conferenceType = new EventType("Conference", "Professional gathering for knowledge exchange", true);
-        EventType concertType = new EventType("Concert", "Live musical performance", true);
-        EventType partyType = new EventType("Party", "A social gathering with music and dancing", true);
-        EventType meetingType = new EventType("Meeting", "A formal gathering of individuals for a specific purpose", true);
-
-        // locations
-        Location weddingLocation = new Location("Grand Hall", "123 Wedding St, Cityville", 40.7128, -74.0060);
-        Location conferenceLocation = new Location("Tech Center", "456 Innovation Blvd, Tech City", 37.7749, -122.4194);
-        Location concertLocation = new Location("Stadium Arena", "789 Music Ave, Townsville", 34.0522, -118.2437);
-        Location partyLocation = new Location("Luxe Lounge", "101 Party Ln, Fun Town", 51.5074, -0.1278);
-        Location meetingLocation = new Location("Boardroom", "200 Corporate Rd, Business Park", 42.3601, -71.0589);
-
-        // add to featured events
-        featuredEventCards.add(new EventCard("M & J's Wedding", "An elegant wedding celebration of joining 2 people into one soul, very beautiful very demure.", 200, PrivacyType.PUBLIC, new Date(), weddingLocation, weddingType));
-        featuredEventCards.add(new EventCard("Tech Conference", "A tech conference with industry leaders", 500, PrivacyType.PRIVATE, new Date(), conferenceLocation, conferenceType));
-        featuredEventCards.add(new EventCard("Summer Music Concert", "Enjoy the best live music performances", 1000, PrivacyType.PUBLIC, new Date(), concertLocation, concertType));
-        featuredEventCards.add(new EventCard("VIP PartyLounge", "An exclusive party for select guests", 100, PrivacyType.PRIVATE, new Date(), partyLocation, partyType));
-        featuredEventCards.add(new EventCard("Business Meeting", "Discussing the upcoming quarter's goals", 30, PrivacyType.PUBLIC, new Date(), meetingLocation, meetingType));
-
         return featuredEventCards;
     }
 
