@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="6dp"
+    android:paddingBottom="6dp"
+    android:paddingStart="13dp"
+    android:paddingEnd="0dp"
+    android:textSize="16sp"
+    android:maxLines="1"
+    android:fontFamily="@font/albert_sans"
+    android:gravity="center_vertical"
+    android:textColor="@color/home_event_card_text" />

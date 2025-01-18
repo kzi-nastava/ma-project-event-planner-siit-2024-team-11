@@ -57,9 +57,9 @@ public class EventsFragment extends Fragment {
 
         this.paginatedEvents = new ArrayList<>();
         setupRecyclerView();
-        //setupPaginationControls();
+        setupPaginationControls();
 
-        //fetchEvents("", null, null, null, null, null, page, pageSize, sort);
+        fetchEvents("", null, null, null, null, null, page, pageSize, sort);
     }
 
     private void setupRecyclerView() {
@@ -86,10 +86,11 @@ public class EventsFragment extends Fragment {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 requireContext(),
                 R.array.page_size_options,
-                android.R.layout.simple_spinner_item
+                R.layout.spinner_item
         );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.spinnerPageSize.setAdapter(adapter);
+        binding.spinnerPageSize.setSelection(2);
 
         binding.spinnerPageSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -131,6 +132,7 @@ public class EventsFragment extends Fragment {
 
                 } else {
                     showErrorDialog("Error while loading events!");
+                    showErrorDialog(response.message());
                 }
                 isLoading = false;
                 //binding.progressBar.setVisibility(View.GONE);
@@ -139,6 +141,7 @@ public class EventsFragment extends Fragment {
             @Override
             public void onFailure(Call<PagedResponse<EventCard>> call, Throwable t) {
                 showErrorDialog("Error while loading events!");
+                showErrorDialog(t.getMessage());
                 isLoading = false;
                 binding.progressBar.setVisibility(View.GONE);
             }
