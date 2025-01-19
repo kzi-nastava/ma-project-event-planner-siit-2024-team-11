@@ -15,16 +15,16 @@ import android.widget.Button;
 
 import com.example.eventy.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class MultiSpinner extends androidx.appcompat.widget.AppCompatSpinner implements
-        DialogInterface.OnMultiChoiceClickListener, DialogInterface.OnCancelListener {
-
+public class MultiSpinner extends androidx.appcompat.widget.AppCompatSpinner implements DialogInterface.OnMultiChoiceClickListener, DialogInterface.OnCancelListener {
     private List<String> items;
-    private boolean[] selected;
+    private List<String> selected;
     private String defaultText;
-    private MultiSpinnerListener listener;
     private String filterNameText;
+    private ArrayAdapter<String> adapter;
+    private boolean isDialogOpen = false;
 
     public MultiSpinner(Context context) {
         super(context);
@@ -40,81 +40,118 @@ public class MultiSpinner extends androidx.appcompat.widget.AppCompatSpinner imp
 
     @Override
     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-        if (isChecked)
-            selected[which] = true;
-        else
-            selected[which] = false;
+        String selectedItem = adapter.getItem(which);
+        if (isChecked) {
+            if (!selected.contains(selectedItem)) {
+                selected.add(selectedItem);
+            }
+        } else {
+            selected.remove(selectedItem);
+        }
     }
 
     @Override
     public void onCancel(DialogInterface dialog) {
-        // refresh text on spinner
-        StringBuffer spinnerBuffer = new StringBuffer();
+        StringBuilder spinnerBuffer = new StringBuilder();
         boolean someSelected = false;
-        for (int i = 0; i < items.size(); i++) {
-            if (selected[i] == true) {
-                spinnerBuffer.append(items.get(i));
-                spinnerBuffer.append(", ");
-                someSelected = true;
-            }
+        for (String selectedItem : selected) {
+            spinnerBuffer.append(selectedItem);
+            spinnerBuffer.append(", ");
+            someSelected = true;
         }
+
         String spinnerText;
         if (someSelected) {
             spinnerText = spinnerBuffer.toString();
             if (spinnerText.length() > 2)
-                spinnerText = spinnerText.substring(0, spinnerText.length() - 2);
+                spinnerText = spinnerText.substring(0, spinnerText.length() - 2); // Remove trailing comma
         } else {
             spinnerText = defaultText;
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
-                android.R.layout.simple_spinner_item,
-                new String[] { spinnerText });
+
+        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, new String[] { spinnerText });
         setAdapter(adapter);
-        listener.onItemsSelected(selected);
     }
 
     @Override
     public boolean performClick() {
+        if (isDialogOpen) {
+            return true; // Block the click
+        }
+        isDialogOpen = true;
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        // Inflate custom layout
-        View dialogView = View.inflate(getContext(), R.layout.multi_spinner_dialog, null);
+
+        View dialogView = View.inflate(getContext(), R.layout.custom_multi_spinner_dialog, null);
         builder.setView(dialogView);
 
-        ListView itemsListView = dialogView.findViewById(R.id.items_list_view);
+        ListView itemsListView = dialogView.findViewById(R.id.multi_items_list_view);
 
-        // Create an adapter for the ListView
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
-                android.R.layout.simple_list_item_multiple_choice, items);
+        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_multiple_choice, items);
         itemsListView.setAdapter(adapter);
         itemsListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
         // Set initial selection state
         for (int i = 0; i < items.size(); i++) {
-            itemsListView.setItemChecked(i, selected[i]);
+            itemsListView.setItemChecked(i, selected.contains(items.get(i)));
         }
 
         EditText searchEditText = dialogView.findViewById(R.id.search_edit_text);
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                adapter.getFilter().filter(s);
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                for (int i = 0; i < itemsListView.getCount(); i++) {
+                    String item = adapter.getItem(i);
+                    if (itemsListView.isItemChecked(i)) {
+                        if (!selected.contains(item)) {
+                            selected.add(item);
+                        }
+                    } else {
+                        selected.remove(item);
+                    }
+                }
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                adapter.getFilter().filter(s, cnt -> {
+                    // Update checked states after filtering
+                    for (int i = 0; i < itemsListView.getCount(); i++) {
+                        String item = adapter.getItem(i);
+                        boolean isHere = selected.contains(item);
+                        itemsListView.setItemChecked(i, selected.contains(item));
+                    }
+                });
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // do something
+            }
         });
 
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                for (int i = 0; i < items.size(); i++) {
-                    selected[i] = itemsListView.isItemChecked(i);
+                for (int i = 0; i < itemsListView.getCount(); i++) {
+                    if (itemsListView.isItemChecked(i)) { // check if the item is selected
+                        String value = adapter.getItem(i); // Get the string value from the adapter
+                        if (!selected.contains(value)) {
+                            selected.add(value);
+                        }
+                    }
                 }
+                isDialogOpen = false;
                 dialog.cancel();
             }
+        });
+        builder.setOnCancelListener(dialog -> {
+            isDialogOpen = false; // Mark the dialog as closed
+            onCancel(dialog); // Call existing onCancel logic
+        });
+
+        builder.setOnDismissListener(dialog -> {
+            isDialogOpen = false; // Ensure flag is reset if dialog is dismissed in any way
         });
 
         TextView filterName = dialogView.findViewById(R.id.filter_name);
@@ -122,9 +159,9 @@ public class MultiSpinner extends androidx.appcompat.widget.AppCompatSpinner imp
 
         Button resetAllFilterButton = dialogView.findViewById(R.id.reset_all_filter);
         resetAllFilterButton.setOnClickListener(v -> {
-            for (int i = 0; i < selected.length; i++) {
-                selected[i] = false;
-                itemsListView.setItemChecked(i, false); // Update ListView to reflect changes
+            selected.clear();
+            for (int i = 0; i < items.size(); i++) {
+                itemsListView.setItemChecked(i, false); // Uncheck all items
             }
         });
 
@@ -133,25 +170,21 @@ public class MultiSpinner extends androidx.appcompat.widget.AppCompatSpinner imp
         return true;
     }
 
-    public void setItems(List<String> items, String allText,
-                         MultiSpinnerListener listener, String filterName) {
+    public void setItems(List<String> items, String allText, String filterName) {
         this.items = items;
         this.defaultText = allText;
-        this.listener = listener;
         this.filterNameText = filterName;
 
-        // all selected by default
-        selected = new boolean[items.size()];
-        for (int i = 0; i < selected.length; i++)
-            selected[i] = false;
+        // Initialize empty selected list
+        selected = new ArrayList<>();
 
-        // all text on the spinner
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+        // All text on the spinner
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_spinner_item, new String[] { allText });
         setAdapter(adapter);
     }
 
-    public interface MultiSpinnerListener {
-        public void onItemsSelected(boolean[] selected);
+    public List<String> getSelectedItems() {
+        return selected;
     }
 }
