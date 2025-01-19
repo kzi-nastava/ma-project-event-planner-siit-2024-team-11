@@ -3,7 +3,6 @@ package com.example.eventy.home.events;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,14 +34,12 @@ public class EventsFragment extends Fragment {
     private EventsAdapter eventsAdapter;
     private int page = 0;
     private int pageSize = 5;
-    private int totalPages = 100;
+    private int totalPages = 99;
     private String sort = "type";
     private ArrayList<EventCard> paginatedEvents;
     private boolean isLoading = false;
 
-    public EventsFragment() {
-        // Required empty public constructor
-    }
+    public EventsFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,7 +83,7 @@ public class EventsFragment extends Fragment {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 requireContext(),
                 R.array.page_size_options,
-                R.layout.spinner_item
+                R.layout.custom_spinner_item
         );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.spinnerPageSize.setAdapter(adapter);
@@ -96,13 +93,13 @@ public class EventsFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 pageSize = Integer.parseInt(parent.getItemAtPosition(position).toString());
-                page = 0; // Reset to the first page
+                page = 0;
                 fetchEvents("", null, null, null, null, null, page, pageSize, sort);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing
+                // do nothing
             }
         });
     }
