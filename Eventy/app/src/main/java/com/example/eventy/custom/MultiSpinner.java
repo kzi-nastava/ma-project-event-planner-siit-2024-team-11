@@ -24,6 +24,7 @@ public class MultiSpinner extends androidx.appcompat.widget.AppCompatSpinner imp
     private String defaultText;
     private String filterNameText;
     private ArrayAdapter<String> adapter;
+    private ListView itemsListView;
     private boolean isDialogOpen = false;
 
     public MultiSpinner(Context context) {
@@ -52,9 +53,13 @@ public class MultiSpinner extends androidx.appcompat.widget.AppCompatSpinner imp
 
     @Override
     public void onCancel(DialogInterface dialog) {
+        updateAdapter(selected);
+    }
+
+    private void updateAdapter(List<String> values) {
         StringBuilder spinnerBuffer = new StringBuilder();
         boolean someSelected = false;
-        for (String selectedItem : selected) {
+        for (String selectedItem : values) {
             spinnerBuffer.append(selectedItem);
             spinnerBuffer.append(", ");
             someSelected = true;
@@ -69,7 +74,7 @@ public class MultiSpinner extends androidx.appcompat.widget.AppCompatSpinner imp
             spinnerText = defaultText;
         }
 
-        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, new String[] { spinnerText });
+        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, new String[]{spinnerText});
         setAdapter(adapter);
     }
 
@@ -85,7 +90,7 @@ public class MultiSpinner extends androidx.appcompat.widget.AppCompatSpinner imp
         View dialogView = View.inflate(getContext(), R.layout.custom_multi_spinner_dialog, null);
         builder.setView(dialogView);
 
-        ListView itemsListView = dialogView.findViewById(R.id.multi_items_list_view);
+        itemsListView = dialogView.findViewById(R.id.multi_items_list_view);
 
         adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_multiple_choice, items);
         itemsListView.setAdapter(adapter);
@@ -118,7 +123,6 @@ public class MultiSpinner extends androidx.appcompat.widget.AppCompatSpinner imp
                     // Update checked states after filtering
                     for (int i = 0; i < itemsListView.getCount(); i++) {
                         String item = adapter.getItem(i);
-                        boolean isHere = selected.contains(item);
                         itemsListView.setItemChecked(i, selected.contains(item));
                     }
                 });
@@ -130,28 +134,26 @@ public class MultiSpinner extends androidx.appcompat.widget.AppCompatSpinner imp
             }
         });
 
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                for (int i = 0; i < itemsListView.getCount(); i++) {
-                    if (itemsListView.isItemChecked(i)) { // check if the item is selected
-                        String value = adapter.getItem(i); // Get the string value from the adapter
-                        if (!selected.contains(value)) {
-                            selected.add(value);
-                        }
+        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+            for (int i = 0; i < itemsListView.getCount(); i++) {
+                if (itemsListView.isItemChecked(i)) { // check if the item is selected
+                    String value = adapter.getItem(i); // Get the string value from the adapter
+                    if (!selected.contains(value)) {
+                        selected.add(value);
                     }
                 }
-                isDialogOpen = false;
-                dialog.cancel();
             }
+            isDialogOpen = false;
+            onCancel(dialog);
+            dialog.cancel();
         });
         builder.setOnCancelListener(dialog -> {
-            isDialogOpen = false; // Mark the dialog as closed
-            onCancel(dialog); // Call existing onCancel logic
+            isDialogOpen = false;
+            onCancel(dialog);
         });
-
         builder.setOnDismissListener(dialog -> {
-            isDialogOpen = false; // Ensure flag is reset if dialog is dismissed in any way
+            isDialogOpen = false;
+            onCancel(dialog);
         });
 
         TextView filterName = dialogView.findViewById(R.id.filter_name);
@@ -170,21 +172,23 @@ public class MultiSpinner extends androidx.appcompat.widget.AppCompatSpinner imp
         return true;
     }
 
-    public void setItems(List<String> items, String allText, String filterName) {
+    public void setItems(List<String> items, String defaultText, String filterName) {
         this.items = items;
-        this.defaultText = allText;
+        this.defaultText = defaultText;
         this.filterNameText = filterName;
 
-        // Initialize empty selected list
         selected = new ArrayList<>();
-
-        // All text on the spinner
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
-                android.R.layout.simple_spinner_item, new String[] { allText });
-        setAdapter(adapter);
+        updateAdapter(new ArrayList<>());
     }
 
     public List<String> getSelectedItems() {
         return selected;
+    }
+
+    public void restoreSelectedItem(ArrayList<String> selected) {
+        if (!selected.isEmpty()) {
+            this.selected = selected;
+            updateAdapter(selected);
+        }
     }
 }

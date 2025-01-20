@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,13 +20,13 @@ import com.example.eventy.R;
 import com.example.eventy.custom.MultiSpinner;
 import com.example.eventy.custom.SingleSpinner;
 import com.example.eventy.databinding.BottomSheetHomeEventsFilterBinding;
+import com.example.eventy.events.model.EventFilters;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -61,16 +60,16 @@ public class EventFilterBottomSheetFragment extends BottomSheetDialogFragment {
             String selectedDateRange = getArguments().getString("dateRange");
 
             // Pre-fill the inputs with these values
-            binding.locationFilter.setSelection(getLocationPosition(selectedLocation)); // Set selected location in the spinner
-            setMultiSpinnerSelection(binding.eventTypeFilter, selectedEventTypes); // Set selected event types
-            binding.maxParticipantsFilter.setText(maxParticipants); // Set max participants
-            binding.eventShowSelectedDate.setText(selectedDateRange); // Set date range
+            binding.locationFilter.restoreSelectedItem(selectedLocation);
+            binding.eventTypeFilter.restoreSelectedItem(selectedEventTypes);
+            binding.maxParticipantsFilter.setText(maxParticipants);
+            binding.eventShowSelectedDate.setText(selectedDateRange);
         }
 
         binding.eventsConfirmButton.setOnClickListener(v -> {
-            String filterValues = getValues();
+            EventFilters selectedFilters = getSelectedFilters();
             if (listener != null) {
-                listener.onFiltersSelected(filterValues);
+                listener.onFiltersSelected(selectedFilters);
             }
             dismiss();
         });
@@ -104,19 +103,9 @@ public class EventFilterBottomSheetFragment extends BottomSheetDialogFragment {
         locations.add("Paris");
         locations.add("Kuala Lumpur");
         locations.add("Banja Luka");
-        locations.add("Paris");
-        locations.add("Kuala Lumpur");
-        locations.add("Banja Luka");
-        locations.add("Paris");
-        locations.add("Kuala Lumpur");
-        locations.add("Banja Luka");
 
         // Set items for the spinner with a default text
-        locationSingleSpinner.setItems(locations, "-", selectedLocation -> {
-            // Log the selected location
-            Log.d("SelectedLocation", "Selected: " + selectedLocation);
-            // Perform additional actions based on the selected location
-        }, "Locations");
+        locationSingleSpinner.setItems(locations, "-", "Locations");
     }
 
     private void setupEventFilterDay() {
@@ -215,50 +204,35 @@ public class EventFilterBottomSheetFragment extends BottomSheetDialogFragment {
         });
     }
 
-    private int getLocationPosition(String selectedLocation) {
-        List<String> items = binding.locationFilter.getItems();
-
-        if (items != null && selectedLocation != null) {
-            return items.indexOf(selectedLocation); // Returns -1 if not found
-        }
-        return -1;
-    }
-
-    private void setMultiSpinnerSelection(MultiSpinner multiSpinner, ArrayList<String> selectedItems) {
-        if (selectedItems != null) {
-            for (int i = 0; i < multiSpinner.getCount(); i++) {
-                if (selectedItems.contains(multiSpinner.getItemAtPosition(i))) {
-                    multiSpinner.setSelection(i, true);
-                }
-            }
-        }
-    }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    public String getValues() {
+    public EventFilters getSelectedFilters() {
+        EventFilters selectedFilters = new EventFilters();
+
         // Selected Location
         String selectedLocation = binding.locationFilter.getSelectedItem().toString();
+        selectedFilters.setSelectedLocation(selectedLocation);
 
         // Selected Event Types
         MultiSpinner multiSpinner = binding.eventTypeFilter;
         List<String> selectedEventTypes = multiSpinner.getSelectedItems();
-        StringBuilder selectedEventTypesText = new StringBuilder();
-
+        /*StringBuilder selectedEventTypesText = new StringBuilder();
         for (int i = 0; i < selectedEventTypes.size(); i++) {
             selectedEventTypesText.append(selectedEventTypes.get(i)).append(",");
         }
         if (selectedEventTypesText.length() > 0) { // remove last comma
             selectedEventTypesText.setLength(selectedEventTypesText.length() - 2);
-        }
+        }*/
+        selectedFilters.setSelectedEventTypes((ArrayList<String>) selectedEventTypes);
 
         // Max Participants
         String maxParticipants = binding.maxParticipantsFilter.getText().toString();
+        selectedFilters.setMaxParticipants(maxParticipants);
 
-        // Selected Date Range
+        /*// Selected Date Range
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault());
         String dateRangeSummary = (selectedStartDateTime != null && selectedEndDateTime != null)
                 ? selectedStartDateTime.format(formatter) + " - " + selectedEndDateTime.format(formatter)
@@ -270,9 +244,12 @@ public class EventFilterBottomSheetFragment extends BottomSheetDialogFragment {
                 .append("Event Types: ").append(selectedEventTypesText.length() > 0 ? selectedEventTypesText : "Not selected").append("\n")
                 .append("Max Participants: ").append(maxParticipants.isEmpty() ? "Not selected" : maxParticipants).append("\n")
                 .append("Date Range: ").append(dateRangeSummary);
+         */
+        selectedFilters.setSelectedStartDateTime(selectedStartDateTime);
+        selectedFilters.setSelectedEndDateTime(selectedEndDateTime);
 
         // Display the selected filter values or pass them to another method or API
-        return filtersSummary.toString();
+        return selectedFilters;
     }
 
     @Override
@@ -285,7 +262,7 @@ public class EventFilterBottomSheetFragment extends BottomSheetDialogFragment {
     }
 
     public interface FilterListener {
-        void onFiltersSelected(String filterValues);
+        void onFiltersSelected(EventFilters filterValues);
         void onFiltersClosed();
     }
 }

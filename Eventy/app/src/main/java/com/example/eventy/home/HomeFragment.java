@@ -23,6 +23,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentHomeBinding;
+import com.example.eventy.events.model.EventFilters;
 import com.example.eventy.home.events.EventsFragment;
 import com.example.eventy.home.events.EventsViewModel;
 import com.example.eventy.home.events.featured_events.FeaturedEventsFragment;
@@ -36,6 +37,7 @@ import com.example.eventy.custom.MultiSpinner;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
@@ -45,21 +47,18 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
     private FragmentHomeBinding binding;
     private EventsViewModel eventsViewModel;
 
-    // filters
-    private String location = "-";
-    private ArrayList<String>  eventTypes;
-    private String maxParticipants= "";
-    private String dateRange = "";
+    private EventFilters eventFilters;
 
     private Button dateRangeButton;
     private TextView showSelectedDateText;
 
     private boolean isFilterOpened = false;
 
+    public HomeFragment() {
+        eventFilters = new EventFilters("", "-", new ArrayList<String>(), null, null, null);
+    }
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -156,10 +155,14 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
             EventFilterBottomSheetFragment bottomSheetFragment = new EventFilterBottomSheetFragment();
 
             Bundle args = new Bundle();
-            args.putString("location", location);
-            args.putStringArrayList("eventTypes", eventTypes);
-            args.putString("maxParticipants", maxParticipants);
-            args.putString("dateRange", dateRange);
+            args.putString("location", eventFilters.getSelectedLocation());
+            args.putStringArrayList("eventTypes", eventFilters.getSelectedEventTypes());
+            args.putString("maxParticipants", eventFilters.getMaxParticipants());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault());
+            String dateRangeSummary = (eventFilters.getSelectedStartDateTime() != null && eventFilters.getSelectedEndDateTime() != null)
+                    ? (eventFilters.getSelectedStartDateTime().format(formatter) + " - " +  eventFilters.getSelectedEndDateTime().format(formatter))
+                    : "Not selected";
+            args.putString("dateRange", dateRangeSummary);
             bottomSheetFragment.setArguments(args);
 
             bottomSheetFragment.show(getChildFragmentManager(), bottomSheetFragment.getTag());
@@ -440,10 +443,10 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
     }
 
     @Override
-    public void onFiltersSelected(String filterValues) {
+    public void onFiltersSelected(EventFilters filterValues) {
         isFilterOpened = false;
-        // Handle the filter values in the parent fragment
-        Log.wtf("ParentFragment", filterValues);
+        this.eventFilters = filterValues;
+        Log.wtf("ParentFragment", filterValues.toString());
     }
 
     @Override

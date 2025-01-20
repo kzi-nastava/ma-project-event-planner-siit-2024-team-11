@@ -2,6 +2,7 @@ package com.example.eventy.custom;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -18,12 +19,14 @@ import com.example.eventy.R;
 
 import java.util.List;
 
-public class SingleSpinner extends AppCompatSpinner {
+public class SingleSpinner extends androidx.appcompat.widget.AppCompatSpinner implements DialogInterface.OnCancelListener {
     private List<String> items;
-    private int selectedIndex = -1; // Default: no selection
+    private String selected; // Default: no selection
     private String defaultText;
-    private SingleSpinnerListener listener;
     private String filterNameText;
+    private ArrayAdapter<String> adapter;
+    private ListView itemsListView;
+    private boolean isDialogOpen = false;
 
     public SingleSpinner(Context context) {
         super(context);
@@ -38,7 +41,22 @@ public class SingleSpinner extends AppCompatSpinner {
     }
 
     @Override
+    public void onCancel(DialogInterface dialogInterface) {
+        updateAdapter(selected);
+    }
+
+    private void updateAdapter(String value) {
+        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, new String[]{value});
+        setAdapter(adapter);
+    }
+
+    @Override
     public boolean performClick() {
+        if (isDialogOpen) {
+            return true; // Block the click
+        }
+        isDialogOpen = true;
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         // Inflate custom layout
@@ -46,30 +64,65 @@ public class SingleSpinner extends AppCompatSpinner {
         builder.setView(dialogView);
 
         // Initialize ListView and adapter
-        ListView itemsListView = dialogView.findViewById(R.id.single_items_list_view);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
-                android.R.layout.simple_list_item_single_choice, items);
+        itemsListView = dialogView.findViewById(R.id.single_items_list_view);
+
+        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_single_choice, items);
         itemsListView.setAdapter(adapter);
         itemsListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
-        // Pre-select the current selection if any
-        if (selectedIndex >= 0) {
+        // pre-select the current selection if any
+        if (!selected.equals(defaultText)) {
+            int selectedIndex = adapter.getPosition(selected);
             itemsListView.setItemChecked(selectedIndex, true);
         }
 
-        // Add search functionality
+        // add search functionality
         EditText searchEditText = dialogView.findViewById(R.id.search_edit_text);
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                for (int i = 0; i < itemsListView.getCount(); i++) {
+                    if (itemsListView.isItemChecked(i)) {
+                        selected = adapter.getItem(i);
+                    }
+                }
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                adapter.getFilter().filter(s);
+                adapter.getFilter().filter(s, cnt -> {
+                    // Update checked states after filtering
+                    for (int i = 0; i < itemsListView.getCount(); i++) {
+                        String item = adapter.getItem(i);
+                        boolean isSelectedIndex = selected.equals(item);
+                        itemsListView.setItemChecked(i, isSelectedIndex);
+                    }
+                });
             }
 
             @Override
             public void afterTextChanged(Editable s) {}
+        });
+
+        // Handle OK button click
+        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+            for (int i = 0; i < itemsListView.getCount(); i++) {
+                if (itemsListView.isItemChecked(i)) {
+                    selected = adapter.getItem(i);
+                    break;
+                }
+            }
+            isDialogOpen = false;
+            onCancel(dialog);
+            dialog.cancel();
+        });
+        builder.setOnCancelListener(dialog -> {
+            isDialogOpen = false;
+            onCancel(dialog);
+        });
+        builder.setOnDismissListener(dialog -> {
+            isDialogOpen = false;
+            onCancel(dialog);
         });
 
         // Add functionality for the reset button
@@ -79,51 +132,32 @@ public class SingleSpinner extends AppCompatSpinner {
         // Add the reset button functionality
         AppCompatButton resetButton = dialogView.findViewById(R.id.reset_all_filter);
         resetButton.setOnClickListener(v -> {
-            selectedIndex = -1; // Reset selection
-            updateSpinnerText(); // Update spinner with default text
+            selected = defaultText; // Reset selection
             itemsListView.clearChoices(); // Clear any ListView selections
             adapter.notifyDataSetChanged(); // Refresh ListView
-        });
-
-        // Handle OK button click
-        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
-            int checkedItemPosition = itemsListView.getCheckedItemPosition();
-            if (checkedItemPosition != -1) {
-                selectedIndex = checkedItemPosition;
-                updateSpinnerText();
-                if (listener != null) {
-                    listener.onItemSelected(items.get(selectedIndex));
-                }
-            }
         });
 
         builder.show();
         return true;
     }
 
-    private void updateSpinnerText() {
-        String spinnerText = (selectedIndex >= 0) ? items.get(selectedIndex) : defaultText;
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
-                android.R.layout.simple_spinner_item, new String[]{spinnerText});
-        setAdapter(adapter);
-    }
-
-    public void setItems(List<String> items, String defaultText,
-                         SingleSpinnerListener listener, String filterName) {
+    public void setItems(List<String> items, String defaultText, String filterName) {
         this.items = items;
         this.defaultText = defaultText;
-        this.listener = listener;
         this.filterNameText = filterName;
 
-        updateSpinnerText();
+        selected = defaultText;
+        updateAdapter(defaultText);
     }
 
-    public List<String> getItems() {
-        return this.items;
+    public String getSelectedItem() {
+        return selected;
     }
 
-    public interface SingleSpinnerListener {
-        void onItemSelected(String selectedItem);
+    public void restoreSelectedItem(String selected) {
+        if (!selected.equals(defaultText)) {
+            this.selected = selected;
+            updateAdapter(selected);
+        }
     }
 }
