@@ -2,7 +2,6 @@ package com.example.eventy.events.services;
 
 import com.example.eventy.common.PagedResponse;
 import com.example.eventy.events.model.EventCard;
-import com.example.eventy.events.model.EventTypeCard;
 import com.example.eventy.events.model.OrganizeEvent;
 import com.example.eventy.events.model.Event;
 

@@ -254,14 +254,6 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
         });
     }
 
-    private void showErrorDialog(String message) {
-        if (isAdded() && getActivity() != null) {
-            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", message);
-            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            errorOkDialog.show();
-        }
-    }
-
     private void setupEventSort() {
         Spinner spinner = binding.sortButton;
 
@@ -540,6 +532,14 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+    }
+
+    private void showErrorDialog(String message) {
+        if (isAdded() && getActivity() != null) {
+            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", message);
+            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            errorOkDialog.show();
+        }
     }
 
     @Override
