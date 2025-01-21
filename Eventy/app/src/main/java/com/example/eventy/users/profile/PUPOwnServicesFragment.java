@@ -36,6 +36,9 @@ public class PUPOwnServicesFragment extends Fragment {
     private ArrayList<Solution> solutionCards;
     private boolean canGoFurther = true;
 
+    public PUPOwnServicesFragment() {
+    }
+
     public PUPOwnServicesFragment(Long userId, boolean isMyCards) {
         this.userId = userId;
         this.isMyCards = isMyCards;

@@ -13,13 +13,9 @@ import android.view.ViewGroup;
 
 import com.example.eventy.adapters.events.FeaturedEventsAdapter;
 import com.example.eventy.databinding.FragmentHomeFeaturedEventsBinding;
-import com.example.eventy.model.enums.PrivacyType;
 import com.example.eventy.events.model.EventCard;
-import com.example.eventy.events.model.EventType;
-import com.example.eventy.model.utils.Location;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class FeaturedEventsFragment extends Fragment {
     private FragmentHomeFeaturedEventsBinding binding;

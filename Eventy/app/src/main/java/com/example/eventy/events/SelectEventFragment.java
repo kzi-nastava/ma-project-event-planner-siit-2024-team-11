@@ -12,14 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.eventy.adapters.events.EventsSingleSelectionAdapter;
 import com.example.eventy.databinding.FragmentServiceReservationSelectEventRecyclerBinding;
-import com.example.eventy.model.enums.PrivacyType;
 import com.example.eventy.events.model.EventCard;
-import com.example.eventy.events.model.EventType;
-import com.example.eventy.model.utils.Location;
 import com.example.eventy.services.ReservationSelectEventFragment;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class SelectEventFragment extends Fragment {
     private FragmentServiceReservationSelectEventRecyclerBinding binding;

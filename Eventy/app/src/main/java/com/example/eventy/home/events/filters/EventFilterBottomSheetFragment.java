@@ -22,6 +22,8 @@ import com.example.eventy.custom.MultiSpinner;
 import com.example.eventy.custom.SingleSpinner;
 import com.example.eventy.databinding.BottomSheetHomeEventsFilterBinding;
 import com.example.eventy.events.model.EventFilters;
+import com.example.eventy.events.model.EventTypeCard;
+import com.example.eventy.events.model.Location;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
@@ -39,6 +41,13 @@ public class EventFilterBottomSheetFragment extends BottomSheetDialogFragment {
     private boolean isDatePickerOpened = false;
     private LocalDateTime selectedStartDateTime = null;
     private LocalDateTime selectedEndDateTime = null;
+    private ArrayList<String> eventTypes;
+    private ArrayList<String> locations;
+
+    public EventFilterBottomSheetFragment(ArrayList<String> eventTypes, ArrayList<String> locations) {
+        this.eventTypes = eventTypes;
+        this.locations = locations;
+    }
 
     @Nullable
     @Override
@@ -88,25 +97,11 @@ public class EventFilterBottomSheetFragment extends BottomSheetDialogFragment {
 
     private void setupFilterEventTypes() {
         MultiSpinner eventTypeMultiSpinner = binding.eventTypeFilter;
-
-        ArrayList<String> eventTypes = new ArrayList<>();
-        eventTypes.add("Wedding"); eventTypes.add("EventType 1"); eventTypes.add("Conference");
-        eventTypes.add("Party"); eventTypes.add("EventType 2"); eventTypes.add("EventType 3");
         eventTypeMultiSpinner.setItems(eventTypes, "-", "Event types");
     }
 
     private void setupFilterLocation() {
         SingleSpinner locationSingleSpinner = binding.locationFilter;
-
-        ArrayList<String> locations = new ArrayList<>();
-        locations.add("Belgrade");
-        locations.add("Los Angeles Office");
-        locations.add("New York Office");
-        locations.add("Paris");
-        locations.add("Kuala Lumpur");
-        locations.add("Banja Luka");
-
-        // Set items for the spinner with a default text
         locationSingleSpinner.setItems(locations, "-", "Locations");
     }
 

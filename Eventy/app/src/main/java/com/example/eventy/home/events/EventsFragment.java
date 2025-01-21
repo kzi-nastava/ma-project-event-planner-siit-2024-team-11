@@ -109,6 +109,10 @@ public class EventsFragment extends Fragment {
     }
 
     private void fetchEvents(String search, EventFilters eventFilters, int page, int pageSize, String sort) {
+        if (!isAdded()) {
+            return;
+        }
+
         if (isLoading) return;
         isLoading = true;
 
@@ -127,7 +131,6 @@ public class EventsFragment extends Fragment {
             eventFilters.getSelectedStartDateTime(), eventFilters.getSelectedEndDateTime(),
             page, pageSize, sort
         );
-
         call.enqueue(new Callback<PagedResponse<EventCard>>() {
             @Override
             public void onResponse(Call<PagedResponse<EventCard>> call, Response<PagedResponse<EventCard>> response) {
@@ -167,9 +170,11 @@ public class EventsFragment extends Fragment {
     }
 
     private void showErrorDialog(String message) {
-        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", message);
-        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        errorOkDialog.show();
+        if (isAdded() && getActivity() != null) {
+            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", message);
+            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            errorOkDialog.show();
+        }
     }
 
     public void updateFilters(EventFilters eventFilters) {

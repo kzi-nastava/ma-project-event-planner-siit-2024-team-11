@@ -2,6 +2,7 @@ package com.example.eventy.events.services;
 
 import com.example.eventy.common.PagedResponse;
 import com.example.eventy.events.model.EventCard;
+import com.example.eventy.events.model.EventTypeCard;
 import com.example.eventy.events.model.OrganizeEvent;
 import com.example.eventy.events.model.Event;
 
@@ -30,4 +31,10 @@ public interface EventService {
                                              @Query("page") int page,
                                              @Query("size") int pageSize,
                                              @Query("sort") String sort);
+
+    @GET(prefix + "/event-types")
+    Call<String[]> getAllUniqueEventTypesForEvents();
+
+    @GET(prefix + "/locations")
+    Call<String[]> getAllUniqueLocationsForEvents();
 }

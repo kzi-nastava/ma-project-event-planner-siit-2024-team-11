@@ -1,6 +1,8 @@
 package com.example.eventy.home;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,6 +22,7 @@ import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
 import com.example.eventy.R;
+import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentHomeBinding;
 import com.example.eventy.events.model.EventFilters;
 import com.example.eventy.home.events.EventsFragment;
@@ -31,6 +34,7 @@ import com.example.eventy.home.solutions.featured_solutions.FeaturedSolutionsFra
 import com.example.eventy.home.solutions.featured_solutions.FeaturedSolutionsTitleFragment;
 import com.example.eventy.custom.MultiSpinner;
 
+import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
@@ -39,6 +43,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class HomeFragment extends Fragment implements EventFilterBottomSheetFragment.FilterListener {
     private FragmentHomeBinding binding;
@@ -46,7 +54,11 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
     private EventFilters eventFilters;
     private Button dateRangeButton;
     private TextView showSelectedDateText;
+    private ArrayList<String> eventTypes = new ArrayList<>();
+    private ArrayList<String> locations = new ArrayList<>();
     private boolean isFilterOpened = false;
+    private boolean areEventTypesLoading = false;
+    private boolean areLocationsLoading = false;
 
     public HomeFragment() {
         eventFilters = new EventFilters("", "-", new ArrayList<String>(), null, null, null);
@@ -163,7 +175,12 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
                 return;
             }
             isFilterOpened = true;
-            EventFilterBottomSheetFragment bottomSheetFragment = new EventFilterBottomSheetFragment();
+
+            if (isAdded()) {
+                loadEventTypes();
+                loadLocations();
+            }
+            EventFilterBottomSheetFragment bottomSheetFragment = new EventFilterBottomSheetFragment(eventTypes, locations);
 
             Bundle args = new Bundle();
             args.putString("location", eventFilters.getSelectedLocation());
@@ -178,6 +195,72 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
 
             bottomSheetFragment.show(getChildFragmentManager(), bottomSheetFragment.getTag());
         });
+    }
+
+    private void loadEventTypes() {
+        if (areEventTypesLoading) return;
+        areEventTypesLoading = true;
+
+        Call<String[]> call = ClientUtils.eventService.getAllUniqueEventTypesForEvents();
+        call.enqueue(new Callback<String[]>() {
+            @Override
+            public void onResponse(Call<String[]> call, Response<String[]> response) {
+                if (response.isSuccessful() && response.body() != null && getActivity() != null) {
+                    String[] eventTypeNames = response.body();
+                    for (String eventTypeName : eventTypeNames) {
+                        eventTypes.add(eventTypeName);
+                    }
+                } else {
+                    showErrorDialog("Error while loading event types!");
+                    showErrorDialog(response.message());
+                }
+                areEventTypesLoading = false;
+            }
+
+            @Override
+            public void onFailure(Call<String[]> call, Throwable t) {
+                showErrorDialog("Error while loading event types!");
+                showErrorDialog(t.getMessage());
+                areEventTypesLoading = false;
+            }
+        });
+    }
+
+    private void loadLocations() {
+        if (areLocationsLoading) return;
+        areLocationsLoading = true;
+
+        Call<String[]> call = ClientUtils.eventService.getAllUniqueLocationsForEvents();
+        call.enqueue(new Callback<String[]>() {
+            @Override
+            public void onResponse(Call<String[]> call, Response<String[]> response) {
+                if (response.isSuccessful() && response.body() != null && getActivity() != null) {
+                    String[] locationNames = response.body();
+                    for (String locationName : locationNames) {
+                        locations.add(locationName);
+                    }
+                } else {
+                    showErrorDialog("Error while loading locations!");
+                    showErrorDialog(response.message());
+                }
+                areLocationsLoading = false;
+            }
+
+            @Override
+            public void onFailure(Call<String[]> call, Throwable t) {
+                showErrorDialog("Error while loading locations!");
+                showErrorDialog(t.getMessage());
+                areLocationsLoading = false;
+            }
+        });
+    }
+
+    private void showErrorDialog(String message) {
+        if (isAdded() && getActivity() != null) {
+            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", message);
+            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            errorOkDialog.show();
+        }
     }
 
     private void setupEventSort() {
