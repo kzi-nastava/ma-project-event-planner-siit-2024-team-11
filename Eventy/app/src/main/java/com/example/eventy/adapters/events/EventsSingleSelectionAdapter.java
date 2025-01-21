@@ -18,6 +18,8 @@ import com.example.eventy.events.model.EventCard;
 import com.example.eventy.services.ReservationSelectEventFragment;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class EventsSingleSelectionAdapter extends RecyclerView.Adapter<EventsSingleSelectionAdapter.EventSingleSelectionViewHolder> {
@@ -47,21 +49,22 @@ public class EventsSingleSelectionAdapter extends RecyclerView.Adapter<EventsSin
         if (eventCard != null) {
             holder.eventName.setText('"' + eventCard.getName() + '"');
 
-            String eventTypeString = "Type: " + eventCard.getEventType().getName();
+            String eventTypeString = "Type: " + eventCard.getEventTypeName();
             holder.eventType.setText(eventTypeString);
 
-            String maxParticipantsString = "Max people: " + eventCard.getMaxParticipants();
+            String maxParticipantsString = "Max people: " + eventCard.getMaxNumberParticipants();
             holder.maxParticipants.setText(maxParticipantsString);
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy.");
-            String formattedDate = dateFormat.format(eventCard.getDate());
+            LocalDateTime dateTime = eventCard.getStartDate(); // Parse ISO 8601 string
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy.");
+            String formattedDate = dateTime.format(formatter); // Format to desired output
             holder.eventDate.setText(formattedDate);
 
-            holder.eventLocation.setText(eventCard.getLocation().getName());
+            holder.eventLocation.setText(eventCard.getLocationName());
 
-            String openOrFullString = (eventCard.getPrivacyType() == PrivacyType.PRIVATE ? "FULL EVENT" : "OPEN EVENT") + "!";
+            String openOrFullString = (eventCard.isOpen() ? "OPEN EVENT" : "FULL EVENT") + "!";
             holder.openOrFull.setText(openOrFullString);
-            holder.openOrFull.setTextColor(eventCard.getPrivacyType() == PrivacyType.PRIVATE ? Color.parseColor("#E91A1A") : Color.parseColor("#3ED34F"));
+            holder.openOrFull.setTextColor(eventCard.isOpen() ? Color.parseColor("#3ED34F") : Color.parseColor("#E91A1A"));
 
             holder.description.setText(eventCard.getDescription());
 

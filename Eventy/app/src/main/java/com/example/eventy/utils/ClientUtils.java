@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import com.example.eventy.BuildConfig;
 import com.example.eventy.events.services.EventService;
 import com.example.eventy.events.services.EventTypeService;
+import com.example.eventy.events.services.LocationService;
 import com.example.eventy.users.services.AuthService;
 import com.example.eventy.users.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,6 +42,7 @@ public class ClientUtils {
         eventTypeService = retrofit.create(EventTypeService.class);
         eventService = retrofit.create(EventService.class);
         userService = retrofit.create(UserService.class);
+        locationService = retrofit.create(LocationService.class);
     }
 
     /*
@@ -73,4 +75,5 @@ public class ClientUtils {
     public static EventTypeService eventTypeService;
     public static EventService eventService;
     public static UserService userService;
+    public static LocationService locationService;
 }

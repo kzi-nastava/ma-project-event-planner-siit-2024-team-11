@@ -1,9 +1,10 @@
 package com.example.eventy.home;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,37 +20,52 @@ import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventy.R;
+import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentHomeBinding;
+import com.example.eventy.events.model.EventFilters;
 import com.example.eventy.home.events.EventsFragment;
-import com.example.eventy.home.events.EventsViewModel;
 import com.example.eventy.home.events.featured_events.FeaturedEventsFragment;
 import com.example.eventy.home.events.featured_events.FeaturedEventsTitleFragment;
+import com.example.eventy.home.events.filters.EventFilterBottomSheetFragment;
 import com.example.eventy.home.solutions.SolutionsFragment;
 import com.example.eventy.home.solutions.featured_solutions.FeaturedSolutionsFragment;
 import com.example.eventy.home.solutions.featured_solutions.FeaturedSolutionsTitleFragment;
 import com.example.eventy.custom.MultiSpinner;
 
+import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class HomeFragment extends Fragment implements MultiSpinner.MultiSpinnerListener {
+
+public class HomeFragment extends Fragment implements EventFilterBottomSheetFragment.FilterListener {
     private FragmentHomeBinding binding;
-    private EventsViewModel eventsViewModel;
-    // private SolutionsViewModel solutionsViewModel;
+    private EventsFragment eventsFragment;
+    private EventFilters eventFilters;
     private Button dateRangeButton;
     private TextView showSelectedDateText;
+    private ArrayList<String> eventTypes = new ArrayList<>();
+    private ArrayList<String> locations = new ArrayList<>();
+    private boolean isFilterOpened = false;
+    private boolean areEventTypesLoading = false;
+    private boolean areLocationsLoading = false;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    public HomeFragment() {
+        eventFilters = new EventFilters("", "-", new ArrayList<String>(), null, null, null);
+    }
 
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -84,8 +100,11 @@ public class HomeFragment extends Fragment implements MultiSpinner.MultiSpinnerL
     }
 
     private void loadInitialItems() {
+        EventsFragment fragmentEvents = new EventsFragment(eventFilters);
+        this.eventsFragment = fragmentEvents;
+
         getChildFragmentManager().beginTransaction()
-                .replace(R.id.all_items, new EventsFragment())
+                .replace(R.id.all_items, fragmentEvents)
                 .commit();
     }
 
@@ -124,7 +143,9 @@ public class HomeFragment extends Fragment implements MultiSpinner.MultiSpinnerL
     }
 
     private void loadEvents() {
-        Fragment fragmentEvents = new EventsFragment();
+        EventsFragment fragmentEvents = new EventsFragment(eventFilters);
+        this.eventsFragment = fragmentEvents;
+
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.all_items, fragmentEvents)
                 .addToBackStack(null)
@@ -132,155 +153,138 @@ public class HomeFragment extends Fragment implements MultiSpinner.MultiSpinnerL
     }
 
     private void setupEventSearch() {
-        eventsViewModel = new ViewModelProvider(this).get(EventsViewModel.class);
         SearchView searchView = binding.searchInput;
-        eventsViewModel.getText().observe(getViewLifecycleOwner(), searchView::setQueryHint);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                eventsFragment.updateSearch(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                eventsFragment.updateSearch(newText);
+                return true;
+            }
+        });
     }
 
     private void setupEventFilters() {
         binding.filterButton.setOnClickListener(v -> {
-            Toast.makeText(this.getContext(), "Event Filter button clicked!", Toast.LENGTH_SHORT).show();
+            if (isFilterOpened) {
+                return;
+            }
+            isFilterOpened = true;
 
-            BottomSheetDialog bottomSheetDialog = loadAndGetEventBottomSheetFilterDialog();
+            if (isAdded()) {
+                loadEventTypes();
+                loadLocations();
+            }
+            EventFilterBottomSheetFragment bottomSheetFragment = new EventFilterBottomSheetFragment(eventTypes, locations);
 
-            setupEventFilterEventTypes(bottomSheetDialog);
-            setupEventFilterLocation(bottomSheetDialog);
-            setupEventFilterDay(bottomSheetDialog);
+            Bundle args = new Bundle();
+            args.putString("location", eventFilters.getSelectedLocation());
+            args.putStringArrayList("eventTypes", eventFilters.getSelectedEventTypes());
+            args.putString("maxParticipants", eventFilters.getMaxParticipants());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault());
+            String dateRangeSummary = (eventFilters.getSelectedStartDateTime() != null && eventFilters.getSelectedEndDateTime() != null)
+                    ? (eventFilters.getSelectedStartDateTime().format(formatter) + " - " +  eventFilters.getSelectedEndDateTime().format(formatter))
+                    : "Not selected";
+            args.putString("dateRange", dateRangeSummary);
+            bottomSheetFragment.setArguments(args);
 
-            showSelectedDateText = bottomSheetDialog.findViewById(R.id.event_show_selected_date);
-
-            MaterialDatePicker<Pair<Long, Long>> materialDatePicker = buildAndGetEventMaterialDatePicker();
-            setupEventFilterDateSelection(bottomSheetDialog, materialDatePicker);
-
-            setupEventConfirmFilter(bottomSheetDialog);
+            bottomSheetFragment.show(getChildFragmentManager(), bottomSheetFragment.getTag());
         });
     }
 
-    private void setupEventConfirmFilter(BottomSheetDialog bottomSheetDialog) {
-        Button closeButton = bottomSheetDialog.findViewById(R.id.events_confirm_button);
-        closeButton.setOnClickListener(v -> bottomSheetDialog.dismiss());
-    }
+    private void loadEventTypes() {
+        if (areEventTypesLoading) return;
+        areEventTypesLoading = true;
 
-    @NonNull
-    private BottomSheetDialog loadAndGetEventBottomSheetFilterDialog() {
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
-        View dialogView = getLayoutInflater().inflate(R.layout.bottom_sheet_home_events_filter, null);
-        bottomSheetDialog.setContentView(dialogView);
-        bottomSheetDialog.show();
-        return bottomSheetDialog;
-    }
-
-    private void setupEventFilterEventTypes(BottomSheetDialog bottomSheetDialog) {
-        MultiSpinner eventTypeMultiSpinner = bottomSheetDialog.findViewById(R.id.event_type_filter);
-
-        ArrayList<String> eventTypes = new ArrayList<>();
-        eventTypes.add("Wedding"); eventTypes.add("Sport"); eventTypes.add("Conference");
-        eventTypes.add("Party"); eventTypes.add("Prom"); eventTypes.add("Big party");
-        eventTypeMultiSpinner.setItems(eventTypes, "-", this, "Event types");
-    }
-
-    private void setupEventFilterLocation(BottomSheetDialog bottomSheetDialog) {
-        MultiSpinner locationMultiSpinner = bottomSheetDialog.findViewById(R.id.location_filter);
-
-        ArrayList<String> locations = new ArrayList<>();
-        locations.add("Belgrade");locations.add("Gradiška");locations.add("New York");
-        locations.add("Paris");locations.add("Kuala Lumpur");locations.add("Banja Luka");
-        locationMultiSpinner.setItems(locations, "-", this, "Locations");
-    }
-
-    private void setupEventFilterDay(BottomSheetDialog bottomSheetDialog) {
-        Spinner daySpinner = bottomSheetDialog.findViewById(R.id.event_day_filter);
-
-        String[] dayTypes = new String[] {
-                "Any day", "Custom"
-        };
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item, dayTypes);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        daySpinner.setAdapter(arrayAdapter);
-        daySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        Call<String[]> call = ClientUtils.eventService.getAllUniqueEventTypesForEvents();
+        call.enqueue(new Callback<String[]>() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        Button dateRangeButton = bottomSheetDialog.findViewById(R.id.date_range_filter);
-        dateRangeButton.setEnabled(false);
-
-        daySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (position == 1) {
-                    dateRangeButton.setEnabled(true);
+            public void onResponse(Call<String[]> call, Response<String[]> response) {
+                if (response.isSuccessful() && response.body() != null && getActivity() != null) {
+                    String[] eventTypeNames = response.body();
+                    eventTypes.clear();
+                    eventTypes.addAll(Arrays.asList(eventTypeNames));
                 } else {
-                    dateRangeButton.setEnabled(false);
-                    dateRangeButton.setText("SELECT DATES \uD83D\uDDD3");
-                    showSelectedDateText.setText("No date selected");
+                    showErrorDialog("Error while loading event types!");
+                    showErrorDialog(response.message());
                 }
+                areEventTypesLoading = false;
             }
 
-            @SuppressLint("SetTextI18n")
             @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                dateRangeButton.setEnabled(false);
-                dateRangeButton.setText("SELECT DATES \uD83D\uDDD3");
-                showSelectedDateText.setText("No date selected");
+            public void onFailure(Call<String[]> call, Throwable t) {
+                showErrorDialog("Error while loading event types!");
+                showErrorDialog(t.getMessage());
+                areEventTypesLoading = false;
             }
         });
     }
 
-    @NonNull
-    private static MaterialDatePicker<Pair<Long, Long>> buildAndGetEventMaterialDatePicker() {
-        MaterialDatePicker.Builder<Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
-        builder.setTitleText("Select a date range");
-        MaterialDatePicker<Pair<Long, Long>> materialDatePicker = builder.build();
-        return materialDatePicker;
+    private void loadLocations() {
+        if (areLocationsLoading) return;
+        areLocationsLoading = true;
+
+        Call<String[]> call = ClientUtils.eventService.getAllUniqueLocationsForEvents();
+        call.enqueue(new Callback<String[]>() {
+            @Override
+            public void onResponse(Call<String[]> call, Response<String[]> response) {
+                if (response.isSuccessful() && response.body() != null && getActivity() != null) {
+                    String[] locationNames = response.body();
+                    locations.clear();
+                    locations.addAll(Arrays.asList(locationNames));
+                } else {
+                    showErrorDialog("Error while loading locations!");
+                    showErrorDialog(response.message());
+                }
+                areLocationsLoading = false;
+            }
+
+            @Override
+            public void onFailure(Call<String[]> call, Throwable t) {
+                showErrorDialog("Error while loading locations!");
+                showErrorDialog(t.getMessage());
+                areLocationsLoading = false;
+            }
+        });
     }
 
-    private void setupEventFilterDateSelection(BottomSheetDialog bottomSheetDialog, MaterialDatePicker<Pair<Long, Long>> materialDatePicker) {
-        dateRangeButton = bottomSheetDialog.findViewById(R.id.date_range_filter);
-        dateRangeButton.setOnClickListener(v1 ->
-                materialDatePicker.show(getParentFragmentManager(), "MATERIAL_DATE_PICKER")
-        );
-
-        materialDatePicker.addOnPositiveButtonClickListener(selection -> {
-            Long startDate = selection.first;
-            Long endDate = selection.second;
-
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            String startDateString = sdf.format(new Date(startDate));
-            String endDateString = sdf.format(new Date(endDate));
-
-            String selectedDateRange = startDateString.equals(endDateString) ? startDateString : startDateString + " - " + endDateString;
-            dateRangeButton.setText(selectedDateRange);
-
-            showSelectedDateText = bottomSheetDialog.findViewById(R.id.event_show_selected_date);
-            showSelectedDateText.setText(startDateString.equals(endDateString) ? "Selected date is: " + selectedDateRange : "Selected dates are: " + selectedDateRange);
-        });
+    private void showErrorDialog(String message) {
+        if (isAdded() && getActivity() != null) {
+            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", message);
+            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            errorOkDialog.show();
+        }
     }
 
     private void setupEventSort() {
         Spinner spinner = binding.sortButton;
 
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item,
-                getResources().getStringArray(R.array.event_sort_options));
-
-        // Specify the layout to use when the list of choices appears
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.event_sort_options));
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        // Apply the adapter to the spinner
         spinner.setAdapter(arrayAdapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String sortValue = arrayAdapter.getItem(position);
+                String selectedSort = "type";
+                switch (sortValue) {
+                    case "Event Type": selectedSort = "type"; break;
+                    case "Name": selectedSort = "name"; break;
+                    case "Max Participants ASC": selectedSort = "maxNumberParticipants,asc"; break;
+                    case "Max Participants DESC": selectedSort = "maxNumberParticipants,desc"; break;
+                    case "Location": selectedSort = "location"; break;
+                    case "Date ASC": selectedSort = "date,asc"; break;
+                    case "Date DESC": selectedSort = "date,desc"; break;
+                }
+
+                eventsFragment.updateSort(selectedSort);
             }
 
             @Override
@@ -401,7 +405,7 @@ public class HomeFragment extends Fragment implements MultiSpinner.MultiSpinnerL
         ArrayList<String> categories = new ArrayList<>();
         categories.add("Food"); categories.add("Music"); categories.add("Catering");
         categories.add("Flowers"); categories.add("Formal attires"); categories.add("Party");
-        solutionCategoryMultiSpinner.setItems(categories, "-", this, "Event types");
+        solutionCategoryMultiSpinner.setItems(categories, "-", "Event types");
     }
 
     private void setupSolutionFilterEventTypes(BottomSheetDialog bottomSheetDialog) {
@@ -410,7 +414,7 @@ public class HomeFragment extends Fragment implements MultiSpinner.MultiSpinnerL
         ArrayList<String> eventTypes = new ArrayList<>();
         eventTypes.add("Wedding"); eventTypes.add("Sport"); eventTypes.add("Conference");
         eventTypes.add("Party"); eventTypes.add("Prom"); eventTypes.add("Big party");
-        eventTypeMultiSpinner.setItems(eventTypes, "-", this, "Event types");
+        eventTypeMultiSpinner.setItems(eventTypes, "-", "Event types");
     }
 
     private void setupSolutionFilterCompany(BottomSheetDialog bottomSheetDialog) {
@@ -539,12 +543,15 @@ public class HomeFragment extends Fragment implements MultiSpinner.MultiSpinnerL
     }
 
     @Override
-    public void onItemsSelected(boolean[] selected) {
-        // Handle the selected items here
-        for (int i = 0; i < selected.length; i++) {
-            if (selected[i]) {
-                Log.d("MultiSpinner", "Item " + (i + 1) + " is selected");
-            }
-        }
+    public void onFiltersSelected(EventFilters filterValues) {
+        isFilterOpened = false;
+        this.eventFilters = filterValues;
+
+        eventsFragment.updateFilters(filterValues);
+    }
+
+    @Override
+    public void onFiltersClosed() {
+        isFilterOpened = false;
     }
 }

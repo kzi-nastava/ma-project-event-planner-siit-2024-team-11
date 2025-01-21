@@ -57,13 +57,14 @@
     <!-- whole tab scroll view -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <!-- tab container -->
         <LinearLayout
             android:id="@+id/featured_events"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:background="@color/home_featured_items_background_color">
 
@@ -202,7 +203,7 @@
             <FrameLayout
                 android:id="@+id/all_items"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@color/background_color"/>
         </LinearLayout>
 

@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-public class ReservationSelectEventFragment extends Fragment implements MultiSpinner.MultiSpinnerListener  {
+public class ReservationSelectEventFragment extends Fragment  {
     private FragmentServiceReservationSelectEventBinding binding;
     private EventCard selectedEventCard = null;
     private Button dateRangeButton;
@@ -120,7 +120,7 @@ public class ReservationSelectEventFragment extends Fragment implements MultiSpi
         ArrayList<String> eventTypes = new ArrayList<>();
         eventTypes.add("Wedding"); eventTypes.add("Sport"); eventTypes.add("Conference");
         eventTypes.add("Party"); eventTypes.add("Prom"); eventTypes.add("Big party");
-        eventTypeMultiSpinner.setItems(eventTypes, "-", this, "Event types");
+        eventTypeMultiSpinner.setItems(eventTypes, "-", "Event types");
     }
 
     private void setupEventFilterLocation(BottomSheetDialog bottomSheetDialog) {
@@ -129,7 +129,7 @@ public class ReservationSelectEventFragment extends Fragment implements MultiSpi
         ArrayList<String> locations = new ArrayList<>();
         locations.add("Belgrade");locations.add("Gradiška");locations.add("New York");
         locations.add("Paris");locations.add("Kuala Lumpur");locations.add("Banja Luka");
-        locationMultiSpinner.setItems(locations, "-", this, "Locations");
+        locationMultiSpinner.setItems(locations, "-", "Locations");
     }
 
     private void setupEventFilterDay(BottomSheetDialog bottomSheetDialog) {
@@ -255,16 +255,6 @@ public class ReservationSelectEventFragment extends Fragment implements MultiSpi
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-    }
-
-    @Override
-    public void onItemsSelected(boolean[] selected) {
-        // Handle the selected items here
-        for (int i = 0; i < selected.length; i++) {
-            if (selected[i]) {
-                Log.d("MultiSpinner", "Item " + (i + 1) + " is selected");
-            }
-        }
     }
 
     public void setSelectedEvent(EventCard selectedEventCard) {

@@ -43,23 +43,23 @@ public class EventDetailsDialog extends Dialog implements
         eventNameTextView.setText('"' + selectedEventCard.getName() + '"');
 
         TextView eventTypeTextView = findViewById(R.id.event_type);
-        eventTypeTextView.setText("Type: " + selectedEventCard.getEventType().getName());
+        eventTypeTextView.setText("Type: " + selectedEventCard.getEventTypeName());
 
         TextView maxParticipantsTextView = findViewById(R.id.max_participants);
-        maxParticipantsTextView.setText("Max participants: " + selectedEventCard.getMaxParticipants());
+        maxParticipantsTextView.setText("Max participants: " + selectedEventCard.getMaxNumberParticipants());
 
         TextView eventDateTextView = findViewById(R.id.event_date);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy.");
-        String formattedDate = dateFormat.format(selectedEventCard.getDate());
+        String formattedDate = dateFormat.format(selectedEventCard.getStartDate());
         eventDateTextView.setText(formattedDate);
 
         TextView eventLocationTextView = findViewById(R.id.event_location);
-        eventLocationTextView.setText(selectedEventCard.getLocation().getName());
+        eventLocationTextView.setText(selectedEventCard.getLocationName());
 
         TextView openOrFullTextView = findViewById(R.id.open_or_full);
-        String openOrFullString = (selectedEventCard.getPrivacyType() == PrivacyType.PRIVATE ? "FULL EVENT" : "OPEN EVENT") + "!";
+        String openOrFullString = (selectedEventCard.isOpen() ? "OPEN EVENT" : "FULL EVENT") + "!";
         openOrFullTextView.setText(openOrFullString);
-        openOrFullTextView.setTextColor(selectedEventCard.getPrivacyType() == PrivacyType.PRIVATE ? Color.parseColor("#E91A1A") : Color.parseColor("#3ED34F"));
+        openOrFullTextView.setTextColor(selectedEventCard.isOpen() ? Color.parseColor("#3ED34F") : Color.parseColor("#E91A1A"));
 
         TextView descriptionTextView = findViewById(R.id.description);
         descriptionTextView.setText(selectedEventCard.getDescription());
