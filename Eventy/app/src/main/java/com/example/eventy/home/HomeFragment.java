@@ -40,6 +40,7 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
@@ -207,9 +208,8 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
             public void onResponse(Call<String[]> call, Response<String[]> response) {
                 if (response.isSuccessful() && response.body() != null && getActivity() != null) {
                     String[] eventTypeNames = response.body();
-                    for (String eventTypeName : eventTypeNames) {
-                        eventTypes.add(eventTypeName);
-                    }
+                    eventTypes.clear();
+                    eventTypes.addAll(Arrays.asList(eventTypeNames));
                 } else {
                     showErrorDialog("Error while loading event types!");
                     showErrorDialog(response.message());
@@ -236,9 +236,8 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
             public void onResponse(Call<String[]> call, Response<String[]> response) {
                 if (response.isSuccessful() && response.body() != null && getActivity() != null) {
                     String[] locationNames = response.body();
-                    for (String locationName : locationNames) {
-                        locations.add(locationName);
-                    }
+                    locations.clear();
+                    locations.addAll(Arrays.asList(locationNames));
                 } else {
                     showErrorDialog("Error while loading locations!");
                     showErrorDialog(response.message());

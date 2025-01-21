@@ -32,6 +32,9 @@ public interface EventService {
                                              @Query("size") int pageSize,
                                              @Query("sort") String sort);
 
+    @GET(prefix + "/featured")
+    Call<EventCard[]> getFeaturedEvents();
+
     @GET(prefix + "/event-types")
     Call<String[]> getAllUniqueEventTypesForEvents();
 

@@ -55,11 +55,9 @@ public class EventsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         this.paginatedEvents = new ArrayList<>();
         setupRecyclerView();
         setupPaginationControls();
-
         fetchEvents(search, eventsFilters, page, pageSize, sort);
     }
 
@@ -116,8 +114,6 @@ public class EventsFragment extends Fragment {
         if (isLoading) return;
         isLoading = true;
 
-        binding.progressBar.setVisibility(View.VISIBLE);
-
         Integer maxParticipants;
         try {
             maxParticipants = Integer.parseInt(eventFilters.getMaxParticipants());
@@ -149,7 +145,6 @@ public class EventsFragment extends Fragment {
                     showErrorDialog(response.message());
                 }
                 isLoading = false;
-                //binding.progressBar.setVisibility(View.GONE);
             }
 
             @Override
@@ -157,7 +152,6 @@ public class EventsFragment extends Fragment {
                 showErrorDialog("Error while loading events!");
                 showErrorDialog(t.getMessage());
                 isLoading = false;
-                binding.progressBar.setVisibility(View.GONE);
             }
         });
     }
