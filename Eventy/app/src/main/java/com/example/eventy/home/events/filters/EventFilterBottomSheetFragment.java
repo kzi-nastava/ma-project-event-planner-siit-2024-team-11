@@ -14,6 +14,7 @@ import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.util.Pair;
 
 import com.example.eventy.R;
@@ -51,7 +52,7 @@ public class EventFilterBottomSheetFragment extends BottomSheetDialogFragment {
             throw new RuntimeException("Parent fragment must implement FilterSelectedListener");
         }
 
-        setupInputs();
+        setupFilterInputs();
 
         if (getArguments() != null) {
             String selectedLocation = getArguments().getString("location");
@@ -77,29 +78,30 @@ public class EventFilterBottomSheetFragment extends BottomSheetDialogFragment {
         return binding.getRoot();
     }
 
-    private void setupInputs() {
-        setupEventFilterEventTypes();
-        setupEventFilterLocation();
-        setupEventFilterDay();
-        setupEventFilterDateSelection();
+    private void setupFilterInputs() {
+        setupFilterEventTypes();
+        setupFilterLocation();
+        setupFilterDay();
+        setupFilterDateSelection();
+        setupFilterResetAll();
     }
 
-    private void setupEventFilterEventTypes() {
+    private void setupFilterEventTypes() {
         MultiSpinner eventTypeMultiSpinner = binding.eventTypeFilter;
 
         ArrayList<String> eventTypes = new ArrayList<>();
-        eventTypes.add("Wedding"); eventTypes.add("Sport"); eventTypes.add("Conference");
-        eventTypes.add("Party"); eventTypes.add("Prom"); eventTypes.add("Big party");
+        eventTypes.add("Wedding"); eventTypes.add("EventType 1"); eventTypes.add("Conference");
+        eventTypes.add("Party"); eventTypes.add("EventType 2"); eventTypes.add("EventType 3");
         eventTypeMultiSpinner.setItems(eventTypes, "-", "Event types");
     }
 
-    private void setupEventFilterLocation() {
+    private void setupFilterLocation() {
         SingleSpinner locationSingleSpinner = binding.locationFilter;
 
         ArrayList<String> locations = new ArrayList<>();
         locations.add("Belgrade");
-        locations.add("Gradiška");
-        locations.add("New York");
+        locations.add("Los Angeles Office");
+        locations.add("New York Office");
         locations.add("Paris");
         locations.add("Kuala Lumpur");
         locations.add("Banja Luka");
@@ -108,30 +110,18 @@ public class EventFilterBottomSheetFragment extends BottomSheetDialogFragment {
         locationSingleSpinner.setItems(locations, "-", "Locations");
     }
 
-    private void setupEventFilterDay() {
+    private void setupFilterDay() {
         Spinner daySpinner = binding.eventDayFilter;
 
-        String[] dayTypes = new String[] {
-                "Any day", "Custom"
-        };
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item, dayTypes);
+        String[] dayTypes = new String[] {"Any day", "Custom"};
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, dayTypes);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         daySpinner.setAdapter(arrayAdapter);
-        daySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
 
         Button dateRangeButton = binding.dateRangeFilter;
         dateRangeButton.setEnabled(false);
-
         daySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @SuppressLint("SetTextI18n")
             @Override
@@ -144,9 +134,10 @@ public class EventFilterBottomSheetFragment extends BottomSheetDialogFragment {
                     dateRangeButton.setBackgroundResource(R.drawable.filter_button_background_disabled);
                     dateRangeButton.setText("SELECT DATES \uD83D\uDDD3");
                     binding.eventShowSelectedDate.setText("No date selected");
+                    selectedStartDateTime = null;
+                    selectedEndDateTime = null;
                 }
             }
-
             @SuppressLint("SetTextI18n")
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
@@ -157,7 +148,7 @@ public class EventFilterBottomSheetFragment extends BottomSheetDialogFragment {
         });
     }
 
-    private void setupEventFilterDateSelection() {
+    private void setupFilterDateSelection() {
         MaterialDatePicker.Builder<Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
         builder.setTitleText("Select a date range");
         MaterialDatePicker<Pair<Long, Long>> materialDatePicker = builder.build();
@@ -204,6 +195,19 @@ public class EventFilterBottomSheetFragment extends BottomSheetDialogFragment {
         });
     }
 
+    private void setupFilterResetAll() {
+        AppCompatButton resetAllButton = binding.resetAllFilter;
+        resetAllButton.setOnClickListener(v -> {
+            binding.locationFilter.restoreSelectedItem("-");
+            binding.eventTypeFilter.restoreSelectedItem(new ArrayList<String>());
+            binding.maxParticipantsFilter.setText(null);
+            binding.eventDayFilter.setSelection(0);
+            binding.eventShowSelectedDate.setText("Not selected");
+            selectedStartDateTime = null;
+            selectedEndDateTime = null;
+        });
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -212,43 +216,23 @@ public class EventFilterBottomSheetFragment extends BottomSheetDialogFragment {
     public EventFilters getSelectedFilters() {
         EventFilters selectedFilters = new EventFilters();
 
-        // Selected Location
+        // Location
         String selectedLocation = binding.locationFilter.getSelectedItem().toString();
         selectedFilters.setSelectedLocation(selectedLocation);
 
-        // Selected Event Types
+        // Event Types
         MultiSpinner multiSpinner = binding.eventTypeFilter;
         List<String> selectedEventTypes = multiSpinner.getSelectedItems();
-        /*StringBuilder selectedEventTypesText = new StringBuilder();
-        for (int i = 0; i < selectedEventTypes.size(); i++) {
-            selectedEventTypesText.append(selectedEventTypes.get(i)).append(",");
-        }
-        if (selectedEventTypesText.length() > 0) { // remove last comma
-            selectedEventTypesText.setLength(selectedEventTypesText.length() - 2);
-        }*/
         selectedFilters.setSelectedEventTypes((ArrayList<String>) selectedEventTypes);
 
         // Max Participants
         String maxParticipants = binding.maxParticipantsFilter.getText().toString();
         selectedFilters.setMaxParticipants(maxParticipants);
 
-        /*// Selected Date Range
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault());
-        String dateRangeSummary = (selectedStartDateTime != null && selectedEndDateTime != null)
-                ? selectedStartDateTime.format(formatter) + " - " + selectedEndDateTime.format(formatter)
-                : "Not selected";
-
-        // Collect all the selected filter values, even if empty
-        StringBuilder filtersSummary = new StringBuilder();
-        filtersSummary.append("Location: ").append(selectedLocation.isEmpty() ? "Not selected" : selectedLocation).append("\n")
-                .append("Event Types: ").append(selectedEventTypesText.length() > 0 ? selectedEventTypesText : "Not selected").append("\n")
-                .append("Max Participants: ").append(maxParticipants.isEmpty() ? "Not selected" : maxParticipants).append("\n")
-                .append("Date Range: ").append(dateRangeSummary);
-         */
+        // Start Date & End Date
         selectedFilters.setSelectedStartDateTime(selectedStartDateTime);
         selectedFilters.setSelectedEndDateTime(selectedEndDateTime);
 
-        // Display the selected filter values or pass them to another method or API
         return selectedFilters;
     }
 

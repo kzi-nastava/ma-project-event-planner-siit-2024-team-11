@@ -3,7 +3,6 @@ package com.example.eventy.home;
 import android.annotation.SuppressLint;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +18,11 @@ import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentHomeBinding;
 import com.example.eventy.events.model.EventFilters;
 import com.example.eventy.home.events.EventsFragment;
-import com.example.eventy.home.events.EventsViewModel;
 import com.example.eventy.home.events.featured_events.FeaturedEventsFragment;
 import com.example.eventy.home.events.featured_events.FeaturedEventsTitleFragment;
 import com.example.eventy.home.events.filters.EventFilterBottomSheetFragment;
@@ -45,13 +42,10 @@ import java.util.Locale;
 
 public class HomeFragment extends Fragment implements EventFilterBottomSheetFragment.FilterListener {
     private FragmentHomeBinding binding;
-    private EventsViewModel eventsViewModel;
-
+    private EventsFragment eventsFragment;
     private EventFilters eventFilters;
-
     private Button dateRangeButton;
     private TextView showSelectedDateText;
-
     private boolean isFilterOpened = false;
 
     public HomeFragment() {
@@ -93,8 +87,11 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
     }
 
     private void loadInitialItems() {
+        EventsFragment fragmentEvents = new EventsFragment(eventFilters);
+        this.eventsFragment = fragmentEvents;
+
         getChildFragmentManager().beginTransaction()
-                .replace(R.id.all_items, new EventsFragment())
+                .replace(R.id.all_items, fragmentEvents)
                 .commit();
     }
 
@@ -133,7 +130,9 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
     }
 
     private void loadEvents() {
-        Fragment fragmentEvents = new EventsFragment();
+        EventsFragment fragmentEvents = new EventsFragment(eventFilters);
+        this.eventsFragment = fragmentEvents;
+
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.all_items, fragmentEvents)
                 .addToBackStack(null)
@@ -141,9 +140,21 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
     }
 
     private void setupEventSearch() {
-        eventsViewModel = new ViewModelProvider(this).get(EventsViewModel.class);
         SearchView searchView = binding.searchInput;
-        eventsViewModel.getText().observe(getViewLifecycleOwner(), searchView::setQueryHint);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                eventsFragment.updateSearch(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                eventsFragment.updateSearch(newText);
+                return true;
+            }
+        });
     }
 
     private void setupEventFilters() {
@@ -172,19 +183,26 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
     private void setupEventSort() {
         Spinner spinner = binding.sortButton;
 
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item,
-                getResources().getStringArray(R.array.event_sort_options));
-
-        // Specify the layout to use when the list of choices appears
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.event_sort_options));
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        // Apply the adapter to the spinner
         spinner.setAdapter(arrayAdapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String sortValue = arrayAdapter.getItem(position);
+                String selectedSort = "type";
+                switch (sortValue) {
+                    case "Event Type": selectedSort = "type"; break;
+                    case "Name": selectedSort = "name"; break;
+                    case "Max Participants ASC": selectedSort = "maxNumberParticipants,asc"; break;
+                    case "Max Participants DESC": selectedSort = "maxNumberParticipants,desc"; break;
+                    case "Location": selectedSort = "location"; break;
+                    case "Date ASC": selectedSort = "date,asc"; break;
+                    case "Date DESC": selectedSort = "date,desc"; break;
+                }
+
+                eventsFragment.updateSort(selectedSort);
             }
 
             @Override
@@ -446,7 +464,8 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
     public void onFiltersSelected(EventFilters filterValues) {
         isFilterOpened = false;
         this.eventFilters = filterValues;
-        Log.wtf("ParentFragment", filterValues.toString());
+
+        eventsFragment.updateFilters(filterValues);
     }
 
     @Override

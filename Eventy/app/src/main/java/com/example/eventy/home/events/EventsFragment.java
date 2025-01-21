@@ -20,6 +20,7 @@ import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentHomeEventsBinding;
 import com.example.eventy.events.model.EventCard;
 import com.example.eventy.common.PagedResponse;
+import com.example.eventy.events.model.EventFilters;
 import com.example.eventy.utils.ClientUtils;
 
 import retrofit2.Call;
@@ -36,14 +37,17 @@ public class EventsFragment extends Fragment {
     private int pageSize = 5;
     private int totalPages = 99;
     private String sort = "type";
+    private String search = "";
+    private EventFilters eventsFilters;
     private ArrayList<EventCard> paginatedEvents;
     private boolean isLoading = false;
 
-    public EventsFragment() {}
+    public EventsFragment(EventFilters eventFilters) {
+        this.eventsFilters = eventFilters;
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeEventsBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -56,7 +60,7 @@ public class EventsFragment extends Fragment {
         setupRecyclerView();
         setupPaginationControls();
 
-        fetchEvents("", null, null, null, null, null, page, pageSize, sort);
+        fetchEvents(search, eventsFilters, page, pageSize, sort);
     }
 
     private void setupRecyclerView() {
@@ -69,14 +73,14 @@ public class EventsFragment extends Fragment {
         binding.btnPrevious.setOnClickListener(v -> {
             if (page > 0) {
                 page--;
-               fetchEvents("", null, null, null, null, null, page, pageSize, sort);
+               fetchEvents(search, eventsFilters, page, pageSize, sort);
             }
         });
 
         binding.btnNext.setOnClickListener(v -> {
             if (page < totalPages - 1) {
                 page++;
-                fetchEvents("", null, null, null, null, null, page, pageSize, sort);
+                fetchEvents(search, eventsFilters, page, pageSize, sort);
             }
         });
 
@@ -94,7 +98,7 @@ public class EventsFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 pageSize = Integer.parseInt(parent.getItemAtPosition(position).toString());
                 page = 0;
-                fetchEvents("", null, null, null, null, null, page, pageSize, sort);
+                fetchEvents(search, eventsFilters, page, pageSize, sort);
             }
 
             @Override
@@ -104,14 +108,24 @@ public class EventsFragment extends Fragment {
         });
     }
 
-    private void fetchEvents(String search, ArrayList<String> eventTypes, Integer maxParticipants, String location, LocalDateTime startDate, LocalDateTime endDate, int page, int pageSize, String sort) {
+    private void fetchEvents(String search, EventFilters eventFilters, int page, int pageSize, String sort) {
         if (isLoading) return;
         isLoading = true;
 
         binding.progressBar.setVisibility(View.VISIBLE);
 
+        Integer maxParticipants;
+        try {
+            maxParticipants = Integer.parseInt(eventFilters.getMaxParticipants());
+        } catch (Exception ignored) {
+            maxParticipants = null;
+        }
+        String location = eventFilters.getSelectedLocation().equals("-") ? null : eventFilters.getSelectedLocation();
+
         Call<PagedResponse<EventCard>> call = ClientUtils.eventService.getEvents(
-            search, eventTypes, maxParticipants, location, startDate, endDate, page, pageSize, sort
+            search, eventFilters.getSelectedEventTypes(), maxParticipants, location,
+            eventFilters.getSelectedStartDateTime(), eventFilters.getSelectedEndDateTime(),
+            page, pageSize, sort
         );
 
         call.enqueue(new Callback<PagedResponse<EventCard>>() {
@@ -149,14 +163,32 @@ public class EventsFragment extends Fragment {
         binding.btnPrevious.setEnabled(page > 0);
         binding.btnNext.setEnabled(page < totalPages - 1);
 
-        binding.tvPageInfo.setText(
-                String.format("Page %d of %d", page + 1, totalPages)
-        );
+        binding.tvPageInfo.setText(String.format("Page %d of %d", page + 1, totalPages));
     }
 
     private void showErrorDialog(String message) {
         ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", message);
         errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         errorOkDialog.show();
+    }
+
+    public void updateFilters(EventFilters eventFilters) {
+        this.eventsFilters = eventFilters;
+
+        page = 0;
+        pageSize = 5;
+        binding.spinnerPageSize.setSelection(2);
+
+        fetchEvents(search, eventsFilters, page, pageSize, sort);
+    }
+
+    public void updateSort(String selectedSort) {
+        sort = selectedSort;
+        fetchEvents(search, eventsFilters, page, pageSize, sort);
+    }
+
+    public void updateSearch(String searchValue) {
+        search = searchValue;
+        fetchEvents(search, eventsFilters, page, pageSize, sort);
     }
 }

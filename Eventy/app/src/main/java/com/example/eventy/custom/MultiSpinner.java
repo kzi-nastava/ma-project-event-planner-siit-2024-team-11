@@ -186,9 +186,7 @@ public class MultiSpinner extends androidx.appcompat.widget.AppCompatSpinner imp
     }
 
     public void restoreSelectedItem(ArrayList<String> selected) {
-        if (!selected.isEmpty()) {
-            this.selected = selected;
-            updateAdapter(selected);
-        }
+        this.selected = selected;
+        updateAdapter(selected);
     }
 }

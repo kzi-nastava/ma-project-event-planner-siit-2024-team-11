@@ -155,9 +155,7 @@ public class SingleSpinner extends androidx.appcompat.widget.AppCompatSpinner im
     }
 
     public void restoreSelectedItem(String selected) {
-        if (!selected.equals(defaultText)) {
-            this.selected = selected;
-            updateAdapter(selected);
-        }
+        this.selected = selected;
+        updateAdapter(selected);
     }
 }
