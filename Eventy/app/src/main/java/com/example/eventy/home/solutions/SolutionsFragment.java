@@ -1,17 +1,27 @@
 package com.example.eventy.home.solutions;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.eventy.R;
+import com.example.eventy.adapters.events.EventsAdapter;
 import com.example.eventy.adapters.solutions.SolutionsAdapter;
+import com.example.eventy.common.PagedResponse;
+import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentHomeSolutionsBinding;
+import com.example.eventy.events.model.EventCard;
+import com.example.eventy.events.model.EventFilters;
 import com.example.eventy.model.enums.ReservationConfirmationType;
 import com.example.eventy.model.enums.Status;
 import com.example.eventy.events.model.EventType;
@@ -19,21 +29,35 @@ import com.example.eventy.model.solution.Category;
 import com.example.eventy.model.solution.Product;
 import com.example.eventy.model.solution.Service;
 import com.example.eventy.model.solution.Solution;
+import com.example.eventy.solutions.model.SolutionCard;
+import com.example.eventy.solutions.model.SolutionsFilter;
+import com.example.eventy.utils.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class SolutionsFragment extends Fragment {
     private FragmentHomeSolutionsBinding binding;
     private SolutionsAdapter solutionsAdapter;
+    private int page = 0;
+    private int pageSize = 5;
+    private int totalPages = 99;
+    private String sort = "category";
+    private String search = "";
+    private SolutionsFilter solutionsFilter;
+    private ArrayList<SolutionCard> paginatedSolutions;
+    private boolean isLoading = false;
 
-    public SolutionsFragment() {
-        // Required empty public constructor
+    public SolutionsFragment(SolutionsFilter solutionsFilter) {
+        this.solutionsFilter = solutionsFilter;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeSolutionsBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -41,147 +65,149 @@ public class SolutionsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        this.paginatedSolutions = new ArrayList<>();
+        setupRecyclerView();
+        setupPaginationControls();
+        fetchSolutions(search, solutionsFilter, page, pageSize, sort);
+    }
 
-        ArrayList<Solution> solutions = getSolutions();
-
-        solutionsAdapter = new SolutionsAdapter(requireContext(), solutions);
-
+    private void setupRecyclerView() {
+        solutionsAdapter = new SolutionsAdapter(requireContext(), paginatedSolutions);
         binding.solutionsRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.solutionsRecycler.setAdapter(solutionsAdapter);
     }
 
-    @NonNull
-    private static ArrayList<Solution> getSolutions() {
-        ArrayList<Solution> solutions = new ArrayList<>();
+    private void setupPaginationControls() {
+        binding.btnPrevious.setOnClickListener(v -> {
+            if (page > 0) {
+                page--;
+                fetchSolutions(search, solutionsFilter, page, pageSize, sort);
+            }
+        });
 
-        ArrayList<EventType> eventTypes = new ArrayList<>();
-        EventType eventType1 = new EventType();
-        eventType1.setName("Wedding");
-        EventType eventType2 = new EventType();
-        eventType2.setName("Sport");
-        EventType eventType3 = new EventType();
-        eventType3.setName("Conference");
-        EventType eventType4 = new EventType();
-        eventType4.setName("Party");
+        binding.btnNext.setOnClickListener(v -> {
+            if (page < totalPages - 1) {
+                page++;
+                fetchSolutions(search, solutionsFilter, page, pageSize, sort);
+            }
+        });
 
-        eventTypes.add(eventType1);
-        eventTypes.add(eventType2);
-        eventTypes.add(eventType3);
-        eventTypes.add(eventType4);
-
-        Service service1 = new Service(
-                "Photography",
-                new Category("photography", "Neki description", Status.ACCEPTED),
-                "Professional wedding photography service.",
-                1500.0, 10,
-                new ArrayList<>(Arrays.asList("image1.jpg", "image2.jpg")),
-                false, true, true, "Full-day photography",
-                30, 180, 7, 3,
-                ReservationConfirmationType.AUTOMATIC, eventTypes
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                requireContext(),
+                R.array.page_size_options,
+                R.layout.custom_spinner_item
         );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.spinnerPageSize.setAdapter(adapter);
+        binding.spinnerPageSize.setSelection(2);
 
-        Service service2 = new Service(
-                "Bon Jovi",
-                new Category("music", "Neki description", Status.ACCEPTED),
-                "Best band ever!", 800.0, 5,
-                new ArrayList<>(Arrays.asList("dj1.jpg", "dj2.jpg")),
-                false, true, true, "Includes sound and lighting equipment",
-                60, 120, 14, 7,
-                ReservationConfirmationType.MANUAL, eventTypes
+        binding.spinnerPageSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                pageSize = Integer.parseInt(parent.getItemAtPosition(position).toString());
+                page = 0;
+                fetchSolutions(search, solutionsFilter, page, pageSize, sort);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // do nothing
+            }
+        });
+    }
+
+    private void fetchSolutions(String search, SolutionsFilter solutionsFilter, int page, int pageSize, String sort) {
+        if (!isAdded()) {
+            return;
+        }
+
+        if (isLoading) return;
+        isLoading = true;
+
+        Double minPrice;
+        try {
+            minPrice = Double.parseDouble(solutionsFilter.getMinPrice());
+        } catch (Exception ignored) {
+            minPrice = null;
+        }
+
+        Double maxPrice;
+        try {
+            maxPrice = Double.parseDouble(solutionsFilter.getMaxPrice());
+        } catch (Exception ignored) {
+            maxPrice = null;
+        }
+
+        String company = solutionsFilter.getCompany().equals("-") ? null : solutionsFilter.getCompany();
+
+        Call<PagedResponse<SolutionCard>> call = ClientUtils.solutionService.getSolutions(
+                search, solutionsFilter.getType(), solutionsFilter.getCategories(),
+                solutionsFilter.getEventTypes(), company, minPrice, maxPrice,
+                solutionsFilter.getStartDate(), solutionsFilter.getEndDate(),
+                solutionsFilter.getAvailable(), page, pageSize, sort
         );
+        call.enqueue(new Callback<PagedResponse<SolutionCard>>() {
+            @Override
+            public void onResponse(Call<PagedResponse<SolutionCard>> call, Response<PagedResponse<SolutionCard>> response) {
+                if (response.isSuccessful() && response.body() != null && getActivity() != null) {
+                    PagedResponse<SolutionCard> pagedResponse = response.body();
 
-        Service service3 = new Service(
-                "EventCard Catering - The best",
-                new Category("catering", "Neki description", Status.ACCEPTED),
-                "Delicious catering service for all types of events.",
-                1200.0, 15,
-                new ArrayList<>(Arrays.asList("catering1.jpg", "catering2.jpg")),
-                false, true, true, "Custom menu available",
-                30, 150, 10, 5,
-                ReservationConfirmationType.AUTOMATIC, eventTypes
-        );
+                    paginatedSolutions.clear();
+                    paginatedSolutions.addAll(pagedResponse.getContent());
+                    solutionsAdapter.notifyDataSetChanged();
 
-        Product product1 = new Product(
-                "Sweet 16 - cake",
-                new Category("cake", "Neki description", Status.ACCEPTED),
-                "Elegant floral centerpiece for your event.",
-                50.0, 0,
-                new ArrayList<>(Arrays.asList("floral1.jpg", "floral2.jpg")),
-                false, true, true, eventTypes
-        );
+                    totalPages = pagedResponse.getTotalPages();
+                    updatePaginationControls();
 
-        Product product2 = new Product(
-                "Custom Gift Candy Basket",
-                new Category("gifts", "Neki description", Status.ACCEPTED),
-                "Personalized gift basket for special occasions.", 75.0, 5,
-                new ArrayList<>(Arrays.asList("gift1.jpg", "gift2.jpg")),
-                false, true, true, eventTypes
-        );
+                } else {
+                    showErrorDialog("Error while loading solutions!");
+                    showErrorDialog(response.message());
+                }
+                isLoading = false;
+            }
 
-        solutions.add(service1);
-        solutions.add(product1);
-        solutions.add(service2);
-        solutions.add(service3);
-        solutions.add(product2);
+            @Override
+            public void onFailure(Call<PagedResponse<SolutionCard>> call, Throwable t) {
+                showErrorDialog("Error while loading solutions!");
+                showErrorDialog(t.getMessage());
+                isLoading = false;
+            }
+        });
+    }
 
-        Service service4 = new Service(
-                "EventCard Decor",
-                new Category("decor", "Neki description", Status.ACCEPTED),
-                "Luxurious event decor for any theme.",
-                1000.0, 12,
-                new ArrayList<>(Arrays.asList("decor1.jpg", "decor2.jpg")),
-                false, true, true, "Includes venue setup and takedown",
-                45, 200, 10, 5,
-                ReservationConfirmationType.MANUAL, eventTypes
-        );
+    private void updatePaginationControls() {
+        binding.btnPrevious.setEnabled(page > 0);
+        binding.btnNext.setEnabled(page < totalPages - 1);
 
-        Service service5 = new Service(
-                "Makeup Artist",
-                new Category("beauty", "Neki description", Status.ACCEPTED),
-                "Professional makeup services for any occasion.",
-                300.0, 0,
-                new ArrayList<>(Arrays.asList("makeup1.jpg", "makeup2.jpg")),
-                false, true, true, "Includes trial session and travel to venue",
-                30, 90, 7, 3,
-                ReservationConfirmationType.AUTOMATIC, eventTypes
-        );
+        binding.tvPageInfo.setText(String.format("Page %d of %d", page + 1, totalPages));
+    }
 
-        Service service6 = new Service(
-                "DJ Service",
-                new Category("entertainment", "Neki description", Status.ACCEPTED),
-                "High-energy DJ service for any event.",
-                500.0, 8,
-                new ArrayList<>(Arrays.asList("dj3.jpg", "dj4.jpg")),
-                false, true, true, "Includes lighting and custom playlists",
-                60, 180, 14, 7,
-                ReservationConfirmationType.MANUAL, eventTypes
-        );
+    private void showErrorDialog(String message) {
+        if (isAdded() && getActivity() != null) {
+            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", message);
+            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            errorOkDialog.show();
+        }
+    }
 
-        Product product3 = new Product(
-                "Handmade Candle Set",
-                new Category("candles", "Neki description", Status.ACCEPTED),
-                "Set of 3 scented candles, perfect for gifting.",
-                30.0, 5,
-                new ArrayList<>(Arrays.asList("candle1.jpg", "candle2.jpg")),
-                false, true, true, eventTypes
-        );
+    public void updateFilters(SolutionsFilter solutionsFilter) {
+        this.solutionsFilter = solutionsFilter;
 
-        Product product4 = new Product(
-                "Wedding Guestbook",
-                new Category("stationery", "Neki description", Status.ACCEPTED),
-                "Elegant guestbook for your special day.",
-                40.0, 10,
-                new ArrayList<>(Arrays.asList("guestbook1.jpg", "guestbook2.jpg")),
-                false, true, true, eventTypes
-        );
+        page = 0;
+        pageSize = 5;
+        binding.spinnerPageSize.setSelection(2);
 
-        solutions.add(service4);
-        solutions.add(service5);
-        solutions.add(service6);
-        solutions.add(product3);
-        solutions.add(product4);
+        fetchSolutions(search, solutionsFilter, page, pageSize, sort);
+    }
 
-        return solutions;
+    public void updateSort(String selectedSort) {
+        sort = selectedSort;
+        fetchSolutions(search, solutionsFilter, page, pageSize, sort);
+    }
+
+    public void updateSearch(String searchValue) {
+        search = searchValue;
+        fetchSolutions(search, solutionsFilter, page, pageSize, sort);
     }
 
     @Override

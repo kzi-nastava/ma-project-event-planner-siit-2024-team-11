@@ -3,6 +3,7 @@ package com.example.eventy.users.services;
 import com.example.eventy.common.PagedResponse;
 import com.example.eventy.events.model.EventCard;
 import com.example.eventy.model.solution.Solution;
+import com.example.eventy.solutions.model.SolutionCard;
 import com.example.eventy.users.model.CalendarOccupancy;
 import com.example.eventy.users.model.UpdateUser;
 import com.example.eventy.users.model.User;
@@ -40,7 +41,7 @@ public interface UserService {
                                                        @Query("page") int page, @Query("size") int size);
 
     @GET(solutionsPrefix + "/favorite/{userId}")
-    Call<PagedResponse<Solution>> getMyFavoriteSolutions(@Path("userId") Long userId, @Query("search") String search,
+    Call<PagedResponse<SolutionCard>> getMyFavoriteSolutions(@Path("userId") Long userId, @Query("search") String search,
                                                          @Query("page") int page, @Query("size") int size);
 
     @GET(eventsPrefix + "/organized/{userId}")
@@ -48,6 +49,6 @@ public interface UserService {
                                                @Query("page") int page, @Query("size") int size);
 
     @GET(eventsPrefix + "/catalog/{userId}")
-    Call<PagedResponse<Solution>> getMySolutions(@Path("userId") Long userId, @Query("search") String search,
-                                                       @Query("page") int page, @Query("size") int size);
+    Call<PagedResponse<SolutionCard>> getMySolutions(@Path("userId") Long userId, @Query("search") String search,
+                                                     @Query("page") int page, @Query("size") int size);
 }

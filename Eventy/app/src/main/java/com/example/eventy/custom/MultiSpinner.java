@@ -59,10 +59,12 @@ public class MultiSpinner extends androidx.appcompat.widget.AppCompatSpinner imp
     private void updateAdapter(List<String> values) {
         StringBuilder spinnerBuffer = new StringBuilder();
         boolean someSelected = false;
-        for (String selectedItem : values) {
-            spinnerBuffer.append(selectedItem);
-            spinnerBuffer.append(", ");
-            someSelected = true;
+        if (values != null) {
+            for (String selectedItem : values) {
+                spinnerBuffer.append(selectedItem);
+                spinnerBuffer.append(", ");
+                someSelected = true;
+            }
         }
 
         String spinnerText;

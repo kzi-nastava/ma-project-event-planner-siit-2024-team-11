@@ -1,24 +1,18 @@
 package com.example.eventy.home;
 
-import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
-import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
 import com.example.eventy.R;
@@ -32,16 +26,14 @@ import com.example.eventy.home.events.filters.EventFilterBottomSheetFragment;
 import com.example.eventy.home.solutions.SolutionsFragment;
 import com.example.eventy.home.solutions.featured_solutions.FeaturedSolutionsFragment;
 import com.example.eventy.home.solutions.featured_solutions.FeaturedSolutionsTitleFragment;
-import com.example.eventy.custom.MultiSpinner;
 
+import com.example.eventy.home.solutions.filters.SolutionFilterBottomSheetFragment;
+import com.example.eventy.solutions.model.SolutionsFilter;
 import com.example.eventy.utils.ClientUtils;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -49,20 +41,30 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class HomeFragment extends Fragment implements EventFilterBottomSheetFragment.FilterListener {
+public class HomeFragment extends Fragment implements EventFilterBottomSheetFragment.FilterListener,
+                                                      SolutionFilterBottomSheetFragment.FilterListener {
     private FragmentHomeBinding binding;
     private EventsFragment eventsFragment;
     private EventFilters eventFilters;
-    private Button dateRangeButton;
-    private TextView showSelectedDateText;
-    private ArrayList<String> eventTypes = new ArrayList<>();
-    private ArrayList<String> locations = new ArrayList<>();
-    private boolean isFilterOpened = false;
-    private boolean areEventTypesLoading = false;
-    private boolean areLocationsLoading = false;
+    private ArrayList<String> eventTypesEvents = new ArrayList<>();
+    private ArrayList<String> locationsEvents = new ArrayList<>();
+    private boolean isEventFilterOpened = false;
+    private boolean areEventTypesEventsLoading = false;
+    private boolean areLocationsEventsLoading = false;
+
+    private SolutionsFragment solutionsFragment;
+    private SolutionsFilter solutionsFilter;
+    private ArrayList<String> eventTypesSolutions = new ArrayList<>();
+    private ArrayList<String> categoriesSolutions  = new ArrayList<>();
+    private ArrayList<String> companiesSolutions  = new ArrayList<>();
+    private boolean isSolutionFilterOpened = false;
+    private boolean areEventTypesSolutionsLoading = false;
+    private boolean areCategoriesSolutionsLoading = false;
+    private boolean areCompaniesSolutionsLoading = false;
 
     public HomeFragment() {
         eventFilters = new EventFilters("", "-", new ArrayList<String>(), null, null, null);
+        solutionsFilter = new SolutionsFilter("", "Any", null, null, "-", null, null,  null, null, true);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -172,16 +174,16 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
 
     private void setupEventFilters() {
         binding.filterButton.setOnClickListener(v -> {
-            if (isFilterOpened) {
+            if (isEventFilterOpened) {
                 return;
             }
-            isFilterOpened = true;
+            isEventFilterOpened = true;
 
             if (isAdded()) {
-                loadEventTypes();
-                loadLocations();
+                loadEventTypesEvents();
+                loadLocationsEvents();
             }
-            EventFilterBottomSheetFragment bottomSheetFragment = new EventFilterBottomSheetFragment(eventTypes, locations);
+            EventFilterBottomSheetFragment bottomSheetFragment = new EventFilterBottomSheetFragment(eventTypesEvents, locationsEvents);
 
             Bundle args = new Bundle();
             args.putString("location", eventFilters.getSelectedLocation());
@@ -198,9 +200,9 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
         });
     }
 
-    private void loadEventTypes() {
-        if (areEventTypesLoading) return;
-        areEventTypesLoading = true;
+    private void loadEventTypesEvents() {
+        if (areEventTypesEventsLoading) return;
+        areEventTypesEventsLoading = true;
 
         Call<String[]> call = ClientUtils.eventService.getAllUniqueEventTypesForEvents();
         call.enqueue(new Callback<String[]>() {
@@ -208,27 +210,27 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
             public void onResponse(Call<String[]> call, Response<String[]> response) {
                 if (response.isSuccessful() && response.body() != null && getActivity() != null) {
                     String[] eventTypeNames = response.body();
-                    eventTypes.clear();
-                    eventTypes.addAll(Arrays.asList(eventTypeNames));
+                    eventTypesEvents.clear();
+                    eventTypesEvents.addAll(Arrays.asList(eventTypeNames));
                 } else {
                     showErrorDialog("Error while loading event types!");
                     showErrorDialog(response.message());
                 }
-                areEventTypesLoading = false;
+                areEventTypesEventsLoading = false;
             }
 
             @Override
             public void onFailure(Call<String[]> call, Throwable t) {
                 showErrorDialog("Error while loading event types!");
                 showErrorDialog(t.getMessage());
-                areEventTypesLoading = false;
+                areEventTypesEventsLoading = false;
             }
         });
     }
 
-    private void loadLocations() {
-        if (areLocationsLoading) return;
-        areLocationsLoading = true;
+    private void loadLocationsEvents() {
+        if (areLocationsEventsLoading) return;
+        areLocationsEventsLoading = true;
 
         Call<String[]> call = ClientUtils.eventService.getAllUniqueLocationsForEvents();
         call.enqueue(new Callback<String[]>() {
@@ -236,20 +238,20 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
             public void onResponse(Call<String[]> call, Response<String[]> response) {
                 if (response.isSuccessful() && response.body() != null && getActivity() != null) {
                     String[] locationNames = response.body();
-                    locations.clear();
-                    locations.addAll(Arrays.asList(locationNames));
+                    locationsEvents.clear();
+                    locationsEvents.addAll(Arrays.asList(locationNames));
                 } else {
                     showErrorDialog("Error while loading locations!");
                     showErrorDialog(response.message());
                 }
-                areLocationsLoading = false;
+                areLocationsEventsLoading = false;
             }
 
             @Override
             public void onFailure(Call<String[]> call, Throwable t) {
                 showErrorDialog("Error while loading locations!");
                 showErrorDialog(t.getMessage());
-                areLocationsLoading = false;
+                areLocationsEventsLoading = false;
             }
         });
     }
@@ -320,7 +322,9 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
     }
 
     private void loadSolutions() {
-        Fragment fragmentSolutions = new SolutionsFragment();
+        SolutionsFragment fragmentSolutions = new SolutionsFragment(solutionsFilter);
+        this.solutionsFragment = fragmentSolutions;
+
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.all_items, fragmentSolutions)
                 .addToBackStack(null)
@@ -328,204 +332,161 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
     }
 
     private void setupSolutionSearch() {
-        // TODO: 11/14/2024
-        //eventsViewModel = new ViewModelProvider(this).get(EventsViewModel.class);
-        //SearchView searchView = binding.searchInput;
-        //eventsViewModel.getText().observe(getViewLifecycleOwner(), searchView::setQueryHint);
+        SearchView searchView = binding.searchInput;
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                solutionsFragment.updateSearch(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                solutionsFragment.updateSearch(newText);
+                return true;
+            }
+        });
     }
 
     private void setupSolutionFilters() {
         binding.filterButton.setOnClickListener(v -> {
-            Toast.makeText(this.getContext(), "Solution Filter button clicked!", Toast.LENGTH_SHORT).show();
+            if (isSolutionFilterOpened) {
+                return;
+            }
+            isSolutionFilterOpened = true;
 
-            BottomSheetDialog bottomSheetDialog = loadAndGetSolutionBottomSheetFilterDialog();
+            if (isAdded()) {
+                loadEventTypesSolutions();
+                loadCategoriesSolutions();
+                loadCompaniesSolutions();
+            }
+            SolutionFilterBottomSheetFragment bottomSheetFragment = new SolutionFilterBottomSheetFragment(eventTypesSolutions, categoriesSolutions, companiesSolutions);
 
-            setupSolutionFilterType(bottomSheetDialog);
-            setupSolutionFilterCategoryType(bottomSheetDialog);
-            setupSolutionFilterEventTypes(bottomSheetDialog);
-            setupSolutionFilterCompany(bottomSheetDialog);
-            setupSolutionFilterDay(bottomSheetDialog);
+            Bundle args = new Bundle();
+            args.putString("type", solutionsFilter.getType());
+            args.putStringArrayList("eventTypes", solutionsFilter.getEventTypes());
+            args.putStringArrayList("categories", solutionsFilter.getCategories());
+            args.putString("company", solutionsFilter.getCompany());
+            args.putString("minPrice", solutionsFilter.getMinPrice());
+            args.putString("maxPrice", solutionsFilter.getMaxPrice());
+            args.putBoolean("available", solutionsFilter.getAvailable());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault());
+            String dateRangeSummary = (solutionsFilter.getStartDate() != null && solutionsFilter.getEndDate() != null)
+                    ? (solutionsFilter.getStartDate().format(formatter) + " - " +  solutionsFilter.getEndDate().format(formatter))
+                    : "Not selected";
+            args.putString("dateRange", dateRangeSummary);
+            bottomSheetFragment.setArguments(args);
 
-            showSelectedDateText = bottomSheetDialog.findViewById(R.id.show_selected_date);
-
-            MaterialDatePicker<Pair<Long, Long>> materialDatePicker = buildAndGetSolutionMaterialDatePicker();
-            setupSolutionFilterDateSelection(bottomSheetDialog, materialDatePicker);
-
-            setupSolutionConfirmFilter(bottomSheetDialog);
+            bottomSheetFragment.show(getChildFragmentManager(), bottomSheetFragment.getTag());
         });
     }
 
-    private void setupSolutionConfirmFilter(BottomSheetDialog bottomSheetDialog) {
-        Button closeButton = bottomSheetDialog.findViewById(R.id.solutions_confirm_button);
-        closeButton.setOnClickListener(v -> bottomSheetDialog.dismiss());
-    }
+    private void loadEventTypesSolutions() {
 
-    @NonNull
-    private BottomSheetDialog loadAndGetSolutionBottomSheetFilterDialog() {
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
-        View dialogView = getLayoutInflater().inflate(R.layout.bottom_sheet_home_solutions_filter, null);
-        bottomSheetDialog.setContentView(dialogView);
-        bottomSheetDialog.show();
-        return bottomSheetDialog;
-    }
+        /*if (areEventTypesSolutionsLoading) return;
+        areEventTypesSolutionsLoading = true;
 
-    private void setupSolutionFilterType(BottomSheetDialog bottomSheetDialog) {
-        Spinner solutionTypeSpinner = bottomSheetDialog.findViewById(R.id.solution_type_filter);
-
-        String[] types = new String[] {
-            "-", "Services", "Products"
-        };
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item, types);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        solutionTypeSpinner.setAdapter(arrayAdapter);
-        solutionTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        Call<String[]> call = ClientUtils.eventService.getAllUniqueEventTypesForEvents();
+        call.enqueue(new Callback<String[]>() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-    }
-
-    private void setupSolutionFilterCategoryType(BottomSheetDialog bottomSheetDialog) {
-        MultiSpinner solutionCategoryMultiSpinner = bottomSheetDialog.findViewById(R.id.solution_category_filter);
-
-        ArrayList<String> categories = new ArrayList<>();
-        categories.add("Food"); categories.add("Music"); categories.add("Catering");
-        categories.add("Flowers"); categories.add("Formal attires"); categories.add("Party");
-        solutionCategoryMultiSpinner.setItems(categories, "-", "Event types");
-    }
-
-    private void setupSolutionFilterEventTypes(BottomSheetDialog bottomSheetDialog) {
-        MultiSpinner eventTypeMultiSpinner = bottomSheetDialog.findViewById(R.id.solution_event_types_filter);
-
-        ArrayList<String> eventTypes = new ArrayList<>();
-        eventTypes.add("Wedding"); eventTypes.add("Sport"); eventTypes.add("Conference");
-        eventTypes.add("Party"); eventTypes.add("Prom"); eventTypes.add("Big party");
-        eventTypeMultiSpinner.setItems(eventTypes, "-", "Event types");
-    }
-
-    private void setupSolutionFilterCompany(BottomSheetDialog bottomSheetDialog) {
-        String[] companies = new String[] {
-            "-", "Beograd DOO", "Gradiška DOO", "New York DOO", "Paris DOO"
-        };
-
-        Spinner solutionTypeSpinner = bottomSheetDialog.findViewById(R.id.company_filter);
-
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item, companies);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        solutionTypeSpinner.setAdapter(arrayAdapter);
-        solutionTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-    }
-
-    private void setupSolutionFilterDay(BottomSheetDialog bottomSheetDialog) {
-        Spinner daySpinner = bottomSheetDialog.findViewById(R.id.day_filter);
-
-        String[] dayTypes = new String[] {
-                "Any day", "Custom"
-        };
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item, dayTypes);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        daySpinner.setAdapter(arrayAdapter);
-        daySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        Button dateRangeButton = bottomSheetDialog.findViewById(R.id.solution_date_range_filter);
-        dateRangeButton.setEnabled(false);
-
-        daySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (position == 1) {
-                    dateRangeButton.setEnabled(true);
+            public void onResponse(Call<String[]> call, Response<String[]> response) {
+                if (response.isSuccessful() && response.body() != null && getActivity() != null) {
+                    String[] eventTypeNames = response.body();
+                    eventTypesEvents.clear();
+                    eventTypesEvents.addAll(Arrays.asList(eventTypeNames));
                 } else {
-                    dateRangeButton.setEnabled(false);
-                    dateRangeButton.setText("SELECT DATES \uD83D\uDDD3");
-                    showSelectedDateText.setText("No date selected");
+                    showErrorDialog("Error while loading event types!");
+                    showErrorDialog(response.message());
                 }
+                areEventTypesEventsLoading = false;
             }
 
-            @SuppressLint("SetTextI18n")
             @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                dateRangeButton.setEnabled(false);
-                dateRangeButton.setText("SELECT DATES \uD83D\uDDD3");
-                showSelectedDateText.setText("No date selected");
+            public void onFailure(Call<String[]> call, Throwable t) {
+                showErrorDialog("Error while loading event types!");
+                showErrorDialog(t.getMessage());
+                areEventTypesEventsLoading = false;
             }
-        });
+        });*/
     }
 
-    @NonNull
-    private static MaterialDatePicker<Pair<Long, Long>> buildAndGetSolutionMaterialDatePicker() {
-        MaterialDatePicker.Builder<Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
-        builder.setTitleText("Select a date range");
-        MaterialDatePicker<Pair<Long, Long>> materialDatePicker = builder.build();
-        return materialDatePicker;
+    private void loadCategoriesSolutions() {
+        /*if (areEventTypesEventsLoading) return;
+        areEventTypesEventsLoading = true;
+
+        Call<String[]> call = ClientUtils.eventService.getAllUniqueEventTypesForEvents();
+        call.enqueue(new Callback<String[]>() {
+            @Override
+            public void onResponse(Call<String[]> call, Response<String[]> response) {
+                if (response.isSuccessful() && response.body() != null && getActivity() != null) {
+                    String[] eventTypeNames = response.body();
+                    eventTypesEvents.clear();
+                    eventTypesEvents.addAll(Arrays.asList(eventTypeNames));
+                } else {
+                    showErrorDialog("Error while loading event types!");
+                    showErrorDialog(response.message());
+                }
+                areEventTypesEventsLoading = false;
+            }
+
+            @Override
+            public void onFailure(Call<String[]> call, Throwable t) {
+                showErrorDialog("Error while loading event types!");
+                showErrorDialog(t.getMessage());
+                areEventTypesEventsLoading = false;
+            }
+        });*/
     }
 
-    private void setupSolutionFilterDateSelection(BottomSheetDialog bottomSheetDialog, MaterialDatePicker<Pair<Long, Long>> materialDatePicker) {
-        dateRangeButton = bottomSheetDialog.findViewById(R.id.solution_date_range_filter);
-        dateRangeButton.setOnClickListener(v1 ->
-                materialDatePicker.show(getParentFragmentManager(), "MATERIAL_DATE_PICKER")
-        );
+    private void loadCompaniesSolutions() {
+        /*if (areLocationsEventsLoading) return;
+        areLocationsEventsLoading = true;
 
-        materialDatePicker.addOnPositiveButtonClickListener(selection -> {
-            Long startDate = selection.first;
-            Long endDate = selection.second;
+        Call<String[]> call = ClientUtils.eventService.getAllUniqueLocationsForEvents();
+        call.enqueue(new Callback<String[]>() {
+            @Override
+            public void onResponse(Call<String[]> call, Response<String[]> response) {
+                if (response.isSuccessful() && response.body() != null && getActivity() != null) {
+                    String[] locationNames = response.body();
+                    locationsEvents.clear();
+                    locationsEvents.addAll(Arrays.asList(locationNames));
+                } else {
+                    showErrorDialog("Error while loading locations!");
+                    showErrorDialog(response.message());
+                }
+                areLocationsEventsLoading = false;
+            }
 
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            String startDateString = sdf.format(new Date(startDate));
-            String endDateString = sdf.format(new Date(endDate));
-
-            String selectedDateRange = startDateString.equals(endDateString) ? startDateString : startDateString + " - " + endDateString;
-            dateRangeButton.setText(selectedDateRange);
-
-            showSelectedDateText = bottomSheetDialog.findViewById(R.id.show_selected_date);
-            showSelectedDateText.setText(startDateString.equals(endDateString) ? "Selected date is: " + selectedDateRange : "Selected dates are: " + selectedDateRange);
-        });
+            @Override
+            public void onFailure(Call<String[]> call, Throwable t) {
+                showErrorDialog("Error while loading locations!");
+                showErrorDialog(t.getMessage());
+                areLocationsEventsLoading = false;
+            }
+        });*/
     }
 
     private void setupSolutionSort() {
         Spinner spinner = binding.sortButton;
 
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item,
-                getResources().getStringArray(R.array.solution_sort_options));
-
-        // Specify the layout to use when the list of choices appears
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.solution_sort_options));
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        // Apply the adapter to the spinner
         spinner.setAdapter(arrayAdapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String sortValue = arrayAdapter.getItem(position);
+                String selectedSort = "category";
+                switch (sortValue) {
+                    case "Category": selectedSort = "category"; break;
+                    case "Name": selectedSort = "name"; break;
+                    case "Price ASC": selectedSort = "price,asc"; break;
+                    case "Price DESC": selectedSort = "price,desc"; break;
+                }
+
+                solutionsFragment.updateSort(selectedSort);
             }
 
             @Override
@@ -544,14 +505,23 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
 
     @Override
     public void onFiltersSelected(EventFilters filterValues) {
-        isFilterOpened = false;
+        isEventFilterOpened = false;
         this.eventFilters = filterValues;
 
         eventsFragment.updateFilters(filterValues);
     }
 
     @Override
+    public void onFiltersSelected(SolutionsFilter filterValues) {
+        isSolutionFilterOpened = false;
+        this.solutionsFilter = filterValues;
+
+        solutionsFragment.updateFilters(filterValues);
+    }
+
+    @Override
     public void onFiltersClosed() {
-        isFilterOpened = false;
+        isEventFilterOpened = false;
+        isSolutionFilterOpened = false;
     }
 }

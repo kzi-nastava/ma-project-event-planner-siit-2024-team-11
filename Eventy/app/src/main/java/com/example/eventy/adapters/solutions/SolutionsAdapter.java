@@ -1,11 +1,11 @@
 package com.example.eventy.adapters.solutions;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,17 +13,21 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventy.R;
+import com.example.eventy.model.enums.ReservationConfirmationType;
 import com.example.eventy.model.solution.Service;
 import com.example.eventy.model.solution.Solution;
+import com.example.eventy.solutions.enums.SolutionType;
+import com.example.eventy.solutions.model.SolutionCard;
+import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.ArrayList;
 
 public class SolutionsAdapter extends RecyclerView.Adapter<SolutionsAdapter.SolutionViewHolder> {
-    private ArrayList<Solution> solutions;
+    private ArrayList<SolutionCard> solutionCards;
     private LayoutInflater layoutInflater;
 
-    public SolutionsAdapter(Context context, ArrayList<Solution> solutions) {
-        this.solutions = solutions;
+    public SolutionsAdapter(Context context, ArrayList<SolutionCard> solutionCards) {
+        this.solutionCards = solutionCards;
         this.layoutInflater = LayoutInflater.from(context);
     }
 
@@ -32,7 +36,7 @@ public class SolutionsAdapter extends RecyclerView.Adapter<SolutionsAdapter.Solu
     public SolutionsAdapter.SolutionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
 
-        if (solutions.get(viewType) instanceof Service) {
+        if (solutionCards.get(viewType).getType().equals(SolutionType.SERVICE)) {
             view = layoutInflater.inflate(R.layout.fragment_service_card, parent, false);
         } else {
             view = layoutInflater.inflate(R.layout.fragment_product_card, parent, false);
@@ -43,24 +47,52 @@ public class SolutionsAdapter extends RecyclerView.Adapter<SolutionsAdapter.Solu
 
     @Override
     public void onBindViewHolder(@NonNull SolutionsAdapter.SolutionViewHolder holder, int position) {
-        Solution solution = solutions.get(position);
+        SolutionCard solutionCard = solutionCards.get(position);
 
-        if (solution != null) {
-            holder.name.setText('"' + solution.getName() + '"');
+        if (solutionCard != null) {
+            holder.name.setText('"' + solutionCard.getName() + '"');
 
-            String categoryString = "Type: " + solution.getCategory().getName();
+            String categoryString = "Type: " + solutionCard.getCategoryName();
             holder.category.setText(categoryString);
 
-            String currentPriceString = String.valueOf(solution.getPrice());
+            if (solutionCard.getType().equals(SolutionType.PRODUCT)) {
+                holder.description.setText(solutionCard.getDescription());
+            } else {
+                int d1 = solutionCard.getMinReservationTime();
+                int d2 = solutionCard.getMaxReservationTime();
+                String durationText = "Duration: " + ((d1 == d2) ? d1 : d1 + "-" + d2) + "min";
+                holder.duration.setText(durationText);
+
+                String reservationType = solutionCard.getReservationType().equals(ReservationConfirmationType.MANUAL) ? "manual" : "auto";
+                holder.reservationType.setText("Reservation: " + reservationType);
+            }
+
+            ArrayList<String> eventTypeNames = solutionCard.getEventTypeNames();
+            int size = eventTypeNames.size();
+
+            String eventType1 = size >= 1 ? eventTypeNames.get(0) : "";
+            holder.eventType1.setText(eventType1);
+            holder.eventType2Container.setVisibility(View.GONE);
+            holder.dots.setVisibility(View.GONE);
+
+            String eventType2 = "";
+            if (size >= 2) {
+                eventType2 = eventTypeNames.get(1);
+                holder.eventType2Container.setVisibility(View.VISIBLE);
+                holder.eventType2.setText(eventType2);
+                holder.dots.setVisibility(size > 2 ? View.VISIBLE : View.GONE);
+            }
+
+            String currentPriceString = String.valueOf(solutionCard.getPrice());
             holder.discount.setText(currentPriceString);
             holder.crossedOutPrice.setText(currentPriceString);
 
-            double discountedPrice = solution.getPrice() - solution.getPrice() * solution.getDiscount() / 100;
+            double discountedPrice = solutionCard.getPrice() - solutionCard.getPrice() * solutionCard.getDiscount() / 100;
             String discountedPriceString = String.format("%.2f", discountedPrice);
             holder.price.setText(discountedPriceString);
 
             View discountContainer = holder.itemView.findViewById(R.id.discount_container);
-            if (solution.getDiscount() == 0) {
+            if (solutionCard.getDiscount() == 0) {
                 discountContainer.setVisibility(View.GONE);
             } else {
                 discountContainer.setVisibility(View.VISIBLE);
@@ -68,23 +100,19 @@ public class SolutionsAdapter extends RecyclerView.Adapter<SolutionsAdapter.Solu
 
             Button seeMoreButton = holder.itemView.findViewById(R.id.see_more_button);
             seeMoreButton.setOnClickListener(v -> {
-                Toast.makeText(holder.itemView.getContext(), "See more: " + solution.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(holder.itemView.getContext(), "See more: " + solutionCard.getName(), Toast.LENGTH_SHORT).show();
             });
 
             Button favoriteButton = holder.itemView.findViewById(R.id.favorite_button);
             favoriteButton.setOnClickListener(v -> {
-                Toast.makeText(holder.itemView.getContext(), "Favorite: " + solution.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(holder.itemView.getContext(), "Favorite: " + solutionCard.getName(), Toast.LENGTH_SHORT).show();
             });
         }
     }
 
-    private int convertDpToPx(int dp, View itemView) {
-        return (int) (dp * itemView.getResources().getDisplayMetrics().density);
-    }
-
     @Override
     public int getItemCount() {
-        return solutions.size();
+        return solutionCards.size();
     }
 
     @Override
@@ -93,7 +121,10 @@ public class SolutionsAdapter extends RecyclerView.Adapter<SolutionsAdapter.Solu
     }
 
     public static class SolutionViewHolder extends RecyclerView.ViewHolder {
-        TextView name, category, price, crossedOutPrice, discount;
+        TextView name, category, price, crossedOutPrice, discount, description,
+                duration, reservationType, eventType1, eventType2, dots;
+        LinearLayout eventType2Container;
+        ShapeableImageView image;
 
         public SolutionViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -102,7 +133,14 @@ public class SolutionsAdapter extends RecyclerView.Adapter<SolutionsAdapter.Solu
             price = itemView.findViewById(R.id.current_price);
             crossedOutPrice = itemView.findViewById(R.id.crossed_out_price);
             discount = itemView.findViewById(R.id.before_price);
-            //image = itemView.findViewById(R.id.image);
+            description = itemView.findViewById(R.id.description);
+            duration = itemView.findViewById(R.id.duration);
+            reservationType = itemView.findViewById(R.id.reservation_type);
+            eventType1 = itemView.findViewById(R.id.event_type1);
+            eventType2 = itemView.findViewById(R.id.event_type2);
+            eventType2Container = itemView.findViewById(R.id.event_type_container2);
+            image = itemView.findViewById(R.id.image);
+            dots = itemView.findViewById(R.id.three_dots);
         }
     }
 }
