@@ -36,13 +36,12 @@ public class SolutionsAdapter extends RecyclerView.Adapter<SolutionsAdapter.Solu
     public SolutionsAdapter.SolutionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
 
-        if (solutionCards.get(viewType).getType().equals(SolutionType.SERVICE)) {
+        if (viewType == 0) {
             view = layoutInflater.inflate(R.layout.fragment_service_card, parent, false);
-        } else {
+        } else { // PRODUCT
             view = layoutInflater.inflate(R.layout.fragment_product_card, parent, false);
         }
-
-        return new SolutionsAdapter.SolutionViewHolder(view);
+        return new SolutionViewHolder(view);
     }
 
     @Override
@@ -117,7 +116,8 @@ public class SolutionsAdapter extends RecyclerView.Adapter<SolutionsAdapter.Solu
 
     @Override
     public int getItemViewType(int position) {
-        return position;
+        SolutionCard solutionCard = solutionCards.get(position);
+        return solutionCard.getType().equals(SolutionType.SERVICE) ? 0 : 1;
     }
 
     public static class SolutionViewHolder extends RecyclerView.ViewHolder {

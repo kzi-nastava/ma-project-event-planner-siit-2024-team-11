@@ -73,7 +73,7 @@ public class SolutionFilterBottomSheetFragment extends BottomSheetDialogFragment
             Boolean available = getArguments().getBoolean("available");
             String selectedDateRange = getArguments().getString("dateRange");
 
-            binding.solutionTypeFilter.setSelection(selectedType.equals("Any") ? 0 : selectedType.equals("Services") ? 1 : 2);
+            binding.solutionTypeFilter.setSelection(selectedType.equals("Any") ? 0 : selectedType.equals("Service") ? 1 : 2);
             binding.solutionCategoryFilter.restoreSelectedItem(selectedCategories);
             binding.solutionEventTypesFilter.restoreSelectedItem(selectedEventTypes);
             binding.companyFilter.restoreSelectedItem(selectedCompany);
@@ -108,7 +108,7 @@ public class SolutionFilterBottomSheetFragment extends BottomSheetDialogFragment
         Spinner solutionTypeSpinner = binding.solutionTypeFilter;
 
         String[] types = new String[] {
-            "-", "Services", "Products"
+            "-", "Service", "Product"
         };
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(),
@@ -129,27 +129,17 @@ public class SolutionFilterBottomSheetFragment extends BottomSheetDialogFragment
 
     private void setupFilterCategories() {
         MultiSpinner solutionCategoryMultiSpinner = binding.solutionCategoryFilter;
-
-        ArrayList<String> categories = new ArrayList<>();
-        categories.add("Food"); categories.add("Music"); categories.add("Catering");
-        categories.add("Flowers"); categories.add("Formal attires"); categories.add("Party");
-        solutionCategoryMultiSpinner.setItems(categories, "-", "Event types");
+        solutionCategoryMultiSpinner.setItems(categories, "-", "Categories");
     }
 
     private void setupFilterEventTypes() {
         MultiSpinner eventTypeMultiSpinner = binding.solutionEventTypesFilter;
-
-        ArrayList<String> eventTypes = new ArrayList<>();
-        eventTypes.add("Wedding"); eventTypes.add("Sport"); eventTypes.add("Conference");
-        eventTypes.add("Party"); eventTypes.add("Prom"); eventTypes.add("Big party");
         eventTypeMultiSpinner.setItems(eventTypes, "-", "Event types");
     }
 
     private void setupFilterCompanies() {
         SingleSpinner companiesSingleSpinner = binding.companyFilter;
-        List<String> companies = new ArrayList<String>();
-        companies.add("Beograd DOO"); companies.add("Gradiška DOO"); companies.add("New York DOO"); companies.add("Paris DOO");
-        companiesSingleSpinner.setItems(companies, "-", "Companies");
+       companiesSingleSpinner.setItems(companies, "-", "Companies");
     }
 
     private void setupFilterDay() {
@@ -253,6 +243,9 @@ public class SolutionFilterBottomSheetFragment extends BottomSheetDialogFragment
 
         // Type
         String selectedType = binding.solutionTypeFilter.getSelectedItem().toString();
+        if (selectedType.equals("-")) {
+            selectedType = "Any";
+        }
         selectedFilters.setType(selectedType);
 
         // Categories
@@ -299,5 +292,4 @@ public class SolutionFilterBottomSheetFragment extends BottomSheetDialogFragment
         void onFiltersSelected(SolutionsFilter filterValues);
         void onFiltersClosed();
     }
-
 }

@@ -44,6 +44,7 @@ import retrofit2.Response;
 public class HomeFragment extends Fragment implements EventFilterBottomSheetFragment.FilterListener,
                                                       SolutionFilterBottomSheetFragment.FilterListener {
     private FragmentHomeBinding binding;
+
     private EventsFragment eventsFragment;
     private EventFilters eventFilters;
     private ArrayList<String> eventTypesEvents = new ArrayList<>();
@@ -64,7 +65,7 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
 
     public HomeFragment() {
         eventFilters = new EventFilters("", "-", new ArrayList<String>(), null, null, null);
-        solutionsFilter = new SolutionsFilter("", "Any", null, null, "-", null, null,  null, null, true);
+        solutionsFilter = new SolutionsFilter("", "Any", new ArrayList<String>(), new ArrayList<String>(), "-", null, null,  null, null, true);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -383,88 +384,87 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
     }
 
     private void loadEventTypesSolutions() {
-
-        /*if (areEventTypesSolutionsLoading) return;
+        if (areEventTypesSolutionsLoading) return;
         areEventTypesSolutionsLoading = true;
 
-        Call<String[]> call = ClientUtils.eventService.getAllUniqueEventTypesForEvents();
+        Call<String[]> call = ClientUtils.solutionService.getAllUniqueEventTypesForSolutions();
         call.enqueue(new Callback<String[]>() {
             @Override
             public void onResponse(Call<String[]> call, Response<String[]> response) {
                 if (response.isSuccessful() && response.body() != null && getActivity() != null) {
                     String[] eventTypeNames = response.body();
-                    eventTypesEvents.clear();
-                    eventTypesEvents.addAll(Arrays.asList(eventTypeNames));
+                    eventTypesSolutions.clear();
+                    eventTypesSolutions.addAll(Arrays.asList(eventTypeNames));
                 } else {
                     showErrorDialog("Error while loading event types!");
                     showErrorDialog(response.message());
                 }
-                areEventTypesEventsLoading = false;
+                areEventTypesSolutionsLoading = false;
             }
 
             @Override
             public void onFailure(Call<String[]> call, Throwable t) {
                 showErrorDialog("Error while loading event types!");
                 showErrorDialog(t.getMessage());
-                areEventTypesEventsLoading = false;
+                areEventTypesSolutionsLoading = false;
             }
-        });*/
+        });
     }
 
     private void loadCategoriesSolutions() {
-        /*if (areEventTypesEventsLoading) return;
-        areEventTypesEventsLoading = true;
+        if (areCategoriesSolutionsLoading) return;
+        areCategoriesSolutionsLoading = true;
 
-        Call<String[]> call = ClientUtils.eventService.getAllUniqueEventTypesForEvents();
+        Call<String[]> call = ClientUtils.solutionService.getAllUniqueCategoriesForSolutions();
         call.enqueue(new Callback<String[]>() {
             @Override
             public void onResponse(Call<String[]> call, Response<String[]> response) {
                 if (response.isSuccessful() && response.body() != null && getActivity() != null) {
-                    String[] eventTypeNames = response.body();
-                    eventTypesEvents.clear();
-                    eventTypesEvents.addAll(Arrays.asList(eventTypeNames));
+                    String[] categoryNames = response.body();
+                    categoriesSolutions.clear();
+                    categoriesSolutions.addAll(Arrays.asList(categoryNames));
                 } else {
-                    showErrorDialog("Error while loading event types!");
+                    showErrorDialog("Error while loading categories!");
                     showErrorDialog(response.message());
                 }
-                areEventTypesEventsLoading = false;
+                areCategoriesSolutionsLoading = false;
             }
 
             @Override
             public void onFailure(Call<String[]> call, Throwable t) {
-                showErrorDialog("Error while loading event types!");
+                showErrorDialog("Error while loading categories!");
                 showErrorDialog(t.getMessage());
-                areEventTypesEventsLoading = false;
+                areCategoriesSolutionsLoading = false;
             }
-        });*/
+        });
     }
 
     private void loadCompaniesSolutions() {
-        /*if (areLocationsEventsLoading) return;
-        areLocationsEventsLoading = true;
+        if (areCompaniesSolutionsLoading) return;
+        areCompaniesSolutionsLoading = true;
 
-        Call<String[]> call = ClientUtils.eventService.getAllUniqueLocationsForEvents();
+        Call<String[]> call = ClientUtils.solutionService.getAllUniqueCompaniesForSolutions();
         call.enqueue(new Callback<String[]>() {
             @Override
             public void onResponse(Call<String[]> call, Response<String[]> response) {
                 if (response.isSuccessful() && response.body() != null && getActivity() != null) {
-                    String[] locationNames = response.body();
-                    locationsEvents.clear();
-                    locationsEvents.addAll(Arrays.asList(locationNames));
+                    String[] companyNames = response.body();
+                    companiesSolutions.clear();
+                    companiesSolutions.addAll(Arrays.asList(companyNames));
                 } else {
-                    showErrorDialog("Error while loading locations!");
+                    showErrorDialog("Error while loading companies!");
                     showErrorDialog(response.message());
                 }
-                areLocationsEventsLoading = false;
+                areCompaniesSolutionsLoading = false;
             }
 
             @Override
             public void onFailure(Call<String[]> call, Throwable t) {
-                showErrorDialog("Error while loading locations!");
+                showErrorDialog("Error while loading companies!");
                 showErrorDialog(t.getMessage());
-                areLocationsEventsLoading = false;
+                areCompaniesSolutionsLoading = false;
             }
-        });*/
+        });
     }
 
     private void setupSolutionSort() {
@@ -480,8 +480,8 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
                 String sortValue = arrayAdapter.getItem(position);
                 String selectedSort = "category";
                 switch (sortValue) {
-                    case "Category": selectedSort = "category"; break;
-                    case "Name": selectedSort = "name"; break;
+                    case "Category": selectedSort = "category,asc"; break;
+                    case "Name": selectedSort = "name,asc"; break;
                     case "Price ASC": selectedSort = "price,asc"; break;
                     case "Price DESC": selectedSort = "price,desc"; break;
                 }

@@ -46,7 +46,7 @@ public class SolutionsFragment extends Fragment {
     private int page = 0;
     private int pageSize = 5;
     private int totalPages = 99;
-    private String sort = "category";
+    private String sort = "id,asc";
     private String search = "";
     private SolutionsFilter solutionsFilter;
     private ArrayList<SolutionCard> paginatedSolutions;
@@ -78,6 +78,10 @@ public class SolutionsFragment extends Fragment {
     }
 
     private void setupPaginationControls() {
+        if (!isAdded()) {
+            return;
+        }
+
         binding.btnPrevious.setOnClickListener(v -> {
             if (page > 0) {
                 page--;
@@ -176,6 +180,10 @@ public class SolutionsFragment extends Fragment {
     }
 
     private void updatePaginationControls() {
+        if (!isAdded()) {
+            return;
+        }
+
         binding.btnPrevious.setEnabled(page > 0);
         binding.btnNext.setEnabled(page < totalPages - 1);
 
@@ -191,6 +199,10 @@ public class SolutionsFragment extends Fragment {
     }
 
     public void updateFilters(SolutionsFilter solutionsFilter) {
+        if (!isAdded()) {
+            return;
+        }
+
         this.solutionsFilter = solutionsFilter;
 
         page = 0;

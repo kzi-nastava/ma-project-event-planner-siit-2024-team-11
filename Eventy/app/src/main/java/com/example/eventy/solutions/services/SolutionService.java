@@ -30,4 +30,13 @@ public interface SolutionService {
 
     @GET(prefix + "/featured")
     Call<SolutionCard[]> getFeaturedSolutions();
+
+    @GET(prefix + "/event-types")
+    Call<String[]> getAllUniqueEventTypesForSolutions();
+
+    @GET(prefix + "/categories")
+    Call<String[]> getAllUniqueCategoriesForSolutions();
+
+    @GET(prefix + "/companies")
+    Call<String[]> getAllUniqueCompaniesForSolutions();
 }
