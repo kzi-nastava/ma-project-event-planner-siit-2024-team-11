@@ -143,6 +143,11 @@ public class MultiSpinner extends androidx.appcompat.widget.AppCompatSpinner imp
                     if (!selected.contains(value)) {
                         selected.add(value);
                     }
+                } else {
+                    String value = adapter.getItem(i); // Get the string value from the adapter
+                    if (selected.contains(value)) {
+                        selected.remove(value);
+                    }
                 }
             }
             isDialogOpen = false;
