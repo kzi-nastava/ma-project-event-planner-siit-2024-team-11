@@ -103,7 +103,7 @@ public class RegisterOrganiserFragment extends Fragment {
                 binding.phoneNumberInputLayout.getError() == null) {
 
                 Call<ResponseBody> call = ClientUtils.authService.register(
-                        new RegisterData(new ArrayList<String>(Arrays.asList(this.profilePicture)),
+                        new RegisterData(Arrays.asList(this.profilePicture),
                                 binding.emailInput.getText().toString(),
                                 binding.passwordInput.getText().toString(),
                                 binding.confirmPasswordInput.getText().toString(),

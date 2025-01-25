@@ -26,6 +26,6 @@ public class PictureHelperService {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream); // Use PNG or JPEG
         byte[] byteArray = outputStream.toByteArray();
-        return Base64.encodeToString(byteArray, Base64.DEFAULT);
+        return "data:image/png;base64," + Base64.encodeToString(byteArray, Base64.NO_WRAP);
     }
 }

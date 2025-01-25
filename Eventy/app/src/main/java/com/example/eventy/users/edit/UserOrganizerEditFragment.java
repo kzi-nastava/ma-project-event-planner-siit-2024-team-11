@@ -35,6 +35,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 
@@ -195,7 +196,7 @@ public class UserOrganizerEditFragment extends Fragment {
 
             Call<User> call = ClientUtils.userService.update(new UpdateUser(
                     this.user.getId(),
-                    new ArrayList<>(List.of(this.profilePicture)),
+                    Arrays.asList(this.profilePicture),
                     binding.emailInput.getText().toString(),
                     binding.oldPasswordInput.getText().toString(),
                     binding.passwordInput.getText().toString(),
