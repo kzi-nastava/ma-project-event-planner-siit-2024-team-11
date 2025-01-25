@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventy.R;
+import com.example.eventy.common.PictureHelperService;
 import com.example.eventy.model.enums.ReservationConfirmationType;
 import com.example.eventy.model.solution.Service;
 import com.example.eventy.model.solution.Solution;
@@ -96,6 +97,8 @@ public class SolutionsAdapter extends RecyclerView.Adapter<SolutionsAdapter.Solu
             } else {
                 discountContainer.setVisibility(View.VISIBLE);
             }
+
+            holder.image.setImageBitmap(PictureHelperService.getPicture(solutionCard.getFirstImageUrl()));
 
             Button seeMoreButton = holder.itemView.findViewById(R.id.see_more_button);
             seeMoreButton.setOnClickListener(v -> {

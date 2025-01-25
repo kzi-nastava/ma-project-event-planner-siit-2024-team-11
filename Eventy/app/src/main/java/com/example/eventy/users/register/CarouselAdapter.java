@@ -11,13 +11,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.eventy.R;
+import com.example.eventy.common.PictureHelperService;
 
 import java.util.List;
 
 public class CarouselAdapter extends RecyclerView.Adapter<CarouselAdapter.CarouselViewHolder> {
-    private List<Uri> images;
+    private List<String> images;
 
-    public CarouselAdapter(List<Uri> images) {
+    public CarouselAdapter(List<String> images) {
         this.images = images;
     }
 
@@ -30,7 +31,7 @@ public class CarouselAdapter extends RecyclerView.Adapter<CarouselAdapter.Carous
 
     @Override
     public void onBindViewHolder(@NonNull CarouselViewHolder holder, int position) {
-        Glide.with(holder.imageView.getContext()).load(images.get(position)).into(holder.imageView);
+        Glide.with(holder.imageView.getContext()).load(PictureHelperService.getPicture(images.get(position))).into(holder.imageView);
     }
 
     @Override
@@ -47,7 +48,7 @@ public class CarouselAdapter extends RecyclerView.Adapter<CarouselAdapter.Carous
         }
     }
 
-    public void updateImages(List<Uri> newImages) {
+    public void updateImages(List<String> newImages) {
         this.images = newImages;
         notifyDataSetChanged();
     }
