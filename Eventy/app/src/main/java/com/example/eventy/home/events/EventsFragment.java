@@ -41,6 +41,8 @@ public class EventsFragment extends Fragment {
     private ArrayList<EventCard> paginatedEvents;
     private boolean isLoading = false;
 
+    public EventsFragment() {}
+
     public EventsFragment(EventFilters eventFilters) {
         this.eventsFilters = eventFilters;
     }

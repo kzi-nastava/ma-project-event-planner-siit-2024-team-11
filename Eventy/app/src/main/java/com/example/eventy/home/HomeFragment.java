@@ -524,4 +524,10 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
         isEventFilterOpened = false;
         isSolutionFilterOpened = false;
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 }

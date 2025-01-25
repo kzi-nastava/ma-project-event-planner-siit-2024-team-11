@@ -13,25 +13,22 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventy.R;
-import com.example.eventy.model.enums.PrivacyType;
 import com.example.eventy.events.model.EventCard;
-import com.example.eventy.services.ReservationSelectEventFragment;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class EventsSingleSelectionAdapter extends RecyclerView.Adapter<EventsSingleSelectionAdapter.EventSingleSelectionViewHolder> {
     private ArrayList<EventCard> eventCards;
-    private ReservationSelectEventFragment reservationSelectEventFragment;
     private LayoutInflater layoutInflater;
+
+    private OnEventSelectedListener onEventSelectedListener;
     LinearLayout previousEventCardBorder = null;
 
-    public EventsSingleSelectionAdapter(Context context, ArrayList<EventCard> eventCards, ReservationSelectEventFragment reservationSelectEventFragment) {
+    public EventsSingleSelectionAdapter(Context context, ArrayList<EventCard> eventCards) {
         this.eventCards = eventCards;
         this.layoutInflater = LayoutInflater.from(context);
-        this.reservationSelectEventFragment = reservationSelectEventFragment;
     }
 
     @NonNull
@@ -55,9 +52,9 @@ public class EventsSingleSelectionAdapter extends RecyclerView.Adapter<EventsSin
             String maxParticipantsString = "Max people: " + eventCard.getMaxNumberParticipants();
             holder.maxParticipants.setText(maxParticipantsString);
 
-            LocalDateTime dateTime = eventCard.getStartDate(); // Parse ISO 8601 string
+            LocalDateTime dateTime = eventCard.getStartDate();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy.");
-            String formattedDate = dateTime.format(formatter); // Format to desired output
+            String formattedDate = dateTime.format(formatter);
             holder.eventDate.setText(formattedDate);
 
             holder.eventLocation.setText(eventCard.getLocationName());
@@ -68,17 +65,6 @@ public class EventsSingleSelectionAdapter extends RecyclerView.Adapter<EventsSin
 
             holder.description.setText(eventCard.getDescription());
 
-            /*
-            Button seeMoreButton = holder.itemView.findViewById(R.id.see_more_button);
-            seeMoreButton.setOnClickListener(v -> {
-                Toast.makeText(holder.itemView.getContext(), "See more: " + eventCard.getName(), Toast.LENGTH_SHORT).show();
-            });
-
-            Button favoriteButton = holder.itemView.findViewById(R.id.favorite_button);
-            favoriteButton.setOnClickListener(v -> {
-                Toast.makeText(holder.itemView.getContext(), "Favorite: " + eventCard.getName(), Toast.LENGTH_SHORT).show();
-            });*/
-
             LinearLayout borderContainer = holder.itemView.findViewById(R.id.border_container);
             borderContainer.setOnClickListener(v -> {
                 if (previousEventCardBorder != null) {
@@ -87,8 +73,11 @@ public class EventsSingleSelectionAdapter extends RecyclerView.Adapter<EventsSin
 
                 previousEventCardBorder = holder.itemView.findViewById(R.id.border_container);
                 previousEventCardBorder.setBackgroundResource(R.drawable.selected_event_card);
-                Toast.makeText(holder.itemView.getContext(), "Selected: " + eventCard.getName(), Toast.LENGTH_SHORT).show();
-                reservationSelectEventFragment.setSelectedEvent(eventCard);
+
+                if (onEventSelectedListener != null) {
+                    Toast.makeText(holder.itemView.getContext(), "Selected: " + eventCard.getName(), Toast.LENGTH_SHORT).show();
+                    onEventSelectedListener.onEventSelected(eventCard);
+                }
             });
         }
     }
@@ -115,7 +104,11 @@ public class EventsSingleSelectionAdapter extends RecyclerView.Adapter<EventsSin
         }
     }
 
-    public static int dpToPx(Context context, float dp) {
-        return Math.round(dp * context.getResources().getDisplayMetrics().density);
+    public void setOnEventSelectedListener(OnEventSelectedListener listener) {
+        this.onEventSelectedListener = listener;
+    }
+
+    public interface OnEventSelectedListener {
+        void onEventSelected(EventCard selectedEvent);
     }
 }

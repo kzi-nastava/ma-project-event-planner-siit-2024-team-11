@@ -1,65 +1,233 @@
 package com.example.eventy.events;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.eventy.R;
 import com.example.eventy.adapters.events.EventsSingleSelectionAdapter;
+import com.example.eventy.common.PagedResponse;
+import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentServiceReservationSelectEventRecyclerBinding;
 import com.example.eventy.events.model.EventCard;
-import com.example.eventy.services.ReservationSelectEventFragment;
+import com.example.eventy.events.model.EventFilters;
+import com.example.eventy.utils.ClientUtils;
 
 import java.util.ArrayList;
 
-public class SelectEventFragment extends Fragment {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class SelectEventFragment extends Fragment implements EventsSingleSelectionAdapter.OnEventSelectedListener  {
     private FragmentServiceReservationSelectEventRecyclerBinding binding;
     private EventsSingleSelectionAdapter eventsSingleSelectionAdapter;
-    private ReservationSelectEventFragment reservationSelectEventFragment;
 
-    public SelectEventFragment() {
-        // Required empty public constructor
-    }
+    private EventCard selectedEventCard = null;
 
-    public SelectEventFragment(ReservationSelectEventFragment reservationSelectEventFragment) {
-        this.reservationSelectEventFragment = reservationSelectEventFragment;
+    private int page = 0;
+    private int pageSize = 5;
+    private int totalPages = 99;
+    private String sort = "type";
+    private String search = "";
+    private EventFilters eventsFilters;
+    private ArrayList<EventCard> paginatedEvents;
+    private boolean isLoading = false;
+
+    ///////////////////////////////////////////////////////
+
+    public SelectEventFragment() {}
+
+    public SelectEventFragment(EventFilters eventFilters) {
+        this.eventsFilters = eventFilters;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentServiceReservationSelectEventRecyclerBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        if (eventsFilters == null) {
+            this.eventsFilters = new EventFilters("", "-", new ArrayList<String>(), null, null, null);
+        }
+
         super.onViewCreated(view, savedInstanceState);
+        this.paginatedEvents = new ArrayList<>();
+        setupRecyclerView();
+        setupPaginationControls();
+        fetchEvents(search, eventsFilters, page, pageSize, sort);
+    }
 
-        ArrayList<EventCard> eventCards = getEvents();
-
-        eventsSingleSelectionAdapter = new EventsSingleSelectionAdapter(requireContext(), eventCards, reservationSelectEventFragment);
+    private void setupRecyclerView() {
+        eventsSingleSelectionAdapter = new EventsSingleSelectionAdapter(requireContext(), paginatedEvents);
+        eventsSingleSelectionAdapter.setOnEventSelectedListener(this);
 
         binding.eventsRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.eventsRecycler.setAdapter(eventsSingleSelectionAdapter);
     }
 
-    @NonNull
-    private static ArrayList<EventCard> getEvents() {
-        ArrayList<EventCard> eventCards = new ArrayList<>();
+    private void setupPaginationControls() {
+        if (!isAdded()) {
+            return;
+        }
 
-        return eventCards;
+        binding.btnPrevious.setOnClickListener(v -> {
+            if (page > 0) {
+                page--;
+                fetchEvents(search, eventsFilters, page, pageSize, sort);
+            }
+        });
+
+        binding.btnNext.setOnClickListener(v -> {
+            if (page < totalPages - 1) {
+                page++;
+                fetchEvents(search, eventsFilters, page, pageSize, sort);
+            }
+        });
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                requireContext(),
+                R.array.page_size_options,
+                R.layout.custom_spinner_item
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.spinnerPageSize.setAdapter(adapter);
+        binding.spinnerPageSize.setSelection(2);
+
+        binding.spinnerPageSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                pageSize = Integer.parseInt(parent.getItemAtPosition(position).toString());
+                page = 0;
+                fetchEvents(search, eventsFilters, page, pageSize, sort);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // do nothing
+            }
+        });
+    }
+
+    private void fetchEvents(String search, EventFilters eventFilters, int page, int pageSize, String sort) {
+        if (!isAdded()) {
+            return;
+        }
+
+        if (isLoading) return;
+        isLoading = true;
+
+        Integer maxParticipants;
+        try {
+            maxParticipants = Integer.parseInt(eventFilters.getMaxParticipants());
+        } catch (Exception ignored) {
+            maxParticipants = null;
+        }
+        String location = eventFilters.getSelectedLocation().equals("-") ? null : eventFilters.getSelectedLocation();
+
+        Call<PagedResponse<EventCard>> call = ClientUtils.eventService.getEvents(
+                search, eventFilters.getSelectedEventTypes(), maxParticipants, location,
+                eventFilters.getSelectedStartDateTime(), eventFilters.getSelectedEndDateTime(),
+                page, pageSize, sort
+        );
+        call.enqueue(new Callback<PagedResponse<EventCard>>() {
+            @Override
+            public void onResponse(Call<PagedResponse<EventCard>> call, Response<PagedResponse<EventCard>> response) {
+                if (response.isSuccessful() && response.body() != null && getActivity() != null) {
+                    PagedResponse<EventCard> pagedResponse = response.body();
+
+                    paginatedEvents.clear();
+                    paginatedEvents.addAll(pagedResponse.getContent());
+                    eventsSingleSelectionAdapter.notifyDataSetChanged();
+
+                    totalPages = pagedResponse.getTotalPages();
+                    updatePaginationControls();
+
+                } else {
+                    showErrorDialog("Error while loading events!");
+                    showErrorDialog(response.message());
+                }
+                isLoading = false;
+            }
+
+            @Override
+            public void onFailure(Call<PagedResponse<EventCard>> call, Throwable t) {
+                showErrorDialog("Error while loading events!");
+                showErrorDialog(t.getMessage());
+                isLoading = false;
+            }
+        });
+    }
+
+    private void updatePaginationControls() {
+        if (!isAdded()) {
+            return;
+        }
+
+        binding.btnPrevious.setEnabled(page > 0);
+        binding.btnNext.setEnabled(page < totalPages - 1);
+
+        binding.tvPageInfo.setText(String.format("Page %d of %d", page + 1, totalPages));
+    }
+
+    private void showErrorDialog(String message) {
+        if (isAdded() && getActivity() != null) {
+            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", message);
+            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            errorOkDialog.show();
+        }
+    }
+
+    public void updateFilters(EventFilters eventFilters) {
+        if (!isAdded()) {
+            return;
+        }
+
+        this.eventsFilters = eventFilters;
+
+        page = 0;
+        pageSize = 5;
+        binding.spinnerPageSize.setSelection(2);
+
+        fetchEvents(search, eventsFilters, page, pageSize, sort);
+    }
+
+    public void updateSort(String selectedSort) {
+        sort = selectedSort;
+        fetchEvents(search, eventsFilters, page, pageSize, sort);
+    }
+
+    public void updateSearch(String searchValue) {
+        search = searchValue;
+        fetchEvents(search, eventsFilters, page, pageSize, sort);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onEventSelected(EventCard selectedEvent) {
+        this.selectedEventCard = selectedEvent;
+    }
+
+    public EventCard getSelectedEventCard() {
+        return this.selectedEventCard;
     }
 }
 
