@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
@@ -23,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.eventy.R;
+import com.example.eventy.common.PictureHelperService;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentRegisterOrganiserBinding;
 import com.example.eventy.users.model.RegisterData;
@@ -42,8 +45,7 @@ import retrofit2.Response;
 public class RegisterOrganiserFragment extends Fragment {
     private FragmentRegisterOrganiserBinding binding;
     private ActivityResultLauncher<Intent> galleryPickerLauncher;
-    private String profilePictureUri =
-            "/Users/rogan003/Desktop/Fakultet/5. semestar/Inzenjerstvo klijentskog sloja/Projekat/iks-project-event-planner-siit-2024-team-11/Eventy/public/ProfilePicture.png";
+    private String profilePicture = PictureHelperService.defaultProfilePicture;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,9 +59,17 @@ public class RegisterOrganiserFragment extends Fragment {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         Intent data = result.getData();
                         if (data != null) {
-                            Uri imageUri = data.getData();
-                            binding.profilePicture.setImageURI(imageUri);
-                            this.profilePictureUri = imageUri.toString();
+                            try {
+                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(
+                                        getActivity().getContentResolver(), data.getData());
+                                binding.profilePicture.setImageBitmap(bitmap);
+                                this.profilePicture = PictureHelperService.bitmapToBase64(bitmap);
+                            }
+                            catch (Exception e) {
+                                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while selecting the picture!");
+                                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                errorOkDialog.show();
+                            }
                         }
                     }
                 }
@@ -93,7 +103,7 @@ public class RegisterOrganiserFragment extends Fragment {
                 binding.phoneNumberInputLayout.getError() == null) {
 
                 Call<ResponseBody> call = ClientUtils.authService.register(
-                        new RegisterData(new ArrayList<String>(Arrays.asList(this.profilePictureUri)),
+                        new RegisterData(new ArrayList<String>(Arrays.asList(this.profilePicture)),
                                 binding.emailInput.getText().toString(),
                                 binding.passwordInput.getText().toString(),
                                 binding.confirmPasswordInput.getText().toString(),
@@ -150,7 +160,7 @@ public class RegisterOrganiserFragment extends Fragment {
     }
 
     private void openGalleryPicker() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setType("image/*");
         galleryPickerLauncher.launch(intent);
     }

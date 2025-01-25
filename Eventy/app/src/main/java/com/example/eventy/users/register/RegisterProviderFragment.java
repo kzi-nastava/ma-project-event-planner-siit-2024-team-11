@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
@@ -26,6 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.eventy.R;
+import com.example.eventy.common.PictureHelperService;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentRegisterProviderBinding;
 import com.example.eventy.users.model.RegisterData;
@@ -48,8 +51,8 @@ public class RegisterProviderFragment extends Fragment {
     private FragmentRegisterProviderBinding binding;
     private CarouselAdapter carouselAdapter;
 
-    private List<Uri> images = Arrays.asList(
-            Uri.parse("android.resource://com.example.eventy/" + R.mipmap.logo)
+    private List<String> images = Arrays.asList(
+            PictureHelperService.defaultProfilePicture
     );
 
     private ActivityResultLauncher<Intent> imagePickerLauncher;
@@ -76,17 +79,35 @@ public class RegisterProviderFragment extends Fragment {
         imagePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    List<Uri> newImages = new ArrayList<>();
+                    List<String> newImages = new ArrayList<>();
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         if (result.getData().getClipData() != null) {
                             ClipData clipData = result.getData().getClipData();
                             for (int i = 0; i < clipData.getItemCount(); i++) {
-                                Uri imageUri = clipData.getItemAt(i).getUri();
-                                newImages.add(imageUri);
+                                try {
+                                    Uri imageUri = clipData.getItemAt(i).getUri();
+                                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(
+                                            getActivity().getContentResolver(), imageUri);
+                                    newImages.add(PictureHelperService.bitmapToBase64(bitmap));
+                                }
+                                catch (Exception e) {
+                                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while selecting the picture!");
+                                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                    errorOkDialog.show();
+                                }
                             }
                         } else if (result.getData().getData() != null) {
-                            Uri imageUri = result.getData().getData();
-                            newImages.add(imageUri);
+                            try {
+                                Uri imageUri = result.getData().getData();
+                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(
+                                        getActivity().getContentResolver(), imageUri);
+                                newImages.add(PictureHelperService.bitmapToBase64(bitmap));
+                            }
+                            catch (Exception e) {
+                                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while selecting the picture!");
+                                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                errorOkDialog.show();
+                            }
                         }
 
                         carouselAdapter.updateImages(newImages);
@@ -96,7 +117,7 @@ public class RegisterProviderFragment extends Fragment {
         );
 
         binding.addPhotosButton.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_PICK);
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             intent.setType("image/*");
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             imagePickerLauncher.launch(intent);
@@ -119,7 +140,7 @@ public class RegisterProviderFragment extends Fragment {
                     binding.addressInputLayout.getError() == null &&
                     binding.phoneNumberInputLayout.getError() == null) {
                 Call<ResponseBody> call = ClientUtils.authService.register(
-                        new RegisterData(this.urisToStringList(),
+                        new RegisterData(this.images,
                                 binding.emailInput.getText().toString(),
                                 binding.passwordInput.getText().toString(),
                                 binding.confirmPasswordInput.getText().toString(),
@@ -237,15 +258,5 @@ public class RegisterProviderFragment extends Fragment {
         } else {
             textInputLayout.setError(null);
         }
-    }
-
-    private List<String> urisToStringList() {
-        List<String> uriStrings = new ArrayList<>();
-
-        for(Uri uri : images) {
-            uriStrings.add(uri.toString());
-        }
-
-        return uriStrings;
     }
 }
