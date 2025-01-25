@@ -58,7 +58,7 @@ public class EventFilterBottomSheetFragment extends BottomSheetDialogFragment {
         if (getParentFragment() instanceof FilterListener) {
             listener = (FilterListener) getParentFragment();
         } else {
-            throw new RuntimeException("Parent fragment must implement FilterSelectedListener");
+            throw new RuntimeException("Parent fragment must implement Event's FilterListener");
         }
 
         setupFilterInputs();

@@ -27,7 +27,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class EventsFragment extends Fragment {
@@ -68,6 +67,10 @@ public class EventsFragment extends Fragment {
     }
 
     private void setupPaginationControls() {
+        if (!isAdded()) {
+            return;
+        }
+
         binding.btnPrevious.setOnClickListener(v -> {
             if (page > 0) {
                 page--;
@@ -157,6 +160,10 @@ public class EventsFragment extends Fragment {
     }
 
     private void updatePaginationControls() {
+        if (!isAdded()) {
+            return;
+        }
+
         binding.btnPrevious.setEnabled(page > 0);
         binding.btnNext.setEnabled(page < totalPages - 1);
 
@@ -172,6 +179,10 @@ public class EventsFragment extends Fragment {
     }
 
     public void updateFilters(EventFilters eventFilters) {
+        if (!isAdded()) {
+            return;
+        }
+
         this.eventsFilters = eventFilters;
 
         page = 0;

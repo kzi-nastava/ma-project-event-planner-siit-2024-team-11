@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.eventy.adapters.events.FeaturedEventsAdapter;
-import com.example.eventy.common.PagedResponse;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentHomeFeaturedEventsBinding;
 import com.example.eventy.events.model.EventCard;
@@ -36,8 +35,7 @@ public class FeaturedEventsFragment extends Fragment {
     public FeaturedEventsFragment() {}
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeFeaturedEventsBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }

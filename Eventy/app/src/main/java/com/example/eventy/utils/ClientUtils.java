@@ -8,6 +8,7 @@ import com.example.eventy.BuildConfig;
 import com.example.eventy.events.services.EventService;
 import com.example.eventy.events.services.EventTypeService;
 import com.example.eventy.events.services.LocationService;
+import com.example.eventy.solutions.services.SolutionService;
 import com.example.eventy.users.services.AuthService;
 import com.example.eventy.users.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,6 +44,7 @@ public class ClientUtils {
         eventService = retrofit.create(EventService.class);
         userService = retrofit.create(UserService.class);
         locationService = retrofit.create(LocationService.class);
+        solutionService = retrofit.create(SolutionService.class);
     }
 
     /*
@@ -76,4 +78,5 @@ public class ClientUtils {
     public static EventService eventService;
     public static UserService userService;
     public static LocationService locationService;
+    public static SolutionService solutionService;
 }

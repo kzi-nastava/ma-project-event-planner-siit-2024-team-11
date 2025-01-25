@@ -51,9 +51,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
             String maxParticipantsString = "Max people: " + eventCard.getMaxNumberParticipants();
             holder.maxParticipants.setText(maxParticipantsString);
 
-            LocalDateTime dateTime = eventCard.getStartDate(); // Parse ISO 8601 string
+            LocalDateTime dateTime = eventCard.getStartDate();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy.");
-            String formattedDate = dateTime.format(formatter); // Format to desired output
+            String formattedDate = dateTime.format(formatter);
             holder.eventDate.setText(formattedDate);
 
             holder.eventLocation.setText(eventCard.getLocationName());

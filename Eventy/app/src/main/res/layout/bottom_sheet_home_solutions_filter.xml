@@ -139,7 +139,7 @@
             android:textColor="@color/home_event_card_label"
             android:layout_marginBottom="6dp"/>
 
-        <Spinner
+        <com.example.eventy.custom.SingleSpinner
             android:id="@+id/company_filter"
             android:layout_width="match_parent"
             android:layout_height="48dp"
@@ -290,7 +290,7 @@
                 android:layout_marginBottom="6dp"
                 android:textColor="@color/home_event_card_label"/>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/solution_date_range_filter"
                 android:layout_width="wrap_content"
                 android:layout_height="43dp"
@@ -298,6 +298,9 @@
                 android:background="@drawable/filter_button_background"
                 android:fontFamily="@font/albert_sans"
                 android:letterSpacing="0.05"
+                android:paddingRight="14dp"
+                android:paddingLeft="14dp"
+                android:textColor="@color/white"
                 android:text="@string/select_date"
                 android:textAllCaps="false"
                 android:textFontWeight="900"

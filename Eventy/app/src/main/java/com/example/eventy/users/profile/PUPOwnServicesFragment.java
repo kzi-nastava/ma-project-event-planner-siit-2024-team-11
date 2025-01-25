@@ -17,6 +17,7 @@ import com.example.eventy.common.PagedResponse;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentPupOwnServicesBinding;
 import com.example.eventy.model.solution.Solution;
+import com.example.eventy.solutions.model.SolutionCard;
 import com.example.eventy.utils.ClientUtils;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class PUPOwnServicesFragment extends Fragment {
     private int page = 0;
     private int pageSize = 5;
     private boolean isLoading = false;
-    private ArrayList<Solution> solutionCards;
+    private ArrayList<SolutionCard> solutionCards;
     private boolean canGoFurther = true;
 
     public PUPOwnServicesFragment() {
@@ -49,7 +50,7 @@ public class PUPOwnServicesFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentPupOwnServicesBinding.inflate(inflater, container, false);
 
-        solutionCards = new ArrayList<>();
+        solutionCards = new ArrayList<SolutionCard>();
         solutionsAdapter = new SolutionsAdapter(requireContext(), solutionCards);
 
         binding.solutionsRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -87,10 +88,10 @@ public class PUPOwnServicesFragment extends Fragment {
         if (this.isMyCards) {
             isLoading = true;
 
-            Call<PagedResponse<Solution>> call = ClientUtils.userService.getMySolutions(this.userId, search, page, pageSize);
-            call.enqueue(new Callback<PagedResponse<Solution>>() {
+            Call<PagedResponse<SolutionCard>> call = ClientUtils.userService.getMySolutions(this.userId, search, page, pageSize);
+            call.enqueue(new Callback<PagedResponse<SolutionCard>>() {
                 @Override
-                public void onResponse(Call<PagedResponse<Solution>> call, Response<PagedResponse<Solution>> response) {
+                public void onResponse(Call<PagedResponse<SolutionCard>> call, Response<PagedResponse<SolutionCard>> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         solutionCards.addAll(response.body().getContent());
                         solutionsAdapter.notifyDataSetChanged();
@@ -108,7 +109,7 @@ public class PUPOwnServicesFragment extends Fragment {
                 }
 
                 @Override
-                public void onFailure(Call<PagedResponse<Solution>> call, Throwable t) {
+                public void onFailure(Call<PagedResponse<SolutionCard>> call, Throwable t) {
                     ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while loading my solutions!");
                     errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     errorOkDialog.show();
@@ -120,10 +121,10 @@ public class PUPOwnServicesFragment extends Fragment {
         else {
             isLoading = true;
 
-            Call<PagedResponse<Solution>> call = ClientUtils.userService.getMyFavoriteSolutions(userId, search, page, pageSize);
-            call.enqueue(new Callback<PagedResponse<Solution>>() {
+            Call<PagedResponse<SolutionCard>> call = ClientUtils.userService.getMyFavoriteSolutions(userId, search, page, pageSize);
+            call.enqueue(new Callback<PagedResponse<SolutionCard>>() {
                 @Override
-                public void onResponse(Call<PagedResponse<Solution>> call, Response<PagedResponse<Solution>> response) {
+                public void onResponse(Call<PagedResponse<SolutionCard>> call, Response<PagedResponse<SolutionCard>> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         solutionCards.addAll(response.body().getContent());
                         solutionsAdapter.notifyDataSetChanged();
@@ -141,7 +142,7 @@ public class PUPOwnServicesFragment extends Fragment {
                 }
 
                 @Override
-                public void onFailure(Call<PagedResponse<Solution>> call, Throwable t) {
+                public void onFailure(Call<PagedResponse<SolutionCard>> call, Throwable t) {
                     ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while loading favorite solutions!");
                     errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     errorOkDialog.show();
