@@ -1,6 +1,7 @@
 package com.example.eventy.adapters.solutions;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +25,10 @@ import java.util.ArrayList;
 public class FeaturedSolutionsAdapter extends RecyclerView.Adapter<FeaturedSolutionsAdapter.SolutionViewHolder> {
     private ArrayList<SolutionCard> featuredSolutions;
     private LayoutInflater layoutInflater;
+    private Context context;
 
     public FeaturedSolutionsAdapter(Context context, ArrayList<SolutionCard> featuredSolutions) {
+        this.context = context;
         this.featuredSolutions = featuredSolutions;
         this.layoutInflater = LayoutInflater.from(context);
     }
@@ -151,7 +154,11 @@ public class FeaturedSolutionsAdapter extends RecyclerView.Adapter<FeaturedSolut
                 discountContainer.setVisibility(View.VISIBLE);
             }
 
-            holder.image.setImageBitmap(PictureHelperService.getPicture(solutionCard.getFirstImageUrl()));
+            Drawable picture = PictureHelperService.getPicture(solutionCard.getFirstImageUrl(), context);
+            if (picture != null) {
+                holder.image.setBackground(picture);
+            }
+            //holder.image.setImageBitmap(PictureHelperService.getPicture(solutionCard.getFirstImageUrl()));
 
             Button seeMoreButton = holder.itemView.findViewById(R.id.see_more_button);
             seeMoreButton.setOnClickListener(v -> {

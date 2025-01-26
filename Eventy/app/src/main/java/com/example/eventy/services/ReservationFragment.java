@@ -3,6 +3,7 @@ package com.example.eventy.services;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.eventy.R;
+import com.example.eventy.common.PictureHelperService;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.custom.ValidOkDialog;
 import com.example.eventy.databinding.FragmentServiceReservationBinding;
@@ -273,6 +275,12 @@ public class ReservationFragment extends Fragment {
         } else {
             discountContainer.setVisibility(View.VISIBLE);
         }
+
+        Drawable picture = PictureHelperService.getPicture(selectedServiceCard.getFirstImageUrl(), getContext());
+        if (picture != null) {
+            binding.service.image.setBackground(picture);
+        }
+        //binding.service.image.setImageBitmap(PictureHelperService.getPicture(selectedServiceCard.getFirstImageUrl()));
 
         TextView reserveBy = binding.reserveBy;
         reserveBy.setText(selectedServiceCard.getReservationDeadline() + " days");
