@@ -11,13 +11,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.eventy.R;
-import com.example.eventy.model.enums.PrivacyType;
 import com.example.eventy.events.model.EventCard;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-public class EventDetailsDialog extends Dialog implements
-        android.view.View.OnClickListener {
+public class EventDetailsDialog extends Dialog implements android.view.View.OnClickListener {
     public ImageView closeButton;
     private EventCard selectedEventCard;
 
@@ -49,8 +48,9 @@ public class EventDetailsDialog extends Dialog implements
         maxParticipantsTextView.setText("Max participants: " + selectedEventCard.getMaxNumberParticipants());
 
         TextView eventDateTextView = findViewById(R.id.event_date);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy.");
-        String formattedDate = dateFormat.format(selectedEventCard.getStartDate());
+        LocalDateTime dateTime = selectedEventCard.getStartDate();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy.");
+        String formattedDate = dateTime.format(formatter);
         eventDateTextView.setText(formattedDate);
 
         TextView eventLocationTextView = findViewById(R.id.event_location);

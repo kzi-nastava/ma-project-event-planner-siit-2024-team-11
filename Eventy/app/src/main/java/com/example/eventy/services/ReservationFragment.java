@@ -1,5 +1,6 @@
 package com.example.eventy.services;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.icu.text.SimpleDateFormat;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,32 +20,38 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.eventy.R;
+import com.example.eventy.custom.ErrorOkDialog;
+import com.example.eventy.custom.ValidOkDialog;
 import com.example.eventy.databinding.FragmentServiceReservationBinding;
 import com.example.eventy.events.EventDetailsDialog;
 import com.example.eventy.model.enums.ReservationConfirmationType;
-import com.example.eventy.model.enums.Status;
 import com.example.eventy.events.model.EventCard;
-import com.example.eventy.events.model.EventType;
-import com.example.eventy.model.solution.Category;
-import com.example.eventy.model.solution.Reservation;
-import com.example.eventy.model.solution.Service;
+import com.example.eventy.services.model.Reservation;
+import com.example.eventy.solutions.model.SolutionCard;
+import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ReservationFragment extends Fragment {
     private FragmentServiceReservationBinding binding;
     // event & service
     private EventCard selectedEventCard = null;
-    private Service selectedService = null;
+    private SolutionCard selectedServiceCard = null;
     // date
     private boolean isDatePickerOpened = false;
     private Long eventDate = null;
@@ -59,26 +67,26 @@ public class ReservationFragment extends Fragment {
     private String formattedEndTime = "__:__";
     // is selected time range valid
     private Boolean isTimeValid = false;
+    private Boolean isReservationCreating = false;
 
-    public ReservationFragment() {
-        // Required empty public constructor
-    }
+    public ReservationFragment() {}
 
-    public ReservationFragment(EventCard selectedEventCard) {
+    public ReservationFragment(EventCard selectedEventCard, SolutionCard selectedServiceCard) {
         this.selectedEventCard = selectedEventCard;
+        this.selectedServiceCard = selectedServiceCard;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentServiceReservationBinding.inflate(inflater, container, false);
 
-        if (selectedEventCard == null) {
+        if (selectedEventCard == null || selectedServiceCard == null) {
             NavController navController = Navigation.findNavController(container);
             navController.popBackStack();
             navController.navigate(R.id.service_reservation);
+            return binding.getRoot();
         }
-        selectedService = getService();
+
         setupServiceDetails();
 
         setupSeeEventButton();
@@ -140,92 +148,137 @@ public class ReservationFragment extends Fragment {
                     endDateTime.get(Calendar.MINUTE) + "min";
 
             if (isTimeValid) {
-                Toast.makeText(this.getContext(), startDateTimeString, Toast.LENGTH_SHORT).show();
-                Toast.makeText(this.getContext(), endDateTimeString, Toast.LENGTH_SHORT).show();
                 Reservation newReservation = new Reservation();
-                newReservation.setId(1L);
-                newReservation.setSelectedEvent(selectedEventCard);
-                newReservation.setSelectedService(selectedService);
-                newReservation.setReservationStartDateTime(startDateTime);
-                newReservation.setReservationEndDateTime(endDateTime);
-                Toast.makeText(this.getContext(), newReservation.toString(), Toast.LENGTH_LONG).show();
-                NavController navController = Navigation.findNavController(container);
-                navController.popBackStack();
-                navController.navigate(R.id.nav_home);
+                newReservation.setSelectedEventId(selectedEventCard.getEventId());
+                newReservation.setSelectedServiceId(selectedServiceCard.getSolutionId());
+                newReservation.setReservationStartDateTime(LocalDateTime.ofInstant(startDateTime.toInstant(), ZoneId.systemDefault()));
+                newReservation.setReservationEndDateTime(LocalDateTime.ofInstant(endDateTime.toInstant(), ZoneId.systemDefault()));
+
+                createReservation(newReservation, this.getContext(), container);
+
             } else {
-                Toast.makeText(this.getContext(), "Time is not valid!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this.getContext(), "Time is not valid!", Toast.LENGTH_SHORT).show();
+                showErrorDialog("Time is not valid!");
             }
         });
 
         return binding.getRoot();
     }
 
-    private Service getService() {
-        ArrayList<EventType> eventTypes = new ArrayList<>();
-        EventType eventType1 = new EventType();
-        eventType1.setName("Wedding");
-        EventType eventType2 = new EventType();
-        eventType2.setName("Sport");
-        EventType eventType3 = new EventType();
-        eventType3.setName("Conference");
-        EventType eventType4 = new EventType();
-        eventType4.setName("Party");
+    private void createReservation(Reservation newReservation, Context context, ViewGroup container) {
+        if (isReservationCreating) {
+            return;
+        }
+        isReservationCreating = true;
 
-        eventTypes.add(eventType1);
-        eventTypes.add(eventType2);
-        eventTypes.add(eventType3);
-        eventTypes.add(eventType4);
+        Call<Reservation> call = ClientUtils.reservationService.createReservation(newReservation);
+        call.enqueue(new Callback<Reservation>() {
+            @Override
+            public void onResponse(Call<Reservation> call, Response<Reservation> response) {
+                if (response.isSuccessful() && response.body() != null && getActivity() != null) {
+                    if (isAdded() && getActivity() != null) {
+                        Toast.makeText(context, newReservation.toString(), Toast.LENGTH_LONG).show();
 
-        return new Service(
-            "Bon Jovi",
-            new Category("music", "Neki description", Status.ACCEPTED),
-            "Best band ever!", 800.0, 5,
-            new ArrayList<>(Arrays.asList("dj1.jpg", "dj2.jpg")),
-            false, true, true, "Includes sound and lighting equipment",
-            90, 120, 14, 7,
-            ReservationConfirmationType.MANUAL, eventTypes
-        );
+                        ValidOkDialog validOkDialog = new ValidOkDialog(getActivity(), "Creation Successful", "Your service reservation was successful!");
+                        validOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        validOkDialog.setOnDismissListener(dialog -> {
+                            NavController navController = Navigation.findNavController(container);
+                            navController.popBackStack();
+                            navController.navigate(R.id.nav_home);
+                        });
+                        validOkDialog.show();
+                    }
+                } else {
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorBody = response.errorBody().string();
+                            String errorMessage = errorBody.replaceAll("[\\[\\]\"]", "");
+                            String reason = errorMessage.split(":")[1].trim();
+
+                            showErrorDialog("Error: " + reason);
+                        } else {
+                            showErrorDialog("An unknown error occurred while creating a service!");
+                        }
+                    } catch (IOException e) {
+                        showErrorDialog("An unknown error occurred while creating a service");
+                    }
+                }
+                isReservationCreating = false;
+            }
+
+            @Override
+            public void onFailure(Call<Reservation> call, Throwable t) {
+                showErrorDialog(t.getMessage());
+                isReservationCreating = false;
+            }
+        });
+    }
+
+    private void showErrorDialog(String message) {
+        if (isAdded() && getActivity() != null) {
+            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Creation Failed", message);
+            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            errorOkDialog.show();
+        }
     }
 
     private void setupServiceDetails() {
         TextView name = binding.service.name;
-        name.setText('"' + selectedService.getName() + '"');
+        name.setText('"' + selectedServiceCard.getName() + '"');
 
         TextView category = binding.service.category;
-        category.setText("Category: " + selectedService.getCategory().getName());
+        category.setText("Category: " + selectedServiceCard.getCategoryName());
 
         TextView duration = binding.service.duration;
-        String durationString = (selectedService.getMinReservationTime().equals(selectedService.getMaxReservationTime())) ? "Duration: " + selectedService.getMinReservationTime() + "min" : "Duration: " + selectedService.getMinReservationTime() + "-" + selectedService.getMaxReservationTime() + "min";
-        duration.setText(durationString);
+        int d1 = selectedServiceCard.getMinReservationTime();
+        int d2 = selectedServiceCard.getMaxReservationTime();
+        String durationText = "Duration: " + ((d1 == d2) ? d1 : d1 + "-" + d2) + "min";
+        duration.setText(durationText);
 
         TextView reservationType = binding.service.reservationType;
-        reservationType.setText("Reservation: " + ((selectedService.getReservationConfirmationType()).equals(ReservationConfirmationType.AUTOMATIC) ? "auto" : "manual"));
-
-        String eventTypeString1 = selectedService.getEventTypes().get(0).getName();
-        String eventTypeString2 = selectedService.getEventTypes().get(1).getName();
+        String resType = selectedServiceCard.getReservationType().equals(ReservationConfirmationType.MANUAL) ? "manual" : "auto";
+        reservationType.setText("Reservation: " + resType);
 
         TextView eventType1 = binding.service.eventType1;
-        eventType1.setText(eventTypeString1);
-
         TextView eventType2 = binding.service.eventType2;
-        eventType2.setText(eventTypeString2);
+        LinearLayout eventType2Container = binding.service.eventTypeContainer2;
+        TextView dots = binding.service.threeDots;
 
-        TextView beforePrice = binding.service.beforePrice;
-        TextView crossedOutPrice = binding.service.crossedOutPrice;
-        String currentPriceString = String.valueOf(selectedService.getPrice());
-        beforePrice.setText(currentPriceString);
-        crossedOutPrice.setText(currentPriceString);
+        ArrayList<String> eventTypeNames = selectedServiceCard.getEventTypeNames();
+        int size = eventTypeNames.size();
+        String et1 = size >= 1 ? eventTypeNames.get(0) : "";
+        eventType1.setText(et1);
+        eventType2Container.setVisibility(View.GONE);
+        dots.setVisibility(View.GONE);
 
-        TextView currentPrice = binding.service.currentPrice;
-        double discountedPrice = selectedService.getPrice() - selectedService.getPrice() * selectedService.getDiscount() / 100;
+        String et2 = "";
+        if (size >= 2) {
+            et2 = eventTypeNames.get(1);
+            eventType2Container.setVisibility(View.VISIBLE);
+            eventType2.setText(et2);
+            dots.setVisibility(size > 2 ? View.VISIBLE : View.GONE);
+        }
+
+        String currentPriceString = String.valueOf(selectedServiceCard.getPrice());
+        binding.service.beforePrice.setText(currentPriceString);
+        binding.service.crossedOutPrice.setText(currentPriceString);
+
+        double discountedPrice = selectedServiceCard.getPrice() - selectedServiceCard.getPrice() * selectedServiceCard.getDiscount() / 100;
         String discountedPriceString = String.format("%.2f", discountedPrice);
-        currentPrice.setText(discountedPriceString);
+        binding.service.currentPrice.setText(discountedPriceString);
+
+        View discountContainer = binding.service.discountContainer;
+        if (selectedServiceCard.getDiscount() == 0) {
+            discountContainer.setVisibility(View.GONE);
+        } else {
+            discountContainer.setVisibility(View.VISIBLE);
+        }
 
         TextView reserveBy = binding.reserveBy;
-        reserveBy.setText(selectedService.getReservationDeadline() + " days");
+        reserveBy.setText(selectedServiceCard.getReservationDeadline() + " days");
 
         TextView cancelBy = binding.cancelBy;
-        cancelBy.setText(selectedService.getCancellationDeadline() + " days");
+        cancelBy.setText(selectedServiceCard.getCancellationDeadline() + " days");
     }
 
     private void setupSeeEventButton() {
@@ -242,7 +295,7 @@ public class ReservationFragment extends Fragment {
 
         // Calculate the minimum date (5 days from today)
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, selectedService.getReservationDeadline()); // Add 5 days to the current date
+        calendar.add(Calendar.DAY_OF_YEAR, selectedServiceCard.getReservationDeadline()); // Add 5 days to the current date
         long minDate = calendar.getTimeInMillis();
 
         // Set constraints to disable past dates
@@ -291,7 +344,7 @@ public class ReservationFragment extends Fragment {
         Button selectEndTimeButton = binding.selectEndTimeButton;
 
         // duration fixed
-        if (selectedService.getMinReservationTime().equals(selectedService.getMaxReservationTime())) {
+        if (selectedServiceCard.getMinReservationTime().equals(selectedServiceCard.getMaxReservationTime())) {
             selectEndTimeButton.setEnabled(false);
             selectEndTimeButton.getBackground().setAlpha(50);
             binding.selectEndTimeText.setText("* Duration is fixed.");
@@ -306,7 +359,7 @@ public class ReservationFragment extends Fragment {
             isStartDatePickerOpened = true;
 
             int totalEndMinutes = selectedEndHour * 60 + selectedEndMinute;
-            int totalStartMinutes = (totalEndMinutes - selectedService.getMinReservationTime() + 24 * 60) % (24 * 60);
+            int totalStartMinutes = (totalEndMinutes - selectedServiceCard.getMinReservationTime() + 24 * 60) % (24 * 60);
             int predictedStartHour = totalStartMinutes / 60;
             int predictedStartMinute = totalStartMinutes % 60;
             MaterialTimePicker materialStartTimePicker = new MaterialTimePicker.Builder()
@@ -325,8 +378,8 @@ public class ReservationFragment extends Fragment {
                 selectedStartMinute = materialStartTimePicker.getMinute();
 
                 // duration fixed
-                if (selectedService.getMinReservationTime().equals(selectedService.getMaxReservationTime())) {
-                    int minutesAll = selectedStartHour * 60 + selectedStartMinute + selectedService.getMinReservationTime();
+                if (selectedServiceCard.getMinReservationTime().equals(selectedServiceCard.getMaxReservationTime())) {
+                    int minutesAll = selectedStartHour * 60 + selectedStartMinute + selectedServiceCard.getMinReservationTime();
                     int hour = (minutesAll / 60) % 24;
                     int minute = minutesAll - (minutesAll / 60) * 60;
 
@@ -374,18 +427,18 @@ public class ReservationFragment extends Fragment {
                 if (selectedStartHour != -1 && selectedEndHour != -1) {
                     int minutes = (selectedStartHour <= selectedEndHour) ? (selectedEndHour * 60 + selectedEndMinute - (selectedStartHour * 60 + selectedStartMinute)) : (24 * 60 - (selectedStartHour * 60 + selectedStartMinute) + selectedEndHour * 60 + selectedEndMinute);
 
-                    if (minutes < selectedService.getMinReservationTime()) {
+                    if (minutes < selectedServiceCard.getMinReservationTime()) {
                         binding.selectStartTimeButton.setBackgroundResource(R.drawable.event_card_description_background);
                         binding.selectEndTimeButton.setBackgroundResource(R.drawable.event_card_description_background);
-                        timeRangeString = "Minimum reservation time is " + selectedService.getMinReservationTime() + " minutes!";
+                        timeRangeString = "Minimum reservation time is " + selectedServiceCard.getMinReservationTime() + " minutes!";
                         showSelectedTimeRangeTextView.setText(timeRangeString);
                         showSelectedTimeRangeTextView.setTextColor(Color.parseColor("#F40F0F"));
                         isTimeValid = false;
                         return;
-                    } else if (minutes > selectedService.getMaxReservationTime()) {
+                    } else if (minutes > selectedServiceCard.getMaxReservationTime()) {
                         binding.selectStartTimeButton.setBackgroundResource(R.drawable.event_card_description_background);
                         binding.selectEndTimeButton.setBackgroundResource(R.drawable.event_card_description_background);
-                        timeRangeString = "Maximum reservation time is " + selectedService.getMaxReservationTime() + " minutes!";
+                        timeRangeString = "Maximum reservation time is " + selectedServiceCard.getMaxReservationTime() + " minutes!";
                         showSelectedTimeRangeTextView.setText(timeRangeString);
                         showSelectedTimeRangeTextView.setTextColor(Color.parseColor("#F40F0F"));
                         isTimeValid = false;
@@ -395,7 +448,7 @@ public class ReservationFragment extends Fragment {
 
                 if (selectedEndHour != -1) {
                     binding.selectEndTimeButton.setBackgroundResource(R.drawable.reservation_select_inputs_border);
-                    if (selectedService.getMinReservationTime().equals(selectedService.getMaxReservationTime())) {
+                    if (selectedServiceCard.getMinReservationTime().equals(selectedServiceCard.getMaxReservationTime())) {
                         binding.selectEndTimeButton.getBackground().setAlpha(50);
                     }
                 }
@@ -423,13 +476,13 @@ public class ReservationFragment extends Fragment {
             isEndDatePickerOpened = true;
 
             int totalStartMinutes = selectedStartHour * 60 + selectedStartMinute;
-            int totalEndMinutes = (totalStartMinutes + selectedService.getMinReservationTime() + 24 * 60) % (24 * 60);
+            int totalEndMinutes = (totalStartMinutes + selectedServiceCard.getMinReservationTime() + 24 * 60) % (24 * 60);
             int predictedEndHour = totalEndMinutes / 60;
             int predictedEndMinute = totalEndMinutes % 60;
             MaterialTimePicker materialEndTimePicker = new MaterialTimePicker.Builder()
                 .setTitleText("SELECT END TIME")
-                .setHour(selectedEndHour == -1 ? (selectedStartHour == -1 ? ((8 + selectedService.getMinReservationTime() / 60 % 24 + 24) % 24) : predictedEndHour) : selectedEndHour)
-                .setMinute(selectedEndMinute == -1 ? (selectedStartMinute == -1 ? ((selectedService.getMinReservationTime() % 60 + 60) % 60): predictedEndMinute) : selectedEndMinute)
+                .setHour(selectedEndHour == -1 ? (selectedStartHour == -1 ? ((8 + selectedServiceCard.getMinReservationTime() / 60 % 24 + 24) % 24) : predictedEndHour) : selectedEndHour)
+                .setMinute(selectedEndMinute == -1 ? (selectedStartMinute == -1 ? ((selectedServiceCard.getMinReservationTime() % 60 + 60) % 60): predictedEndMinute) : selectedEndMinute)
                 .setTimeFormat(TimeFormat.CLOCK_24H)
                 .build();
 
@@ -461,18 +514,18 @@ public class ReservationFragment extends Fragment {
                 String timeRangeString = "";
                 if (selectedStartHour != -1 && selectedEndHour != -1) {
                     int minutes = (selectedStartHour <= selectedEndHour) ? (selectedEndHour * 60 + selectedEndMinute - (selectedStartHour * 60 + selectedStartMinute)) : (24 * 60 - (selectedStartHour * 60 + selectedStartMinute) + selectedEndHour * 60 + selectedEndMinute);
-                    if (minutes < selectedService.getMinReservationTime()) {
+                    if (minutes < selectedServiceCard.getMinReservationTime()) {
                         binding.selectStartTimeButton.setBackgroundResource(R.drawable.event_card_description_background);
                         binding.selectEndTimeButton.setBackgroundResource(R.drawable.event_card_description_background);
-                        timeRangeString = "Minimum reservation time is " + selectedService.getMinReservationTime() + " minutes!";
+                        timeRangeString = "Minimum reservation time is " + selectedServiceCard.getMinReservationTime() + " minutes!";
                         showSelectedTimeRangeTextView.setText(timeRangeString);
                         showSelectedTimeRangeTextView.setTextColor(Color.parseColor("#F40F0F"));
                         isTimeValid = false;
                         return;
-                    } else if (minutes > selectedService.getMaxReservationTime()) {
+                    } else if (minutes > selectedServiceCard.getMaxReservationTime()) {
                         binding.selectStartTimeButton.setBackgroundResource(R.drawable.event_card_description_background);
                         binding.selectEndTimeButton.setBackgroundResource(R.drawable.event_card_description_background);
-                        timeRangeString = "Maximum reservation time is " + selectedService.getMaxReservationTime() + " minutes!";
+                        timeRangeString = "Maximum reservation time is " + selectedServiceCard.getMaxReservationTime() + " minutes!";
                         showSelectedTimeRangeTextView.setText(timeRangeString);
                         showSelectedTimeRangeTextView.setTextColor(Color.parseColor("#F40F0F"));
                         isTimeValid = false;

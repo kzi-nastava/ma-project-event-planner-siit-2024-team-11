@@ -10,12 +10,12 @@ import android.widget.TextView;
 
 import com.example.eventy.R;
 
-public class ErrorOkDialog extends Dialog implements android.view.View.OnClickListener {
+public class ValidOkDialog extends Dialog implements android.view.View.OnClickListener {
     public ImageView closeButton;
     private String title;
     private String message;
 
-    public ErrorOkDialog(Activity a, String title, String message) {
+    public ValidOkDialog(Activity a, String title, String message) {
         super(a);
         this.title = title;
         this.message = message;
@@ -25,7 +25,7 @@ public class ErrorOkDialog extends Dialog implements android.view.View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.dialog_error_ok);
+        setContentView(R.layout.dialog_valid_ok);
         closeButton = (ImageView) findViewById(R.id.close_button);
         closeButton.setOnClickListener(this);
 
