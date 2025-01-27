@@ -111,7 +111,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
                 android:enabled="false"
-                android:textColor="@color/home_event_card_text"
+                android:textColor="#909090"
                 android:inputType="textEmailAddress"/>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -189,7 +189,7 @@
                 android:inputType="textPostalAddress"
                 android:textSize="15sp"
                 android:enabled="false"
-                android:textColor="@color/home_event_card_text"
+                android:textColor="#909090"
                 android:background="@drawable/event_card_description_background"/>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -214,7 +214,7 @@
                 android:inputType="phone"
                 android:textSize="15sp"
                 android:enabled="false"
-                android:textColor="@color/home_event_card_text"
+                android:textColor="#909090"
                 android:background="@drawable/event_card_description_background"/>
         </com.google.android.material.textfield.TextInputLayout>
 

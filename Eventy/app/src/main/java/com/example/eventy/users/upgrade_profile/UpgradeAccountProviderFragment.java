@@ -72,6 +72,17 @@ public class UpgradeAccountProviderFragment extends Fragment {
         binding = FragmentUserFastRegistrationUpgradeAccountProviderBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        if (currentUser == null) {
+            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Unable to load the currently logged-in user!");
+            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            errorOkDialog.setOnDismissListener(dialog -> {
+                NavController navController = Navigation.findNavController(container);
+                navController.popBackStack();
+                navController.navigate(R.id.nav_my_profile);
+            });
+            errorOkDialog.show();
+        }
+
         ViewPager2 viewPager = binding.viewPager;
         carouselAdapter = new CarouselAdapter(images);
         viewPager.setAdapter(carouselAdapter);
@@ -174,8 +185,6 @@ public class UpgradeAccountProviderFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null && getActivity() != null) {
                     if (isAdded() && getActivity() != null) {
                         loadingDialog.cancel();
-
-                        Toast.makeText(context, upgradeProfileData.toString(), Toast.LENGTH_LONG).show();
 
                         ValidOkDialog validOkDialog = new ValidOkDialog(getActivity(),
                                 "Email Confirmation Needed",

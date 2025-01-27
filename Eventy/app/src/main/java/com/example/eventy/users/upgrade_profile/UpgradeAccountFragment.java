@@ -31,6 +31,10 @@ public class UpgradeAccountFragment extends Fragment {
 
     public UpgradeAccountFragment() {}
 
+    public UpgradeAccountFragment(User currentUser) {
+        this.currentUser = currentUser;
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentUserFastRegistrationUpgradeAccountBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -39,19 +43,28 @@ public class UpgradeAccountFragment extends Fragment {
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    currentUser = response.body();
+                currentUser = response.body();
 
-                } else {
-                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Unable to load the currently logged-in user!");
-                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    errorOkDialog.setOnDismissListener(dialog -> {
-                        NavController navController = Navigation.findNavController(container);
-                        navController.popBackStack();
-                        navController.navigate(R.id.nav_home);
-                    });
-                    errorOkDialog.show();
-                }
+                getChildFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new UpgradeAccountOrganiserFragment(currentUser))
+                        .commit();
+
+                Button switchButton = binding.switchFragmentButton;
+                switchButton.setOnClickListener(v -> {
+                    Fragment fragment = isOrganiser ? new UpgradeAccountProviderFragment(currentUser) : new UpgradeAccountOrganiserFragment(currentUser);
+                    getChildFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, fragment)
+                            .addToBackStack(null)
+                            .commit();
+                    isOrganiser = !isOrganiser;
+                    binding.registerLabel.setText(isOrganiser ? "Event Organiser" : "Solution Provider");
+                });
+
+                binding.loginHereButton.setOnClickListener(v -> {
+                    NavController navController = Navigation.findNavController(v);
+                    navController.popBackStack();
+                    navController.navigate(R.id.nav_login);
+                });
             }
 
             @Override
@@ -61,33 +74,10 @@ public class UpgradeAccountFragment extends Fragment {
                 errorOkDialog.setOnDismissListener(dialog -> {
                     NavController navController = Navigation.findNavController(container);
                     navController.popBackStack();
-                    navController.navigate(R.id.nav_home);
+                    navController.navigate(R.id.nav_my_profile);
                 });
                 errorOkDialog.show();
             }
-        });
-
-        if (currentUser != null) {
-            getChildFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new UpgradeAccountOrganiserFragment(currentUser))
-                    .commit();
-
-            Button switchButton = binding.switchFragmentButton;
-            switchButton.setOnClickListener(v -> {
-                Fragment fragment = isOrganiser ? new UpgradeAccountProviderFragment(currentUser) : new UpgradeAccountOrganiserFragment(currentUser);
-                getChildFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, fragment)
-                        .addToBackStack(null)
-                        .commit();
-                isOrganiser = !isOrganiser;
-                binding.registerLabel.setText(isOrganiser ? "Event Organiser" : "Solution Provider");
-            });
-        }
-
-        binding.loginHereButton.setOnClickListener(v -> {
-            NavController navController = Navigation.findNavController(v);
-            navController.popBackStack();
-            navController.navigate(R.id.nav_login);
         });
 
         return root;

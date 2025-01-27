@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -14,7 +15,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -60,6 +60,22 @@ public class UpgradeAccountOrganiserFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentUserFastRegistrationUpgradeAccountOrganiserBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        if (currentUser == null) {
+            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Unable to load the currently logged-in user!");
+            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            errorOkDialog.setOnDismissListener(dialog -> {
+                NavController navController = Navigation.findNavController(container);
+                navController.popBackStack();
+                navController.navigate(R.id.nav_my_profile);
+            });
+            errorOkDialog.show();
+        }
+
+        Drawable profileDrawable = PictureHelperService.getPicture(profilePicture, getContext());
+        if (profileDrawable != null) {
+            binding.profilePicture.setBackground(profileDrawable);
+        }
 
         binding.profilePictureContainer.setClipToOutline(true);
         galleryPickerLauncher = registerForActivityResult(
@@ -109,10 +125,6 @@ public class UpgradeAccountOrganiserFragment extends Fragment {
             } else {
                 showErrorDialog("Please ensure all fields are filled with valid values.");
             }
-
-            NavController navController = Navigation.findNavController(v);
-            navController.popBackStack();
-            navController.navigate(R.id.nav_home);
         });
 
         return root;
@@ -148,8 +160,6 @@ public class UpgradeAccountOrganiserFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null && getActivity() != null) {
                     if (isAdded() && getActivity() != null) {
                         loadingDialog.cancel();
-
-                        Toast.makeText(context, upgradeProfileData.toString(), Toast.LENGTH_LONG).show();
 
                         ValidOkDialog validOkDialog = new ValidOkDialog(getActivity(),
                                 "Email Confirmation Needed",

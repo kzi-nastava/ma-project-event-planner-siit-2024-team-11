@@ -117,8 +117,6 @@ public class FastRegistrationFragment extends Fragment {
                     if (isAdded() && getActivity() != null) {
                         loadingDialog.cancel();
 
-                        Toast.makeText(context, fastRegistrationData.toString(), Toast.LENGTH_LONG).show();
-
                         ValidOkDialog validOkDialog = new ValidOkDialog(getActivity(),
                                 "Email Confirmation Needed",
                                 "Confirmation email sent to the email address!");

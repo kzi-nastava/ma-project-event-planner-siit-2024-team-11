@@ -183,23 +183,30 @@ public class EventOrganizationFragment extends Fragment {
             } else {
                 this.organizeEvent.setEmails(eventInvitationSendingFragment.getInvitedEmails());
                 Call<Event> call = ClientUtils.eventService.organizeEvent(organizeEvent);
+                LoadingDialog loadingDialog = new LoadingDialog(getActivity(),
+                        "Loading",
+                        "We are currently processing your request. Please wait a few seconds!");
+                loadingDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                loadingDialog.show();
+
                 call.enqueue(new Callback<Event>() {
                     @Override
                     public void onResponse(Call<Event> call, Response<Event> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            new AlertDialog.Builder(getContext())
-                                    .setTitle(" Successful creation")
-                                    .setMessage("Your event has been created successfully! Invitations have been sent to the specified email addresses.")
-                                    .setIcon(R.drawable.icon_success_png)
-                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int whichButton) {
-                                            // this leads to home (for now), will lead to the event page or user profile
-                                            NavController navController = Navigation.findNavController(v);
-                                            navController.popBackStack();
-                                            navController.navigate(R.id.nav_home);
-                                        }})
-                                    .show();
+                        if (isAdded() && getActivity() != null) {
+                            loadingDialog.cancel();
+
+                            ValidOkDialog validOkDialog = new ValidOkDialog(getActivity(), "Creation Successful", "Your event has been created successfully! Invitations have been sent to the specified email addresses.");
+                            validOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            validOkDialog.setOnDismissListener(dialog -> {
+                                NavController navController = Navigation.findNavController(container);
+                                navController.popBackStack();
+                                navController.navigate(R.id.nav_home);
+                            });
+                            validOkDialog.show();
+
                         } else {
+                            loadingDialog.cancel();
+
                             ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while organizing an event!");
                             errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                             errorOkDialog.show();
@@ -208,6 +215,8 @@ public class EventOrganizationFragment extends Fragment {
 
                     @Override
                     public void onFailure(Call<Event> call, Throwable t) {
+                        loadingDialog.cancel();
+
                         ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while organizing an event!");
                         errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                         errorOkDialog.show();
