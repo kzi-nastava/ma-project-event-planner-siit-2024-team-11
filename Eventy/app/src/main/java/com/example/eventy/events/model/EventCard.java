@@ -15,10 +15,11 @@ public class EventCard {
     private Long organiserId; // when we click on picture/name it shows organiser profile
     private String organiserName;
     private String organiserImage;
+    private boolean isFavorite;
 
     public EventCard() { }
 
-    public EventCard(Long eventId, String name, String description, int maxNumberParticipants, boolean isOpen, String eventTypeName, String locationName, LocalDateTime startDate, LocalDateTime endDate, Long organiserId, String organiserName, String organiserImage) {
+    public EventCard(Long eventId, String name, String description, int maxNumberParticipants, boolean isOpen, String eventTypeName, String locationName, LocalDateTime startDate, LocalDateTime endDate, Long organiserId, String organiserName, String organiserImage, boolean isFavorite) {
         this.eventId = eventId;
         this.name = name;
         this.description = description;
@@ -31,6 +32,7 @@ public class EventCard {
         this.organiserId = organiserId;
         this.organiserName = organiserName;
         this.organiserImage = organiserImage;
+        this.isFavorite = isFavorite;
     }
 
     public Long getEventId() {
@@ -127,6 +129,14 @@ public class EventCard {
 
     public void setOrganiserImage(String organiserImage) {
         this.organiserImage = organiserImage;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
     }
 
     @Override
