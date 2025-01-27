@@ -116,4 +116,10 @@
         android:label="Upgrade Profile"
         tools:layout="@layout/fragment_user_fast_registration_upgrade_account"/>
 
+    <fragment
+        android:id="@+id/nav_event_details"
+        android:name="com.example.eventy.events.eventdetails.EventDetailsFragment"
+        android:label="Event Details"
+        tools:layout="@layout/fragment_event_details"/>
+
 </navigation>

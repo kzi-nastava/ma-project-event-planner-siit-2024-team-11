@@ -1,7 +1,10 @@
 package com.example.eventy.adapters.events;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.View;
@@ -11,6 +14,9 @@ import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.time.LocalDateTime;
@@ -19,8 +25,14 @@ import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 
 import com.example.eventy.R;
+import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.model.enums.PrivacyType;
 import com.example.eventy.events.model.EventCard;
+import com.example.eventy.utils.ClientUtils;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FeaturedEventsAdapter extends RecyclerView.Adapter<FeaturedEventsAdapter.EventViewHolder> {
     private ArrayList<EventCard> featuredEventCards;
@@ -94,12 +106,46 @@ public class FeaturedEventsAdapter extends RecyclerView.Adapter<FeaturedEventsAd
 
             Button seeMoreButton = holder.itemView.findViewById(R.id.see_more_button);
             seeMoreButton.setOnClickListener(v -> {
-                Toast.makeText(holder.itemView.getContext(), "See more: " + eventCard.getName(), Toast.LENGTH_SHORT).show();
+                Bundle args = new Bundle();
+                args.putLong("EventID", eventCard.getEventId());
+                NavController navController = Navigation.findNavController(v);
+
+                navController.popBackStack();
+
+                navController.navigate(R.id.nav_event_details, args);
             });
 
             Button favoriteButton = holder.itemView.findViewById(R.id.favorite_button);
             favoriteButton.setOnClickListener(v -> {
-                Toast.makeText(holder.itemView.getContext(), "Favorite: " + eventCard.getName(), Toast.LENGTH_SHORT).show();
+                Call<Void> call = ClientUtils.eventService.toggleFavoriteEvent(eventCard.getEventId());
+                call.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            if (eventCard.isFavorite()) {
+                                favoriteButton.setBackgroundColor(Color.parseColor("#929AB7"));
+                                favoriteButton.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.icon_favorite_smaller_white));
+                            }
+                            else {
+                                favoriteButton.setBackgroundColor(Color.parseColor("#ffffff"));
+                                favoriteButton.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.icon_favorite_smaller));
+                            }
+                            eventCard.setFavorite(!eventCard.isFavorite());
+                            Toast.makeText(holder.itemView.getContext(), (eventCard.isFavorite() ? "Favorite: " : "Remove Favorite: ") + eventCard.getName(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            ErrorOkDialog errorOkDialog = new ErrorOkDialog((Activity) holder.itemView.getContext(), "Error", "Please log in to make this your favorite event.");
+                            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            errorOkDialog.show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        ErrorOkDialog errorOkDialog = new ErrorOkDialog((Activity) holder.itemView.getContext(), "Error", "Please log in to make this your favorite event.");
+                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        errorOkDialog.show();
+                    }
+                });
             });
         }
     }
