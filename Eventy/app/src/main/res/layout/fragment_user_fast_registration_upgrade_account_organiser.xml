@@ -133,7 +133,6 @@
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName"
                     android:textSize="15sp"
-                    android:enabled="false"
                     android:textColor="@color/home_event_card_text"
                     android:background="@drawable/event_card_description_background"/>
             </com.google.android.material.textfield.TextInputLayout>
@@ -158,7 +157,6 @@
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName"
                     android:textSize="15sp"
-                    android:enabled="false"
                     android:textColor="@color/home_event_card_text"
                     android:background="@drawable/event_card_description_background"/>
             </com.google.android.material.textfield.TextInputLayout>

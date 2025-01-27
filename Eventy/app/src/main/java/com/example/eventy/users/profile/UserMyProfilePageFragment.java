@@ -51,6 +51,9 @@ public class UserMyProfilePageFragment extends Fragment {
                 if(user.getUserType() != UserType.AUTHENTICATED) {
                     binding.upgradeButton.setVisibility(View.GONE);
                 }
+                binding.upgradeButton.setOnClickListener(v -> {
+
+                });
 
                 TabLayout tabLayout = binding.tabLayout;
 

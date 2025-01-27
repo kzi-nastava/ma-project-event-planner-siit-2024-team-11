@@ -23,6 +23,7 @@ import androidx.navigation.Navigation;
 import com.example.eventy.R;
 import com.example.eventy.common.PictureHelperService;
 import com.example.eventy.custom.ErrorOkDialog;
+import com.example.eventy.custom.LoadingDialog;
 import com.example.eventy.custom.ValidOkDialog;
 import com.example.eventy.databinding.FragmentServiceReservationBinding;
 import com.example.eventy.events.EventDetailsDialog;
@@ -174,11 +175,19 @@ public class ReservationFragment extends Fragment {
         isReservationCreating = true;
 
         Call<Reservation> call = ClientUtils.reservationService.createReservation(newReservation);
+        LoadingDialog loadingDialog = new LoadingDialog(getActivity(),
+                "Loading",
+                "We are currently processing your request. Please wait a few seconds!");
+        loadingDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        loadingDialog.show();
+
         call.enqueue(new Callback<Reservation>() {
             @Override
             public void onResponse(Call<Reservation> call, Response<Reservation> response) {
                 if (response.isSuccessful() && response.body() != null && getActivity() != null) {
                     if (isAdded() && getActivity() != null) {
+                        loadingDialog.cancel();
+
                         Toast.makeText(context, newReservation.toString(), Toast.LENGTH_LONG).show();
 
                         ValidOkDialog validOkDialog = new ValidOkDialog(getActivity(), "Creation Successful", "Your service reservation was successful!");
@@ -191,6 +200,8 @@ public class ReservationFragment extends Fragment {
                         validOkDialog.show();
                     }
                 } else {
+                    loadingDialog.cancel();
+
                     try {
                         if (response.errorBody() != null) {
                             String errorBody = response.errorBody().string();
@@ -210,6 +221,8 @@ public class ReservationFragment extends Fragment {
 
             @Override
             public void onFailure(Call<Reservation> call, Throwable t) {
+                loadingDialog.cancel();
+
                 showErrorDialog(t.getMessage());
                 isReservationCreating = false;
             }
