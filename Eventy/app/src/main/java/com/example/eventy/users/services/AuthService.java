@@ -1,6 +1,7 @@
 package com.example.eventy.users.services;
 
 import com.example.eventy.users.model.AuthResponse;
+import com.example.eventy.users.model.FastRegistration;
 import com.example.eventy.users.model.LoginData;
 import com.example.eventy.users.model.RegisterData;
 
@@ -26,4 +27,7 @@ public interface AuthService {
 
     @PUT(prefix + "registration-confirmation/{requestId}")
     Call<AuthResponse> confirmRegistration(@Path("requestId") Long requestId);
+
+    @POST(prefix + "fast-registration")
+    Call<ResponseBody> fastRegister(@Body FastRegistration fastRegistrationData);
 }
