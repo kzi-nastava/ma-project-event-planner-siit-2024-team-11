@@ -98,6 +98,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         if (response.isSuccessful() && response.body() != null) {
+                            eventCard.setFavorite(!eventCard.isFavorite());
+
                             if (eventCard.isFavorite()) {
                                 favoriteButton.setBackgroundColor(Color.parseColor("#929AB7"));
                                 favoriteButton.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.icon_favorite_smaller_white));
@@ -106,7 +108,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
                                 favoriteButton.setBackgroundColor(Color.parseColor("#ffffff"));
                                 favoriteButton.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.icon_favorite_smaller));
                             }
-                            eventCard.setFavorite(!eventCard.isFavorite());
+
                             Toast.makeText(holder.itemView.getContext(), (eventCard.isFavorite() ? "Favorite: " : "Remove Favorite: ") + eventCard.getName(), Toast.LENGTH_SHORT).show();
                         } else {
                             ErrorOkDialog errorOkDialog = new ErrorOkDialog((Activity) holder.itemView.getContext(), "Error", "Please log in to make this your favorite event.");
