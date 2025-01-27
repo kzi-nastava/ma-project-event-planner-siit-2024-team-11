@@ -4,6 +4,7 @@ import com.example.eventy.common.PagedResponse;
 import com.example.eventy.events.model.EventCard;
 import com.example.eventy.events.model.OrganizeEvent;
 import com.example.eventy.events.model.Event;
+import com.example.eventy.users.model.EventDetails;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface EventService {
@@ -39,4 +41,16 @@ public interface EventService {
 
     @GET(prefix + "/locations")
     Call<String[]> getAllUniqueLocationsForEvents();
+
+    @GET(prefix + "/favorite/{eventId}")
+    Call<Void> toggleFavoriteEvent(@Path("eventId") Long eventId);
+
+    @GET(prefix + "/{eventId}")
+    Call<EventDetails> getEvent(@Path("eventId") Long eventId);
+
+    @GET(prefix + "/pdfs/details/{eventId}")
+    Call<byte[]> triggerEventDetailsPDFDownload(@Path("eventId") Long eventId);
+
+    @GET(prefix + "/pdfs/guest-list/{eventId}")
+    Call<byte[]> triggerEventGuestListPDFDownload(@Path("eventId") Long eventId);
 }
