@@ -91,7 +91,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
                 call.enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
-                        if (response.isSuccessful() && response.body() != null) {
+                        if (response.isSuccessful()) {
                             eventCard.setIsFavorite(!eventCard.getIsFavorite());
 
                             if (eventCard.getIsFavorite()) {

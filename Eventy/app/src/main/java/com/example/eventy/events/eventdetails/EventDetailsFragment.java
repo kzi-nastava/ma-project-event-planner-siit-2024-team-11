@@ -148,7 +148,7 @@ public class EventDetailsFragment extends Fragment {
         call2.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful() && response.body() != null) {
+                if (response.isSuccessful()) {
                     event.setIsFavorite(!event.getIsFavorite());
 
                     if (event.getIsFavorite()) {
