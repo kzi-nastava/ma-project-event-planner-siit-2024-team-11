@@ -22,11 +22,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.text.SimpleDateFormat;
 
 import com.example.eventy.R;
 import com.example.eventy.custom.ErrorOkDialog;
-import com.example.eventy.model.enums.PrivacyType;
 import com.example.eventy.events.model.EventCard;
 import com.example.eventy.utils.ClientUtils;
 
@@ -122,9 +120,9 @@ public class FeaturedEventsAdapter extends RecyclerView.Adapter<FeaturedEventsAd
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            eventCard.setFavorite(!eventCard.isFavorite());
+                            eventCard.setIsFavorite(!eventCard.getIsFavorite());
 
-                            if (eventCard.isFavorite()) {
+                            if (eventCard.getIsFavorite()) {
                                 favoriteButton.setBackgroundColor(Color.parseColor("#929AB7"));
                                 favoriteButton.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.icon_favorite_smaller_white));
                             }
@@ -133,7 +131,7 @@ public class FeaturedEventsAdapter extends RecyclerView.Adapter<FeaturedEventsAd
                                 favoriteButton.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.icon_favorite_smaller));
                             }
 
-                            Toast.makeText(holder.itemView.getContext(), (eventCard.isFavorite() ? "Favorite: " : "Remove Favorite: ") + eventCard.getName(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(holder.itemView.getContext(), (eventCard.getIsFavorite() ? "Favorite: " : "Remove Favorite: ") + eventCard.getName(), Toast.LENGTH_SHORT).show();
                         } else {
                             ErrorOkDialog errorOkDialog = new ErrorOkDialog((Activity) holder.itemView.getContext(), "Error", "Please log in to make this your favorite event.");
                             errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

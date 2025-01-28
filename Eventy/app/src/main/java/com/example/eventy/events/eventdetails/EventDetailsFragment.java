@@ -149,7 +149,7 @@ public class EventDetailsFragment extends Fragment {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    event.setFavorite(!event.getIsFavorite());
+                    event.setIsFavorite(!event.getIsFavorite());
 
                     if (event.getIsFavorite()) {
                         binding.favoriteButton.setBackgroundColor(Color.parseColor("#929AB7"));
