@@ -138,7 +138,7 @@ public class EventOrganizationFragment extends Fragment {
                                     if (isAdded() && getActivity() != null) {
                                         loadingDialog.cancel();
 
-                                        ValidOkDialog validOkDialog = new ValidOkDialog(getActivity(), "Creation Successful", "Your event has been created successfully! Invitations have been sent to the specified email addresses.");
+                                        ValidOkDialog validOkDialog = new ValidOkDialog(getActivity(), "Creation Successful", "Your public event has been created successfully!");
                                         validOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                                         validOkDialog.setOnDismissListener(dialog -> {
                                             NavController navController = Navigation.findNavController(container);
@@ -195,7 +195,7 @@ public class EventOrganizationFragment extends Fragment {
                         if (isAdded() && getActivity() != null) {
                             loadingDialog.cancel();
 
-                            ValidOkDialog validOkDialog = new ValidOkDialog(getActivity(), "Creation Successful", "Your event has been created successfully! Invitations have been sent to the specified email addresses.");
+                            ValidOkDialog validOkDialog = new ValidOkDialog(getActivity(), "Creation Successful", "Your private event has been created successfully! Invitations have been sent to the specified email addresses.");
                             validOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                             validOkDialog.setOnDismissListener(dialog -> {
                                 NavController navController = Navigation.findNavController(container);
