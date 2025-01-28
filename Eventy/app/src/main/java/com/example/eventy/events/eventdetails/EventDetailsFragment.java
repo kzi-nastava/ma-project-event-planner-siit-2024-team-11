@@ -106,7 +106,6 @@ public class EventDetailsFragment extends Fragment {
                     mapController.setZoom(15.0);
 
                     if (event.getIsFavorite()) {
-                        binding.favoriteButton.setBackgroundColor(Color.parseColor("#929AB7"));
                         binding.favoriteButton.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.icon_favorite_smaller_white));
                     }
 
@@ -152,14 +151,12 @@ public class EventDetailsFragment extends Fragment {
                     event.setIsFavorite(!event.getIsFavorite());
 
                     if (event.getIsFavorite()) {
-                        binding.favoriteButton.setBackgroundColor(Color.parseColor("#929AB7"));
                         binding.favoriteButton.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.icon_favorite_smaller_white));
                     } else {
-                        binding.favoriteButton.setBackgroundColor(Color.parseColor("#ffffff"));
                         binding.favoriteButton.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.icon_favorite_smaller));
                     }
 
-                    Toast.makeText(getContext(), (event.getIsFavorite() ? "Favorite: " : "Remove Favorite: ") + event.getName(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), (event.getIsFavorite() ? "Favorite: " : "Removed Favorite: ") + event.getName(), Toast.LENGTH_SHORT).show();
                 } else {
                     ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Please log in to make this your favorite event.");
                     errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
