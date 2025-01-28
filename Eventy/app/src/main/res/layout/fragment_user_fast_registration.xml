@@ -193,7 +193,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="15sp"
                     android:enabled="false"
-                    android:textColor="@color/home_event_card_text"
+                    android:textColor="#909090"
                     android:inputType="textEmailAddress"/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -238,54 +238,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
-                    android:textSize="15sp"
-                    android:textColor="@color/home_event_card_text"
-                    android:background="@drawable/event_card_description_background"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- First Name Field -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/first_name_input_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:hint="First Name"
-                app:hintTextColor="@color/home_event_card_label"
-                app:endIconMode="clear_text"
-                android:textColor="@color/home_event_card_text"
-                app:boxBackgroundColor="@color/white"
-                app:boxStrokeColor="#A0ABC7"
-                app:endIconDrawable="@drawable/icon_remove">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/first_name_input"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPersonName"
-                    android:textSize="15sp"
-                    android:textColor="@color/home_event_card_text"
-                    android:background="@drawable/event_card_description_background"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Last Name Field -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/last_name_input_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:hint="Last Name"
-                android:textColor="@color/home_event_card_text"
-                app:hintTextColor="@color/home_event_card_label"
-                app:boxBackgroundColor="@color/white"
-                app:boxStrokeColor="#A0ABC7"
-                app:endIconMode="clear_text"
-                app:endIconDrawable="@drawable/icon_remove">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/last_name_input"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPersonName"
                     android:textSize="15sp"
                     android:textColor="@color/home_event_card_text"
                     android:background="@drawable/event_card_description_background"/>

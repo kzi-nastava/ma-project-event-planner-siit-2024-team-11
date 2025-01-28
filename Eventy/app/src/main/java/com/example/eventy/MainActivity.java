@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -19,6 +18,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.eventy.common.EncryptionUtil;
 import com.example.eventy.databinding.ActivityMainBinding;
 import com.example.eventy.users.model.AuthResponse;
 import com.example.eventy.users.services.LoggedInHelperService;
@@ -26,7 +26,6 @@ import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
@@ -138,6 +137,45 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         }
+
+        if (data != null && "fast-registration".equals(data.getHost())) {
+            String encryptedEmail = data.getQueryParameter("value");
+            String email;
+            try {
+                email = EncryptionUtil.decrypt(encryptedEmail);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            // Pass the decrypted email to the FastRegistrationFragment
+            Bundle bundle = new Bundle();
+            bundle.putString("email", email);
+            bundle.putString("encryptedEmail", encryptedEmail);
+
+            navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+            navController.popBackStack();
+            navController.navigate(R.id.fast_registration, bundle);
+        }
+
+        if (data != null && "homepage".equals(data.getHost())) {
+            navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+            navController.popBackStack();
+            navController.navigate(R.id.nav_home);
+        }
+
+        if (data != null && "event-details".equals(data.getHost())) {
+            String eventId = data.getQueryParameter("id");
+
+            Bundle bundle = new Bundle();
+            bundle.putString("eventId", eventId);
+
+            navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+            navController.popBackStack();
+            // DODATI OVDE DA NAVIGIRA U EVENT DETAILS I PROSLIJEDITI eventId U FRAGMENT preko Bundle
+            // api/events/{eventId} --> za sad nav_home jer ne postoji event view? (nmg naci?)
+            navController.navigate(R.id.nav_home);
+        }
+
     }
 
     @Override

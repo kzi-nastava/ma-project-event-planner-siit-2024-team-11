@@ -1,8 +1,10 @@
 package com.example.eventy.users.services;
 
 import com.example.eventy.users.model.AuthResponse;
+import com.example.eventy.users.model.FastRegistration;
 import com.example.eventy.users.model.LoginData;
 import com.example.eventy.users.model.RegisterData;
+import com.example.eventy.users.model.UpgradeProfile;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -26,4 +28,10 @@ public interface AuthService {
 
     @PUT(prefix + "registration-confirmation/{requestId}")
     Call<AuthResponse> confirmRegistration(@Path("requestId") Long requestId);
+
+    @POST(prefix + "fast-registration")
+    Call<ResponseBody> fastRegister(@Body FastRegistration fastRegistrationData);
+
+    @POST(prefix + "upgrade-profile")
+    Call<ResponseBody> upgradeProfile(@Body UpgradeProfile upgradeProfileData);
 }

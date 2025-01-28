@@ -31,9 +31,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class UserMyProfilePageFragment extends Fragment {
-
     private FragmentUserMyProfilePageBinding binding;
-
     private User user;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -48,8 +46,29 @@ public class UserMyProfilePageFragment extends Fragment {
             public void onResponse(Call<User> call, Response<User> response) {
                 user = response.body();
 
-                if(user.getUserType() != UserType.AUTHENTICATED) {
+                if (user == null) {
+                    if (isAdded() && getActivity() != null) {
+                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Unable to load the currently logged-in user!");
+                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        errorOkDialog.setOnDismissListener(dialog -> {
+                            NavController navController = Navigation.findNavController(container);
+                            navController.popBackStack();
+                            navController.navigate(R.id.nav_home);
+                        });
+                        errorOkDialog.show();
+                        return;
+                    }
+                }
+
+                if (user.getUserType() != UserType.AUTHENTICATED) {
                     binding.upgradeButton.setVisibility(View.GONE);
+                } else {
+                    binding.upgradeButton.setVisibility(View.VISIBLE);
+                    binding.upgradeButton.setOnClickListener(v -> {
+                        NavController navController = Navigation.findNavController(container);
+                        navController.popBackStack();
+                        navController.navigate(R.id.upgrade_profile);
+                    });
                 }
 
                 TabLayout tabLayout = binding.tabLayout;
@@ -75,11 +94,11 @@ public class UserMyProfilePageFragment extends Fragment {
                         Fragment selectedFragment;
                         if (tab.getPosition() == 0) {
                             selectedFragment = new BasicInformationFragment(user);
-                        } else if(tab.getPosition() == 1) {
+                        } else if (tab.getPosition() == 1) {
                             selectedFragment = new UserCalendarFragment();
-                        } else if(tab.getPosition() == 2) {
+                        } else if (tab.getPosition() == 2) {
                             selectedFragment = new MyCardsFragment(user);
-                        } else if(tab.getPosition() == 3) {
+                        } else if (tab.getPosition() == 3) {
                             selectedFragment = new OrganizerEventsFragment(user.getId(), false);
                         } else {
                             selectedFragment = new PUPOwnServicesFragment(user.getId(), false);
@@ -92,32 +111,29 @@ public class UserMyProfilePageFragment extends Fragment {
                     }
 
                     @Override
-                    public void onTabUnselected(TabLayout.Tab tab) {
-
-                    }
+                    public void onTabUnselected(TabLayout.Tab tab) {}
 
                     @Override
-                    public void onTabReselected(TabLayout.Tab tab) {
-
-                    }
+                    public void onTabReselected(TabLayout.Tab tab) {}
                 });
 
                 if(user.getUserType() != UserType.ORGANIZER && user.getUserType() != UserType.PROVIDER) {
                     tabLayout.setVisibility(View.GONE);
                 }
 
-                if(user.getUserType() == UserType.PROVIDER) {
+                if (user.getUserType() == UserType.PROVIDER) {
                     binding.nameText.setText(user.getName());
-                }
-                else {
+                    binding.nameText.setVisibility(View.VISIBLE);
+                } else if (user.getUserType() == UserType.AUTHENTICATED) {
+                    binding.nameText.setVisibility(View.GONE);
+                } else {
                     binding.nameText.setText(user.getFirstName() + " " + user.getLastName());
+                    binding.nameText.setVisibility(View.VISIBLE);
                 }
 
                 binding.editButton.setOnClickListener(v -> {
                     NavController navController = Navigation.findNavController(v);
-
                     navController.popBackStack();
-
                     navController.navigate(R.id.nav_edit_user);
                 });
 
@@ -147,17 +163,13 @@ public class UserMyProfilePageFragment extends Fragment {
                                             }})
                                         .show();
                             } else {
-                                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while deactivating account!");
-                                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                                errorOkDialog.show();
+                                showErrorDialog("Error while deactivating account!");
                             }
                         }
 
                         @Override
                         public void onFailure(Call<Void> call, Throwable t) {
-                            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while deactivating account!");
-                            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                            errorOkDialog.show();
+                            showErrorDialog("Error while deactivating account!");
                         }
                     });
                 });
@@ -165,13 +177,19 @@ public class UserMyProfilePageFragment extends Fragment {
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while getting user profile!");
-                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                errorOkDialog.show();
+                showErrorDialog("Error while getting user profile!");
             }
         });
 
         return root;
+    }
+
+    private void showErrorDialog(String message) {
+        if (isAdded() && getActivity() != null) {
+            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", message);
+            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            errorOkDialog.show();
+        }
     }
 
     @Override
