@@ -1,21 +1,31 @@
 package com.example.eventy.events.eventdetails;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,8 +47,11 @@ import org.osmdroid.util.MapTileIndex;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -67,7 +80,8 @@ public class EventDetailsFragment extends Fragment {
                     binding.eventNameText.setText(event.getName());
                     binding.eventDescriptionText.setText(event.getDescription());
                     binding.eventOrganizerText.setText("Organizer: " + event.getOrganizerName());
-                    binding.eventDateText.setText("Date: " + event.getDate().toString());
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy HH:mm:ss");
+                    binding.eventDateText.setText("Date: " + event.getDate().format(formatter));
                     binding.eventLocationText.setText("Location: " + event.getLocation().getAddress());
 
                     OnlineTileSourceBase cartoTileSource = new OnlineTileSourceBase(
@@ -173,25 +187,21 @@ public class EventDetailsFragment extends Fragment {
         });
     }
 
-    private byte[] pdfData; // Store PDF data
-    private String pdfFileName; // Store file name
-
     private void downloadEventDetails() {
-        Call<byte[]> call = ClientUtils.eventService.triggerEventDetailsPDFDownload(event.getId());
-        call.enqueue(new Callback<byte[]>() {
+        Call<ResponseBody> call = ClientUtils.eventService.triggerEventDetailsPDFDownload(event.getId());
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<byte[]> call, Response<byte[]> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    pdfData = response.body();
-                    pdfFileName = event.getName() + "EventDetails.pdf";
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null && savePDFToDownloads(response.body(), event.getName() + "EventDetails.pdf")) {
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("Event Details PDF is downloading")
+                            .setMessage("Please check your downloads folder!")
+                            .setIcon(R.drawable.icon_success_png)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
 
-                    if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                            != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                    }
-                    else {
-                        savePDFFile(pdfData, pdfFileName);
-                    }
+                                }})
+                            .show();
                 } else {
                     ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error while downloading", "Error while downloading event details. Please try again later.");
                     errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -200,7 +210,7 @@ public class EventDetailsFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<byte[]> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error while downloading", "Error while downloading event details. Please try again later.");
                 errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 errorOkDialog.show();
@@ -209,21 +219,20 @@ public class EventDetailsFragment extends Fragment {
     }
 
     private void downloadGuestList() {
-        Call<byte[]> call = ClientUtils.eventService.triggerEventGuestListPDFDownload(event.getId());
-        call.enqueue(new Callback<byte[]>() {
+        Call<ResponseBody> call = ClientUtils.eventService.triggerEventGuestListPDFDownload(event.getId());
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<byte[]> call, Response<byte[]> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    pdfData = response.body();
-                    pdfFileName = event.getName() + "GuestList.pdf";
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null && savePDFToDownloads(response.body(), event.getName() + "GuestList.pdf")) {
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("Guest List PDF is downloading")
+                            .setMessage("Please check your downloads folder!")
+                            .setIcon(R.drawable.icon_success_png)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
 
-                    if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                            != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                    }
-                    else {
-                        savePDFFile(pdfData, pdfFileName);
-                    }
+                                }})
+                            .show();
                 } else {
                     ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error while downloading", "Error while downloading event details. Please try again later.");
                     errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -232,7 +241,7 @@ public class EventDetailsFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<byte[]> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error while downloading", "Error while downloading event details. Please try again later.");
                 errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 errorOkDialog.show();
@@ -240,39 +249,35 @@ public class EventDetailsFragment extends Fragment {
         });
     }
 
-    private void savePDFFile(byte[] pdfData, String fileName) {
+    private boolean savePDFToDownloads(ResponseBody body, String fileName) {
         try {
-            // Get external files directory
-            File pdfFile = new File(requireContext().getExternalFilesDir(null), fileName);
+            Context context = requireContext();
+            OutputStream outputStream;
 
-            // Write byte array to the file
-            FileOutputStream fos = new FileOutputStream(pdfFile);
-            fos.write(pdfData);
-            fos.close();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { // Android 10+
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Downloads.DISPLAY_NAME, fileName);
+                values.put(MediaStore.Downloads.MIME_TYPE, "application/pdf");
+                values.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
 
-            // Optionally, open the file
-            openPDF(pdfFile);
-        } catch (IOException ignored) {
+                outputStream = context.getContentResolver().openOutputStream(
+                        context.getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
+                );
+            } else {
+                // For Android 9 and below, use External Storage (Requires Permission)
+                File pdfFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fileName);
+                outputStream = new FileOutputStream(pdfFile);
+            }
 
+            if (outputStream != null) {
+                outputStream.write(body.bytes());
+                outputStream.close();
+                Log.d("PDF", "File saved successfully!");
+                return true;
+            }
+        } catch (Exception e) {
+            Log.e("PDF", "Error saving PDF: " + e.getMessage());
         }
+        return false;
     }
-
-    private void openPDF(File pdfFile) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(pdfFile), "application/pdf");
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-
-        try {
-            startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(requireContext(), "No PDF viewer installed.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private final ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    savePDFFile(pdfData, pdfFileName);
-                }
-            });
 }

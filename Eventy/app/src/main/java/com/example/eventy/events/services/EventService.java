@@ -9,6 +9,7 @@ import com.example.eventy.users.model.EventDetails;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -50,8 +51,8 @@ public interface EventService {
     Call<EventDetails> getEvent(@Path("eventId") Long eventId);
 
     @GET(prefix + "/pdfs/details/{eventId}")
-    Call<byte[]> triggerEventDetailsPDFDownload(@Path("eventId") Long eventId);
+    Call<ResponseBody> triggerEventDetailsPDFDownload(@Path("eventId") Long eventId);
 
     @GET(prefix + "/pdfs/guest-list/{eventId}")
-    Call<byte[]> triggerEventGuestListPDFDownload(@Path("eventId") Long eventId);
+    Call<ResponseBody> triggerEventGuestListPDFDownload(@Path("eventId") Long eventId);
 }
