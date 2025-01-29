@@ -24,6 +24,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,16 +42,30 @@ import com.example.eventy.users.model.EventDetails;
 import com.example.eventy.utils.ClientUtils;
 
 import org.osmdroid.api.IMapController;
+import org.osmdroid.config.Configuration;
+import org.osmdroid.events.MapListener;
+import org.osmdroid.events.ScrollEvent;
+import org.osmdroid.events.ZoomEvent;
+import org.osmdroid.tileprovider.MapTileProviderBasic;
+import org.osmdroid.tileprovider.modules.TileDownloader;
 import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.util.MapTileIndex;
+import org.osmdroid.views.overlay.Marker;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.security.cert.X509Certificate;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -70,6 +86,8 @@ public class EventDetailsFragment extends Fragment {
 
         Long typeId = getArguments().getLong("EventID");
 
+        Configuration.getInstance().setUserAgentValue("Eventy/1.0");
+
         Call<EventDetails> call = ClientUtils.eventService.getEvent(typeId);
         call.enqueue(new Callback<EventDetails>() {
             @Override
@@ -83,6 +101,24 @@ public class EventDetailsFragment extends Fragment {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy HH:mm:ss");
                     binding.eventDateText.setText("Date: " + event.getDate().format(formatter));
                     binding.eventLocationText.setText("Location: " + event.getLocation().getAddress());
+
+                    TrustManager[] trustAllCerts = new TrustManager[] {
+                            new X509TrustManager() {
+                                public X509Certificate[] getAcceptedIssuers() {
+                                    return new X509Certificate[0];
+                                }
+                                public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+                                public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+                            }
+                    };
+
+                    try {
+                        SSLContext sc = SSLContext.getInstance("SSL");
+                        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+                        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
                     OnlineTileSourceBase cartoTileSource = new OnlineTileSourceBase(
                             "CartoDB",
@@ -111,13 +147,39 @@ public class EventDetailsFragment extends Fragment {
                     };
 
                     binding.mapview.setTileSource(cartoTileSource);
-                    binding.mapview.invalidate(); // Refresh the map to load tiles
+                    binding.mapview.postInvalidate(); // Use postInvalidate() to refresh the map
                     binding.mapview.setMultiTouchControls(true);
 
-
+                    GeoPoint location = new GeoPoint(event.getLocation().getLatitude(), event.getLocation().getLongitude());
                     IMapController mapController = binding.mapview.getController();
-                    mapController.setCenter(new GeoPoint(event.getLocation().getLatitude(), event.getLocation().getLongitude()));
-                    mapController.setZoom(15.0);
+
+// Add a marker at the default location
+                    Marker marker = new Marker(binding.mapview);
+                    marker.setPosition(location);
+                    marker.setTitle(event.getLocation().getAddress());
+                    binding.mapview.getOverlays().add(marker);
+
+// Add a MapListener to center the map after tiles are loaded
+                    binding.mapview.addMapListener(new MapListener() {
+                        @Override
+                        public boolean onScroll(ScrollEvent event) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onZoom(ZoomEvent event) {
+                            mapController.setCenter(location);
+                            mapController.setZoom(15.0);
+                            binding.mapview.removeMapListener(this); // Remove the listener after centering
+                            return false;
+                        }
+                    });
+
+// Alternatively, use a Handler to delay centering
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                        mapController.setCenter(location);
+                        mapController.setZoom(15.0);
+                    }, 500); // Delay of 500ms to ensure the map is ready
 
                     if (event.getIsFavorite()) {
                         binding.favoriteButton.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.icon_favorite_smaller_white));
@@ -192,7 +254,7 @@ public class EventDetailsFragment extends Fragment {
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful() && response.body() != null && savePDFToDownloads(response.body(), event.getName() + "EventDetails.pdf")) {
+                if (response.isSuccessful() && response.body() != null && savePDFToDownloads(response.body(), event.getName() + " Event Details.pdf")) {
                     new AlertDialog.Builder(getContext())
                             .setTitle("Event Details PDF is downloading")
                             .setMessage("Please check your downloads folder!")
@@ -223,7 +285,7 @@ public class EventDetailsFragment extends Fragment {
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful() && response.body() != null && savePDFToDownloads(response.body(), event.getName() + "GuestList.pdf")) {
+                if (response.isSuccessful() && response.body() != null && savePDFToDownloads(response.body(), event.getName() + " Guest List.pdf")) {
                     new AlertDialog.Builder(getContext())
                             .setTitle("Guest List PDF is downloading")
                             .setMessage("Please check your downloads folder!")
