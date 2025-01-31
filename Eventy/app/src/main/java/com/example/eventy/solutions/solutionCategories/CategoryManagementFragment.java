@@ -16,11 +16,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import com.example.eventy.R;
 import com.example.eventy.adapters.solutions.SolutionCategoryAdapter;
 import com.example.eventy.common.PagedResponse;
 import com.example.eventy.custom.ErrorOkDialog;
+import com.example.eventy.custom.SolutionCategoryDialog;
 import com.example.eventy.databinding.FragmentCategoryManagementBinding;
 import com.example.eventy.model.enums.Status;
 import com.example.eventy.solutions.model.Category;
@@ -72,8 +74,29 @@ public class CategoryManagementFragment extends Fragment {
         binding.categoriesRecycler.setAdapter(adapter);
 
         binding.floatingActionButton.setOnClickListener(v -> {
-            NavController navController = Navigation.findNavController(v);
-            navController.navigate(R.id.nav_category_input);
+            SolutionCategoryDialog dialog = new SolutionCategoryDialog(getContext(), null, null, null, (idValue, nameValue, descriptionValue) -> {
+                if (idValue != -1L) {
+                    Toast.makeText(getContext(), "Unexpected error!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Call<CategoryWithID> call = ClientUtils.categoryService.createCategory(new Category(nameValue, descriptionValue, Status.ACCEPTED));
+                    call.enqueue(new Callback<CategoryWithID>() {
+                        @Override
+                        public void onResponse(Call<CategoryWithID> call, Response<CategoryWithID> response) {
+                            if (response.isSuccessful()) {
+                                fetchCategories();
+                            } else {
+                                Toast.makeText(getContext(), "Error with creating new category!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<CategoryWithID> call, Throwable t) {
+                            Toast.makeText(getContext(), "Network error!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
+            dialog.show();
         });
     }
 

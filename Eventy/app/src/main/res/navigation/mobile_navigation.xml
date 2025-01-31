@@ -98,11 +98,6 @@
         android:name="com.example.eventy.solutions.solutionCategories.CategoryHomeFragment"
         android:label="Category management"
         tools:layout="@layout/fragment_category_home"/>
-    <fragment
-        android:id="@+id/nav_category_input"
-        android:label=""
-        android:name="com.example.eventy.solutions.solutionCategories.CategoryInputFragment"
-        tools:layout="@layout/fragment_category_input"/>
 
     <fragment
         android:id="@+id/fast_registration"
