@@ -93,4 +93,8 @@
 
     <!-- /services/create-reservation -->
     <string name="reservation_creation_time_hint">The end time will be calculated automatically if the service duration is fixed!</string>
+
+    <!-- /categories -->
+    <string name="active_categories">Active categories</string>
+    <string name="category_requests">Requests</string>
 </resources>
