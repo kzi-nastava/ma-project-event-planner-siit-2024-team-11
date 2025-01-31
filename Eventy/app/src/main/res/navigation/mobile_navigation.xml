@@ -94,10 +94,10 @@
         android:label="Service Reservation"
         tools:layout="@layout/fragment_service_reservation_select_event"/>
     <fragment
-        android:id="@+id/nav_category_management"
-        android:name="com.example.eventy.solutions.solutionCategories.CategoryManagementFragment"
+        android:id="@+id/nav_category_home"
+        android:name="com.example.eventy.solutions.solutionCategories.CategoryHomeFragment"
         android:label="Category management"
-        tools:layout="@layout/fragment_category_management"/>
+        tools:layout="@layout/fragment_category_home"/>
     <fragment
         android:id="@+id/nav_category_input"
         android:label=""
