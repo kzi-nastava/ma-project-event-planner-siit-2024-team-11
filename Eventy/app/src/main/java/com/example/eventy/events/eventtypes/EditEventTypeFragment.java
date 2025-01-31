@@ -1,7 +1,5 @@
 package com.example.eventy.events.eventtypes;
 
-import static android.content.Intent.getIntent;
-
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -20,11 +18,10 @@ import android.view.ViewGroup;
 import com.example.eventy.R;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentEditEventTypeBinding;
-import com.example.eventy.events.model.CreatedEventType;
 import com.example.eventy.events.model.EventType;
 import com.example.eventy.events.model.EventTypeWithActivity;
 import com.example.eventy.events.model.UpdateEventType;
-import com.example.eventy.model.solution.CategoryWithID;
+import com.example.eventy.solutions.model.CategoryWithID;
 import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;

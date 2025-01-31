@@ -15,26 +15,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.eventy.R;
-import com.example.eventy.adapters.events.EventsAdapter;
 import com.example.eventy.adapters.solutions.SolutionsAdapter;
 import com.example.eventy.common.PagedResponse;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentHomeSolutionsBinding;
-import com.example.eventy.events.model.EventCard;
-import com.example.eventy.events.model.EventFilters;
-import com.example.eventy.model.enums.ReservationConfirmationType;
-import com.example.eventy.model.enums.Status;
-import com.example.eventy.events.model.EventType;
-import com.example.eventy.model.solution.Category;
-import com.example.eventy.model.solution.Product;
-import com.example.eventy.model.solution.Service;
-import com.example.eventy.model.solution.Solution;
 import com.example.eventy.solutions.model.SolutionCard;
 import com.example.eventy.solutions.model.SolutionsFilter;
 import com.example.eventy.utils.ClientUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import retrofit2.Call;
 import retrofit2.Callback;

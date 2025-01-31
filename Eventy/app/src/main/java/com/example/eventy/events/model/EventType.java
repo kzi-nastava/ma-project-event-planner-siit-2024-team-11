@@ -1,6 +1,6 @@
 package com.example.eventy.events.model;
 
-import com.example.eventy.model.solution.CategoryWithID;
+import com.example.eventy.solutions.model.CategoryWithID;
 
 import java.util.List;
 import java.util.Objects;
