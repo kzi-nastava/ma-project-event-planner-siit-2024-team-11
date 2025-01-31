@@ -17,6 +17,14 @@ public class CreateActivity {
         this.endTime = endTime;
     }
 
+    public CreateActivity(Activity activity) {
+        this.name = activity.getName();
+        this.description = activity.getDescription();
+        this.location = activity.getLocation();
+        this.startTime = activity.getStartTime();
+        this.endTime = activity.getEndTime();
+    }
+
     public String getName() {
         return name;
     }
