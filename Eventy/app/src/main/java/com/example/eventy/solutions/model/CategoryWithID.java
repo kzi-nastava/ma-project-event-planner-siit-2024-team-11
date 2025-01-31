@@ -1,4 +1,4 @@
-package com.example.eventy.model.solution;
+package com.example.eventy.solutions.model;
 
 import com.example.eventy.model.enums.Status;
 
