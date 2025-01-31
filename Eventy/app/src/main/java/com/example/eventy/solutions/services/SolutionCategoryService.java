@@ -42,7 +42,7 @@ public interface SolutionCategoryService {
     Call<CategoryWithID> changeRequest(@Body CategoryWithID changedCategory);
 
     @PUT(prefix + "/requests/replace")
-    Call<CategoryWithID> replaceRequest(@Query("replacedCategoryId") Long replacedCategoryId,
+    Call<Boolean> replaceRequest(@Query("replacedCategoryId") Long replacedCategoryId,
                                         @Query("newlyUsedCategoryId") Long newlyUsedCategoryId);
 
     @DELETE(prefix + "/{categoryId}")
