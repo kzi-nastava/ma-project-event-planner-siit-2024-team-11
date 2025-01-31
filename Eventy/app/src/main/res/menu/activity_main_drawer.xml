@@ -45,7 +45,7 @@
             android:icon="@drawable/icon_service_reservation"
             android:title="Service Reservation"/>
         <item
-            android:id="@+id/nav_category_management"
+            android:id="@+id/nav_category_home"
             android:icon="@drawable/category_management_icon"
             android:title="@string/category_management"/>
     </group>

@@ -1,4 +1,4 @@
-package com.example.eventy.model.solution;
+package com.example.eventy.solutions.model;
 
 import com.example.eventy.model.enums.Status;
 
@@ -47,5 +47,10 @@ public class CategoryWithID {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
     }
 }

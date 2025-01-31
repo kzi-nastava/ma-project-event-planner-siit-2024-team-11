@@ -1,6 +1,7 @@
 package com.example.eventy.model.solution;
 
 import com.example.eventy.events.model.EventType;
+import com.example.eventy.solutions.model.Category;
 
 import java.util.ArrayList;
 import java.util.Objects;
