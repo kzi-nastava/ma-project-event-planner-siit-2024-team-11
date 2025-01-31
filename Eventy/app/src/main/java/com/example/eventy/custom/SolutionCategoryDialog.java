@@ -3,17 +3,15 @@ package com.example.eventy.custom;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 
 import com.example.eventy.R;
-import com.example.eventy.databinding.DialogSolutionCategoryBinding;
 import com.google.android.material.button.MaterialButton;
 
 public class SolutionCategoryDialog extends Dialog implements android.view.View.OnClickListener{
@@ -54,7 +52,7 @@ public class SolutionCategoryDialog extends Dialog implements android.view.View.
         editTextName.setText(name);
         editTextDescription.setText(description);
 
-        if (name == "") {
+        if (name.isEmpty()) {
             confirmButton.setText("Create");
         } else {
             confirmButton.setText("Save changes");
@@ -65,16 +63,18 @@ public class SolutionCategoryDialog extends Dialog implements android.view.View.
             String nameValue = editTextName.getText().toString();
             String descriptionValue = editTextDescription.getText().toString();
 
-            if (nameValue != "" && descriptionValue != "") {
+            if (!nameValue.isEmpty() && !descriptionValue.isEmpty()) {
                 if (callback != null) {
                     callback.onCategoryDataReceived(idValue, nameValue, descriptionValue);
                 }
                 dismiss();
             } else {
                 if (getContext() instanceof Activity) {
-                    ErrorOkDialog errorOkDialog = new ErrorOkDialog((Activity) getContext(), "Error", "Both name and description must be written!");
-                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    errorOkDialog.show();
+                    new AlertDialog.Builder(getContext())
+                            .setMessage("Both name and description must be written!")
+                            .setCancelable(true)
+                            .setPositiveButton("OK", (dialog, id) -> dialog.dismiss())
+                            .show();
                 }
             }
 
