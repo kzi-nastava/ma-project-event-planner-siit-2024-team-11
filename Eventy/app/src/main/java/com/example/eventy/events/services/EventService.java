@@ -2,6 +2,7 @@ package com.example.eventy.events.services;
 
 import com.example.eventy.common.PagedResponse;
 import com.example.eventy.events.model.EventCard;
+import com.example.eventy.events.model.EventStats;
 import com.example.eventy.events.model.OrganizeEvent;
 import com.example.eventy.events.model.Event;
 import com.example.eventy.users.model.EventDetails;
@@ -50,9 +51,23 @@ public interface EventService {
     @GET(prefix + "/{eventId}")
     Call<EventDetails> getEvent(@Path("eventId") Long eventId);
 
+    @GET(prefix + "/stats")
+    Call<PagedResponse<EventStats>> getEventStats(@Query("search") String search,
+                                                  @Query("eventTypes") ArrayList<String> eventTypes,
+                                                  @Query("maxParticipants") Integer maxParticipants,
+                                                  @Query("location") String location,
+                                                  @Query("startDate") LocalDateTime startDate,
+                                                  @Query("endDate") LocalDateTime endDate,
+                                                  @Query("page") int page,
+                                                  @Query("size") int pageSize,
+                                                  @Query("sort") String sort);
+
     @GET(prefix + "/pdfs/details/{eventId}")
     Call<ResponseBody> triggerEventDetailsPDFDownload(@Path("eventId") Long eventId);
 
     @GET(prefix + "/pdfs/guest-list/{eventId}")
     Call<ResponseBody> triggerEventGuestListPDFDownload(@Path("eventId") Long eventId);
+
+    @GET(prefix + "/pdfs/stats/{eventId}")
+    Call<ResponseBody> triggerEventStatsPDFDownload(@Path("eventId") Long eventId);
 }
