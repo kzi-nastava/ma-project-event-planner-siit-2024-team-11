@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.example.eventy.R;
 import com.example.eventy.adapters.events.EventsAdapter;
@@ -23,10 +25,14 @@ import com.example.eventy.databinding.FragmentEventsStatsBinding;
 import com.example.eventy.databinding.FragmentHomeEventsBinding;
 import com.example.eventy.events.model.EventCard;
 import com.example.eventy.events.model.EventFilters;
+import com.example.eventy.home.events.filters.EventFilterBottomSheetFragment;
 import com.example.eventy.utils.ClientUtils;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,9 +49,17 @@ public class EventsStatsFragment extends Fragment {
     private EventFilters eventsFilters;
     private ArrayList<EventCard> paginatedEvents;
     private boolean isLoading = false;
+    private ArrayList<String> eventTypesEvents = new ArrayList<>();
+    private ArrayList<String> locationsEvents = new ArrayList<>();
+    private boolean isEventFilterOpened = false;
+    private boolean areEventTypesEventsLoading = false;
+    private boolean areLocationsEventsLoading = false;
 
     public EventsStatsFragment() {
         eventsFilters = new EventFilters("", "-", new ArrayList<String>(), null, null, null);
+        setupEventSearch();
+        setupEventFilters();
+        setupEventSort();
     }
 
     @Override
@@ -203,5 +217,138 @@ public class EventsStatsFragment extends Fragment {
     public void updateSearch(String searchValue) {
         search = searchValue;
         fetchEvents(search, eventsFilters, page, pageSize, sort);
+    }
+
+    private void setupEventSearch() {
+        SearchView searchView = binding.searchInput;
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                updateSearch(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                updateSearch(newText);
+                return true;
+            }
+        });
+    }
+
+    private void setupEventFilters() {
+        binding.filterButton.setOnClickListener(v -> {
+            if (isEventFilterOpened) {
+                return;
+            }
+            isEventFilterOpened = true;
+
+            if (isAdded()) {
+                loadEventTypesEvents();
+                loadLocationsEvents();
+            }
+            EventFilterBottomSheetFragment bottomSheetFragment = new EventFilterBottomSheetFragment(eventTypesEvents, locationsEvents);
+
+            Bundle args = new Bundle();
+            args.putString("location", eventsFilters.getSelectedLocation());
+            args.putStringArrayList("eventTypes", eventsFilters.getSelectedEventTypes());
+            args.putString("maxParticipants", eventsFilters.getMaxParticipants());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault());
+            String dateRangeSummary = (eventsFilters.getSelectedStartDateTime() != null && eventsFilters.getSelectedEndDateTime() != null)
+                    ? (eventsFilters.getSelectedStartDateTime().format(formatter) + " - " +  eventsFilters.getSelectedEndDateTime().format(formatter))
+                    : "Not selected";
+            args.putString("dateRange", dateRangeSummary);
+            bottomSheetFragment.setArguments(args);
+
+            bottomSheetFragment.show(getChildFragmentManager(), bottomSheetFragment.getTag());
+        });
+    }
+
+    private void loadEventTypesEvents() {
+        if (areEventTypesEventsLoading) return;
+        areEventTypesEventsLoading = true;
+
+        Call<String[]> call = ClientUtils.eventService.getAllUniqueEventTypesForEvents();
+        call.enqueue(new Callback<String[]>() {
+            @Override
+            public void onResponse(Call<String[]> call, Response<String[]> response) {
+                if (response.isSuccessful() && response.body() != null && getActivity() != null) {
+                    String[] eventTypeNames = response.body();
+                    eventTypesEvents.clear();
+                    eventTypesEvents.addAll(Arrays.asList(eventTypeNames));
+                } else {
+                    showErrorDialog("Error while loading event types!");
+                    showErrorDialog(response.message());
+                }
+                areEventTypesEventsLoading = false;
+            }
+
+            @Override
+            public void onFailure(Call<String[]> call, Throwable t) {
+                showErrorDialog("Error while loading event types!");
+                showErrorDialog(t.getMessage());
+                areEventTypesEventsLoading = false;
+            }
+        });
+    }
+
+    private void loadLocationsEvents() {
+        if (areLocationsEventsLoading) return;
+        areLocationsEventsLoading = true;
+
+        Call<String[]> call = ClientUtils.eventService.getAllUniqueLocationsForEvents();
+        call.enqueue(new Callback<String[]>() {
+            @Override
+            public void onResponse(Call<String[]> call, Response<String[]> response) {
+                if (response.isSuccessful() && response.body() != null && getActivity() != null) {
+                    String[] locationNames = response.body();
+                    locationsEvents.clear();
+                    locationsEvents.addAll(Arrays.asList(locationNames));
+                } else {
+                    showErrorDialog("Error while loading locations!");
+                    showErrorDialog(response.message());
+                }
+                areLocationsEventsLoading = false;
+            }
+
+            @Override
+            public void onFailure(Call<String[]> call, Throwable t) {
+                showErrorDialog("Error while loading locations!");
+                showErrorDialog(t.getMessage());
+                areLocationsEventsLoading = false;
+            }
+        });
+    }
+
+    private void setupEventSort() {
+        Spinner spinner = binding.sortButton;
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.event_sort_options));
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner.setAdapter(arrayAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String sortValue = arrayAdapter.getItem(position);
+                String selectedSort = "type";
+                switch (sortValue) {
+                    case "Event Type": selectedSort = "type"; break;
+                    case "Name": selectedSort = "name"; break;
+                    case "Max Participants ASC": selectedSort = "maxNumberParticipants,asc"; break;
+                    case "Max Participants DESC": selectedSort = "maxNumberParticipants,desc"; break;
+                    case "Location": selectedSort = "location"; break;
+                    case "Date ASC": selectedSort = "date,asc"; break;
+                    case "Date DESC": selectedSort = "date,desc"; break;
+                }
+
+                updateSort(selectedSort);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 }
