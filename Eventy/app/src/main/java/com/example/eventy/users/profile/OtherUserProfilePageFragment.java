@@ -43,8 +43,12 @@ public class OtherUserProfilePageFragment extends Fragment {
         binding = FragmentOtherUserProfilePageBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        // change this to some ID later where you can, it shouldn't have the logged in users ID
-        Call<User> call = ClientUtils.userService.get(LoggedInHelperService.getId());
+        Long id = -1L;
+        if (getArguments() != null) {
+            id = getArguments().getLong("userId");
+        }
+
+        Call<User> call = ClientUtils.userService.get(id);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
