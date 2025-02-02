@@ -24,9 +24,6 @@ import java.util.List;
 
 public class EventStatsCardFragment extends Fragment {
 
-    private BarChart barChart;
-    private PieChart averageGradeChart;
-
     public EventStatsCardFragment() {
         // Required empty public constructor
     }
@@ -36,44 +33,6 @@ public class EventStatsCardFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_event_stats_card, container, false);
 
-        // Load card fragment dynamically
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.cardContainer, new EventCardFragment());  // Replace with actual card fragment
-        transaction.commit();
-
-        // Initialize charts
-        barChart = view.findViewById(R.id.barChart);
-        averageGradeChart = view.findViewById(R.id.averageGradeChart);
-
-        setupBarChart();
-        setupPieChart();
-
         return view;
-    }
-
-    private void setupBarChart() {
-        List<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(1, 10));
-        entries.add(new BarEntry(2, 20));
-        entries.add(new BarEntry(3, 15));
-        entries.add(new BarEntry(4, 5));
-        entries.add(new BarEntry(5, 8));
-
-        BarDataSet dataSet = new BarDataSet(entries, "Grades Distribution");
-        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-        BarData barData = new BarData(dataSet);
-        barChart.setData(barData);
-        barChart.invalidate();
-    }
-
-    private void setupPieChart() {
-        List<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(4.2f, "Average Grade"));
-
-        PieDataSet dataSet = new PieDataSet(entries, "Grade");
-        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-        PieData pieData = new PieData(dataSet);
-        averageGradeChart.setData(pieData);
-        averageGradeChart.invalidate();
     }
 }

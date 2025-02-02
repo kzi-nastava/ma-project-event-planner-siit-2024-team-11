@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,11 +24,22 @@ import com.example.eventy.R;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.events.model.EventCard;
 import com.example.eventy.events.model.EventStats;
+import com.example.eventy.home.events.event_card.EventCardFragment;
 import com.example.eventy.utils.ClientUtils;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,7 +58,7 @@ public class EventStatsAdapter extends RecyclerView.Adapter<EventStatsAdapter.Ev
     @Override
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
-        view = layoutInflater.inflate(R.layout.fragment_event_card, parent, false);
+        view = layoutInflater.inflate(R.layout.fragment_event_stats_card, parent, false);
 
         return new EventViewHolder(view);
     }
@@ -125,6 +137,10 @@ public class EventStatsAdapter extends RecyclerView.Adapter<EventStatsAdapter.Ev
                     }
                 });
             });
+
+            holder.setupBarChart(eventStats.getGradeDistribution());
+            holder.setupPieChart(eventStats.getVisitors(), eventCard.getMaxNumberParticipants(), "Visitors", holder.numberChart);
+            holder.setupPieChart((float) eventStats.getAverageGrade(), 5, "Average Grade", holder.averageGradeChart);
         }
     }
 
@@ -135,9 +151,13 @@ public class EventStatsAdapter extends RecyclerView.Adapter<EventStatsAdapter.Ev
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
         TextView eventName, eventType, maxParticipants, eventDate, eventLocation, openOrFull, description;
+        private BarChart barChart;
+        private PieChart averageGradeChart;
+        private PieChart numberChart;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
+
             eventName = itemView.findViewById(R.id.event_name);
             eventType = itemView.findViewById(R.id.event_type);
             maxParticipants = itemView.findViewById(R.id.max_participants);
@@ -145,6 +165,35 @@ public class EventStatsAdapter extends RecyclerView.Adapter<EventStatsAdapter.Ev
             eventLocation = itemView.findViewById(R.id.event_location);
             openOrFull = itemView.findViewById(R.id.open_or_full);
             description = itemView.findViewById(R.id.description);
+            barChart = itemView.findViewById(R.id.barChart);
+            averageGradeChart = itemView.findViewById(R.id.averageGradeChart);
+            numberChart = itemView.findViewById(R.id.numberChart);
+        }
+
+        public void setupBarChart(int[] gradeDistribution) {
+            List<BarEntry> entries = new ArrayList<>();
+            entries.add(new BarEntry(1, gradeDistribution[0]));
+            entries.add(new BarEntry(2, gradeDistribution[1]));
+            entries.add(new BarEntry(3, gradeDistribution[2]));
+            entries.add(new BarEntry(4, gradeDistribution[3]));
+            entries.add(new BarEntry(5, gradeDistribution[4]));
+
+            BarDataSet dataSet = new BarDataSet(entries, "Grade Distribution");
+            dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+            BarData barData = new BarData(dataSet);
+            barChart.setData(barData);
+            barChart.invalidate();
+        }
+
+        public void setupPieChart(float num, float max, String title, PieChart pieChart) {
+            List<PieEntry> entries = new ArrayList<>();
+            entries.add(new PieEntry(num, title));
+
+            PieDataSet dataSet = new PieDataSet(entries, title);
+            dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+            PieData pieData = new PieData(dataSet);
+            pieChart.setData(pieData);
+            pieChart.invalidate();
         }
     }
 }
