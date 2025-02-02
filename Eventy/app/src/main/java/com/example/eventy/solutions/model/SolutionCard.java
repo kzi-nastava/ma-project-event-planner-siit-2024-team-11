@@ -2,6 +2,7 @@ package com.example.eventy.solutions.model;
 
 import com.example.eventy.model.enums.ReservationConfirmationType;
 import com.example.eventy.solutions.enums.SolutionType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 
@@ -21,16 +22,19 @@ public class SolutionCard {
     private Double price;
     private Integer discount;
     private String firstImageUrl;
+    @JsonProperty("isAvailable")
     private Boolean isAvailable;
     private Long providerId;
     private String providerName;
     private String providerImageUrl;
+    @JsonProperty("isFavorite")
+    private Boolean isFavorite;
 
     public SolutionCard() {
 
     }
 
-    public SolutionCard(Long solutionId, SolutionType type, String name, String categoryName, String description, String specifics, Integer minReservationTime, Integer maxReservationTime, Integer reservationDeadline, Integer cancellationDeadline, ReservationConfirmationType reservationType, ArrayList<String> eventTypeNames, Double price, Integer discount, String firstImageUrl, Boolean isAvailable, Long providerId, String providerName, String providerImageUrl) {
+    public SolutionCard(Long solutionId, SolutionType type, String name, String categoryName, String description, String specifics, Integer minReservationTime, Integer maxReservationTime, Integer reservationDeadline, Integer cancellationDeadline, ReservationConfirmationType reservationType, ArrayList<String> eventTypeNames, Double price, Integer discount, String firstImageUrl, Boolean isAvailable, Long providerId, String providerName, String providerImageUrl, Boolean isFavorite) {
         this.solutionId = solutionId;
         this.type = type;
         this.name = name;
@@ -50,6 +54,7 @@ public class SolutionCard {
         this.providerId = providerId;
         this.providerName = providerName;
         this.providerImageUrl = providerImageUrl;
+        this.isFavorite = isFavorite;
     }
 
     public Long getSolutionId() {
@@ -203,4 +208,8 @@ public class SolutionCard {
     public void setProviderImageUrl(String providerImageUrl) {
         this.providerImageUrl = providerImageUrl;
     }
+
+    public void setIsFavorite(Boolean isFavorite) { this.isFavorite = isFavorite; }
+
+    public Boolean getIsFavorite() { return isFavorite; }
 }
