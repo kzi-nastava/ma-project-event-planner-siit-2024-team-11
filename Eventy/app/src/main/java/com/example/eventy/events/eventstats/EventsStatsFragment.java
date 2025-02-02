@@ -26,6 +26,7 @@ import com.example.eventy.databinding.FragmentHomeEventsBinding;
 import com.example.eventy.events.model.EventCard;
 import com.example.eventy.events.model.EventFilters;
 import com.example.eventy.home.events.filters.EventFilterBottomSheetFragment;
+import com.example.eventy.solutions.model.SolutionsFilter;
 import com.example.eventy.utils.ClientUtils;
 
 import java.time.LocalDateTime;
@@ -38,7 +39,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class EventsStatsFragment extends Fragment {
+public class EventsStatsFragment extends Fragment implements EventFilterBottomSheetFragment.FilterListener {
     private FragmentEventsStatsBinding binding;
     private EventsAdapter eventsAdapter;
     private int page = 0;
@@ -57,9 +58,6 @@ public class EventsStatsFragment extends Fragment {
 
     public EventsStatsFragment() {
         eventsFilters = new EventFilters("", "-", new ArrayList<String>(), null, null, null);
-        setupEventSearch();
-        setupEventFilters();
-        setupEventSort();
     }
 
     @Override
@@ -72,6 +70,9 @@ public class EventsStatsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         this.paginatedEvents = new ArrayList<>();
+        setupEventSearch();
+        setupEventFilters();
+        setupEventSort();
         setupRecyclerView();
         setupPaginationControls();
         fetchEvents(search, eventsFilters, page, pageSize, sort);
@@ -350,5 +351,18 @@ public class EventsStatsFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+    }
+
+    @Override
+    public void onFiltersSelected(EventFilters filterValues) {
+        isEventFilterOpened = false;
+        this.eventsFilters = filterValues;
+
+        updateFilters(filterValues);
+    }
+
+    @Override
+    public void onFiltersClosed() {
+        isEventFilterOpened = false;
     }
 }
