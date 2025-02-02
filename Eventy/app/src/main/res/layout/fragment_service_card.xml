@@ -373,7 +373,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <!-- favorite button -->
-                <Button
+                <ImageButton
                     android:id="@+id/favorite_button"
                     android:layout_width="33dp"
                     android:layout_height="match_parent"
