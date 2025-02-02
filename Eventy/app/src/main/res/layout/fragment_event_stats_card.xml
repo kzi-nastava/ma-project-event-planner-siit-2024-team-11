@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
     tools:context=".events.eventstats.EventStatsCardFragment">
@@ -295,9 +295,9 @@
         <!-- Number Chart -->
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/numberChart"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="200dp"
-            android:layout_marginBottom="16dp"
+            android:layout_weight="1"
             android:background="@android:color/white" />
 
         <!-- Bar Chart -->
@@ -309,27 +309,38 @@
             android:background="@android:color/white" />
     </LinearLayout>
 
-    <!-- Second Row: Average Grade Chart -->
-    <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/averageGradeChart"
+    <!-- Second Row: Average Grade Chart & Download Button -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginBottom="16dp"
-        android:background="@android:color/white" />
-
-    <!-- Download Button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/download_event_stats_button"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:icon="@drawable/icon_download"
-        android:text="Event Stats"
-        app:backgroundTint="@color/eventy_color"
-        style="@style/Widget.MaterialComponents.Button"
-        app:cornerRadius="7dp"
-        android:fontFamily="@font/roboto"
-        android:textStyle="bold"
-        android:padding="10dp"
-        android:layout_marginLeft="20dp" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="16dp">
+
+        <!-- Average Grade Chart -->
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/averageGradeChart"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_weight="1"
+            android:background="@android:color/white" />
+
+        <!-- Download Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/download_event_stats_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:icon="@drawable/icon_download"
+            android:text="Event Stats"
+            app:backgroundTint="@color/eventy_color"
+            style="@style/Widget.MaterialComponents.Button"
+            app:cornerRadius="7dp"
+            android:fontFamily="@font/roboto"
+            android:textStyle="bold"
+            android:padding="10dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp" />
+    </LinearLayout>
 
 </LinearLayout>
