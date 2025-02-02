@@ -1,10 +1,17 @@
 package com.example.eventy.events.eventstats;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,11 +44,15 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -142,6 +153,37 @@ public class EventStatsAdapter extends RecyclerView.Adapter<EventStatsAdapter.Ev
             holder.setupBarChart(eventStats.getGradeDistribution());
             holder.setupPieChart(eventStats.getVisitors(), eventCard.getMaxNumberParticipants(), "Visitors", holder.numberChart);
             holder.setupPieChart((float) eventStats.getAverageGrade(), 5, "Average Grade", holder.averageGradeChart);
+
+            holder.itemView.findViewById(R.id.download_event_stats_button).setOnClickListener(v -> {
+                Call<ResponseBody> call = ClientUtils.eventService.triggerEventStatsPDFDownload(eventCard.getEventId());
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful() && response.body() != null && savePDFToDownloads(response.body(), eventCard.getName() + " Event Stats.pdf", holder.itemView.getContext())) {
+                            new AlertDialog.Builder(holder.itemView.getContext())
+                                    .setTitle("Event Stats PDF is downloading")
+                                    .setMessage("Please check your downloads folder!")
+                                    .setIcon(R.drawable.icon_success_png)
+                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+
+                                        }})
+                                    .show();
+                        } else {
+                            ErrorOkDialog errorOkDialog = new ErrorOkDialog((Activity) holder.itemView.getContext(), "Error while downloading", "Error while downloading event details. Please try again later.");
+                            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            errorOkDialog.show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        ErrorOkDialog errorOkDialog = new ErrorOkDialog((Activity) holder.itemView.getContext(), "Error while downloading", "Error while downloading event details. Please try again later.");
+                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        errorOkDialog.show();
+                    }
+                });
+            });
         }
     }
 
@@ -203,5 +245,36 @@ public class EventStatsAdapter extends RecyclerView.Adapter<EventStatsAdapter.Ev
             pieChart.setDescription(description);
             pieChart.invalidate();
         }
+    }
+
+    private boolean savePDFToDownloads(ResponseBody body, String fileName, Context context) {
+        try {
+            OutputStream outputStream;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { // Android 10+
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Downloads.DISPLAY_NAME, fileName);
+                values.put(MediaStore.Downloads.MIME_TYPE, "application/pdf");
+                values.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
+
+                outputStream = context.getContentResolver().openOutputStream(
+                        context.getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
+                );
+            } else {
+                // For Android 9 and below, use External Storage (Requires Permission)
+                File pdfFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fileName);
+                outputStream = new FileOutputStream(pdfFile);
+            }
+
+            if (outputStream != null) {
+                outputStream.write(body.bytes());
+                outputStream.close();
+                Log.d("PDF", "File saved successfully!");
+                return true;
+            }
+        } catch (Exception e) {
+            Log.e("PDF", "Error saving PDF: " + e.getMessage());
+        }
+        return false;
     }
 }
