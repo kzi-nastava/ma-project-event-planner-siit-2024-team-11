@@ -117,4 +117,10 @@
         android:label="Event Details"
         tools:layout="@layout/fragment_event_details"/>
 
+    <fragment
+        android:id="@+id/nav_solution_details"
+        android:name="com.example.eventy.solutions.SolutionDetailsFragment"
+        android:label="Solution Details"
+        tools:layout="@layout/fragment_solution_details"/>
+
 </navigation>
