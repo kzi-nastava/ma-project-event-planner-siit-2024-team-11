@@ -6,6 +6,10 @@ public class EventStats {
     private double averageGrade;
     private int[] gradeDistribution;
 
+    public EventStats() {
+
+    }
+
     public EventStats(EventCard eventCard, int visitors, double averageGrade, int[] gradeDistribution) {
         this.eventCard = eventCard;
         this.visitors = visitors;

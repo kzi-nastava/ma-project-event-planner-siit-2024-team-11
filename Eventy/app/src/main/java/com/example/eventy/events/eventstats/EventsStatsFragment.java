@@ -18,18 +18,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.example.eventy.R;
-import com.example.eventy.adapters.events.EventsAdapter;
 import com.example.eventy.common.PagedResponse;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentEventsStatsBinding;
-import com.example.eventy.databinding.FragmentHomeEventsBinding;
-import com.example.eventy.events.model.EventCard;
 import com.example.eventy.events.model.EventFilters;
+import com.example.eventy.events.model.EventStats;
 import com.example.eventy.home.events.filters.EventFilterBottomSheetFragment;
-import com.example.eventy.solutions.model.SolutionsFilter;
 import com.example.eventy.utils.ClientUtils;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,14 +37,14 @@ import retrofit2.Response;
 
 public class EventsStatsFragment extends Fragment implements EventFilterBottomSheetFragment.FilterListener {
     private FragmentEventsStatsBinding binding;
-    private EventsAdapter eventsAdapter;
+    private EventStatsAdapter eventStatsAdapter;
     private int page = 0;
     private int pageSize = 5;
     private int totalPages = 99;
     private String sort = "type";
     private String search = "";
     private EventFilters eventsFilters;
-    private ArrayList<EventCard> paginatedEvents;
+    private ArrayList<EventStats> paginatedEvents;
     private boolean isLoading = false;
     private ArrayList<String> eventTypesEvents = new ArrayList<>();
     private ArrayList<String> locationsEvents = new ArrayList<>();
@@ -79,9 +75,9 @@ public class EventsStatsFragment extends Fragment implements EventFilterBottomSh
     }
 
     private void setupRecyclerView() {
-        eventsAdapter = new EventsAdapter(requireContext(), paginatedEvents);
+        eventStatsAdapter = new EventStatsAdapter(requireContext(), paginatedEvents);
         binding.eventsRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
-        binding.eventsRecycler.setAdapter(eventsAdapter);
+        binding.eventsRecycler.setAdapter(eventStatsAdapter);
     }
 
     private void setupPaginationControls() {
@@ -143,20 +139,20 @@ public class EventsStatsFragment extends Fragment implements EventFilterBottomSh
         }
         String location = eventFilters.getSelectedLocation().equals("-") ? null : eventFilters.getSelectedLocation();
 
-        Call<PagedResponse<EventCard>> call = ClientUtils.eventService.getEvents(
+        Call<PagedResponse<EventStats>> call = ClientUtils.eventService.getEventStats(
                 search, eventFilters.getSelectedEventTypes(), maxParticipants, location,
                 eventFilters.getSelectedStartDateTime(), eventFilters.getSelectedEndDateTime(),
                 page, pageSize, sort
         );
-        call.enqueue(new Callback<PagedResponse<EventCard>>() {
+        call.enqueue(new Callback<PagedResponse<EventStats>>() {
             @Override
-            public void onResponse(Call<PagedResponse<EventCard>> call, Response<PagedResponse<EventCard>> response) {
+            public void onResponse(Call<PagedResponse<EventStats>> call, Response<PagedResponse<EventStats>> response) {
                 if (response.isSuccessful() && response.body() != null && getActivity() != null) {
-                    PagedResponse<EventCard> pagedResponse = response.body();
+                    PagedResponse<EventStats> pagedResponse = response.body();
 
                     paginatedEvents.clear();
                     paginatedEvents.addAll(pagedResponse.getContent());
-                    eventsAdapter.notifyDataSetChanged();
+                    eventStatsAdapter.notifyDataSetChanged();
 
                     totalPages = pagedResponse.getTotalPages();
                     updatePaginationControls();
@@ -169,7 +165,7 @@ public class EventsStatsFragment extends Fragment implements EventFilterBottomSh
             }
 
             @Override
-            public void onFailure(Call<PagedResponse<EventCard>> call, Throwable t) {
+            public void onFailure(Call<PagedResponse<EventStats>> call, Throwable t) {
                 showErrorDialog("Error while loading events!");
                 showErrorDialog(t.getMessage());
                 isLoading = false;
