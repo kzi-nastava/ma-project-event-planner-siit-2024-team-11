@@ -64,14 +64,17 @@ public class LoggedInHelperService {
 //        menu.findItem(R.id.fast_registration).setVisible(false);
 //        menu.findItem(R.id.upgrade_profile).setVisible(false);
 //        menu.findItem(R.id.nav_category_management).setVisible(false);
+//        menu.findItem(R.id.nav_event_stats).setVisible(false);
 //
 //        // Example logic: Show/Hide items based on role
 //        if ("ROLE_Admin".equals(role)) {
 //            menu.findItem(R.id.nav_event_types).setVisible(true);
 //            menu.findItem(R.id.nav_category_management).setVisible(true);
+//            menu.findItem(R.id.nav_event_stats).setVisible(false);
 //        } else if ("ROLE_Organizer".equals(role)){
 //            menu.findItem(R.id.nav_event_organization).setVisible(true);
 //            menu.findItem(R.id.service_reservation).setVisible(true);
+//            menu.findItem(R.id.nav_event_stats).setVisible(false);
 //        } else if ("ROLE_Provider".equals(role)) {
 //            menu.findItem(R.id.nav_add_service).setVisible(true);
 //            menu.findItem(R.id.nav_edit_service).setVisible(true);

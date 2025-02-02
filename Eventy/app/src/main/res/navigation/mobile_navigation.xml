@@ -118,6 +118,12 @@
         tools:layout="@layout/fragment_event_details"/>
 
     <fragment
+        android:id="@+id/nav_event_stats"
+        android:name="com.example.eventy.events.eventstats.EventsStatsFragment"
+        android:label="Event Stats"
+        tools:layout="@layout/fragment_events_stats"/>
+  
+    <fragment
         android:id="@+id/nav_solution_details"
         android:name="com.example.eventy.solutions.SolutionDetailsFragment"
         android:label="Solution Details"
