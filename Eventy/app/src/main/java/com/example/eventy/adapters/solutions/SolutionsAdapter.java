@@ -1,28 +1,42 @@
 package com.example.eventy.adapters.solutions;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventy.R;
 import com.example.eventy.common.PictureHelperService;
+import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.model.enums.ReservationConfirmationType;
 import com.example.eventy.model.solution.Service;
 import com.example.eventy.model.solution.Solution;
 import com.example.eventy.solutions.enums.SolutionType;
 import com.example.eventy.solutions.model.SolutionCard;
+import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SolutionsAdapter extends RecyclerView.Adapter<SolutionsAdapter.SolutionViewHolder> {
     private ArrayList<SolutionCard> solutionCards;
@@ -109,12 +123,49 @@ public class SolutionsAdapter extends RecyclerView.Adapter<SolutionsAdapter.Solu
 
             Button seeMoreButton = holder.itemView.findViewById(R.id.see_more_button);
             seeMoreButton.setOnClickListener(v -> {
-                Toast.makeText(holder.itemView.getContext(), "See more: " + solutionCard.getName(), Toast.LENGTH_SHORT).show();
+                Bundle args = new Bundle();
+                args.putLong("solutionId", solutionCard.getSolutionId());
+
+                NavController navController = Navigation.findNavController(v);
+                navController.popBackStack();
+                navController.navigate(R.id.nav_solution_details, args);
             });
 
-            Button favoriteButton = holder.itemView.findViewById(R.id.favorite_button);
+            ImageButton favoriteButton = holder.itemView.findViewById(R.id.favorite_button);
+
+            if(solutionCard.getIsFavorite()) {
+                favoriteButton.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.icon_favorite_smaller_white));
+            }
+
             favoriteButton.setOnClickListener(v -> {
-                Toast.makeText(holder.itemView.getContext(), "Favorite: " + solutionCard.getName(), Toast.LENGTH_SHORT).show();
+                Call<Boolean> call = ClientUtils.solutionService.toggleFavorite(solutionCard.getSolutionId());
+                call.enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        if (response.isSuccessful()) {
+                            solutionCard.setIsFavorite(!solutionCard.getIsFavorite());
+
+                            if (solutionCard.getIsFavorite()) {
+                                favoriteButton.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.icon_favorite_smaller_white));
+                            } else {
+                                favoriteButton.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.icon_favorite_smaller));
+                            }
+
+                            Toast.makeText(holder.itemView.getContext(), (solutionCard.getIsFavorite() ? "Favorite: " : "Removed Favorite: ") + solutionCard.getName(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            ErrorOkDialog errorOkDialog = new ErrorOkDialog((Activity) holder.itemView.getContext(), "Error", "Please log in to make this your favorite solution.");
+                            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            errorOkDialog.show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+                        ErrorOkDialog errorOkDialog = new ErrorOkDialog((Activity) holder.itemView.getContext(), "Error", "Please log in to make this your favorite solution.");
+                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        errorOkDialog.show();
+                    }
+                });
             });
         }
     }
