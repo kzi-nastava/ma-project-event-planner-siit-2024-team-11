@@ -170,7 +170,7 @@ public class EventStatsAdapter extends RecyclerView.Adapter<EventStatsAdapter.Ev
                                         }})
                                     .show();
                         } else {
-                            ErrorOkDialog errorOkDialog = new ErrorOkDialog((Activity) holder.itemView.getContext(), "Error while downloading", "Error while downloading event details. Please try again later.");
+                            ErrorOkDialog errorOkDialog = new ErrorOkDialog((Activity) holder.itemView.getContext(), "Error while downloading", "Error while downloading event stats. Please try again later.");
                             errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                             errorOkDialog.show();
                         }
@@ -178,7 +178,7 @@ public class EventStatsAdapter extends RecyclerView.Adapter<EventStatsAdapter.Ev
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        ErrorOkDialog errorOkDialog = new ErrorOkDialog((Activity) holder.itemView.getContext(), "Error while downloading", "Error while downloading event details. Please try again later.");
+                        ErrorOkDialog errorOkDialog = new ErrorOkDialog((Activity) holder.itemView.getContext(), "Error while downloading", "Error while downloading event stats. Please try again later.");
                         errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                         errorOkDialog.show();
                     }
