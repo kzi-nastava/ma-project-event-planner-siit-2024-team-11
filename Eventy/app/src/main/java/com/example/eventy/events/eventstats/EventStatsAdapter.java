@@ -28,6 +28,7 @@ import com.example.eventy.home.events.event_card.EventCardFragment;
 import com.example.eventy.utils.ClientUtils;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -181,18 +182,25 @@ public class EventStatsAdapter extends RecyclerView.Adapter<EventStatsAdapter.Ev
             BarDataSet dataSet = new BarDataSet(entries, "Grade Distribution");
             dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
             BarData barData = new BarData(dataSet);
+            Description description = new Description();
+            description.setText("Grade Distribution");
+            barChart.setDescription(description);
             barChart.setData(barData);
             barChart.invalidate();
         }
 
         public void setupPieChart(float num, float max, String title, PieChart pieChart) {
             List<PieEntry> entries = new ArrayList<>();
-            entries.add(new PieEntry(num, title));
+            entries.add(new PieEntry(num));
+            entries.add(new PieEntry(max - num));
 
             PieDataSet dataSet = new PieDataSet(entries, title);
             dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
             PieData pieData = new PieData(dataSet);
             pieChart.setData(pieData);
+            Description description = new Description();
+            description.setText(title);
+            pieChart.setDescription(description);
             pieChart.invalidate();
         }
     }
