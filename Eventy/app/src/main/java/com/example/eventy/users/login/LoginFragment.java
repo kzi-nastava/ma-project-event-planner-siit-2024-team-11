@@ -38,10 +38,7 @@ public class LoginFragment extends Fragment {
 
         binding.registerHereButton.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(v);
-
-            // Problem with back button so we clear the backstack
-            navController.popBackStack();
-
+            navController.popBackStack(); // Problem with back button so we clear the backstack
             navController.navigate(R.id.nav_register);
         });
 
@@ -60,11 +57,12 @@ public class LoginFragment extends Fragment {
 
                         LoggedInHelperService.manageNavigationItems();
 
+                        Bundle bundle = new Bundle();
+                        bundle.putBoolean("reviewEvents", true);
+
                         NavController navController = Navigation.findNavController(v);
-
                         navController.popBackStack();
-
-                        navController.navigate(R.id.nav_home);
+                        navController.navigate(R.id.nav_home, bundle);
                     } else {
                         ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Email and password don't match!");
                         errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

@@ -14,8 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.eventy.R;
+import com.example.eventy.custom.CreateReviewDialog;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentHomeBinding;
 import com.example.eventy.events.model.EventFilters;
@@ -28,7 +31,10 @@ import com.example.eventy.home.solutions.featured_solutions.FeaturedSolutionsFra
 import com.example.eventy.home.solutions.featured_solutions.FeaturedSolutionsTitleFragment;
 
 import com.example.eventy.home.solutions.filters.SolutionFilterBottomSheetFragment;
+import com.example.eventy.reviews.model.CreateReview;
+import com.example.eventy.reviews.model.UnreviewedEvent;
 import com.example.eventy.solutions.model.SolutionsFilter;
+import com.example.eventy.users.services.LoggedInHelperService;
 import com.example.eventy.utils.ClientUtils;
 
 import java.time.format.DateTimeFormatter;
@@ -44,6 +50,7 @@ import retrofit2.Response;
 public class HomeFragment extends Fragment implements EventFilterBottomSheetFragment.FilterListener,
                                                       SolutionFilterBottomSheetFragment.FilterListener {
     private FragmentHomeBinding binding;
+    private ViewGroup container;
 
     private EventsFragment eventsFragment;
     private EventFilters eventFilters;
@@ -63,6 +70,12 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
     private boolean areCategoriesSolutionsLoading = false;
     private boolean areCompaniesSolutionsLoading = false;
 
+    private UnreviewedEvent[] unreviewedEvents;
+    private int currentIndex = 0;
+    private Long loggedInUserId;
+
+    //////////////////////////////////////////////////
+
     public HomeFragment() {
         eventFilters = new EventFilters("", "-", new ArrayList<String>(), null, null, null);
         solutionsFilter = new SolutionsFilter("", "Any", new ArrayList<String>(), new ArrayList<String>(), "-", null, null,  null, null, true);
@@ -71,11 +84,17 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        this.container = container;
 
         loadInitialView();
 
         setupTabEvents();
         setupTabSolutions();
+
+        boolean reviewEvents = getArguments() != null && getArguments().getBoolean("reviewEvents", false);
+        if (reviewEvents) {
+            reviewEventsMethod();
+        }
 
         return root;
     }
@@ -493,6 +512,70 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+    }
+
+    private void reviewEventsMethod() {
+        loggedInUserId = LoggedInHelperService.getId();
+        if (loggedInUserId == null) {
+            return;
+        }
+
+        Call<UnreviewedEvent[]> call = ClientUtils.eventService.getUnreviewedAcceptedEventsByUserId(loggedInUserId);
+        call.enqueue(new Callback<UnreviewedEvent[]>() {
+            @Override
+            public void onResponse(Call<UnreviewedEvent[]> call, Response<UnreviewedEvent[]> response) {
+                if (response.isSuccessful() && response.body() != null && getActivity() != null) {
+                    unreviewedEvents = response.body();
+
+                    if (unreviewedEvents.length > 0) {
+                        showNextDialog();
+                    } else {
+                        reloadActivity();
+                    }
+
+                } else {
+                    showErrorDialog("Error while loading unreviewed events!");
+                    showErrorDialog(response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UnreviewedEvent[]> call, Throwable t) {
+                showErrorDialog("Error while loading unreviewed events!");
+                showErrorDialog(t.getMessage());
+            }
+        });
+    }
+
+    private void showNextDialog() {
+        if (currentIndex >= unreviewedEvents.length) {
+            reloadActivity();
+            return;
+        }
+
+        UnreviewedEvent unreviewedEvent = unreviewedEvents[currentIndex];
+        CreateReview createReview = new CreateReview(
+            loggedInUserId,
+            null,
+            unreviewedEvent.getId(),
+            null,
+            null
+        );
+
+        CreateReviewDialog createReviewDialog = new CreateReviewDialog(getActivity(), "\"" + unreviewedEvent.getName() + "\"", "Please rate the event you attended!", createReview);
+        createReviewDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        createReviewDialog.setCanceledOnTouchOutside(false);
+        createReviewDialog.setOnDismissListener(dialog -> {
+            currentIndex++;
+            showNextDialog();
+        });
+        createReviewDialog.show();
+    }
+
+    private void reloadActivity() {
+        NavController navController = Navigation.findNavController(requireView());
+        navController.popBackStack();
+        navController.navigate(R.id.nav_home);
     }
 
     private void showErrorDialog(String message) {

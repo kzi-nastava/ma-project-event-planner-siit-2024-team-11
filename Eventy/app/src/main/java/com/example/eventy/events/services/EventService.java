@@ -5,6 +5,7 @@ import com.example.eventy.events.model.EventCard;
 import com.example.eventy.events.model.EventStats;
 import com.example.eventy.events.model.OrganizeEvent;
 import com.example.eventy.events.model.Event;
+import com.example.eventy.reviews.model.UnreviewedEvent;
 import com.example.eventy.users.model.EventDetails;
 
 import java.time.LocalDateTime;
@@ -70,4 +71,7 @@ public interface EventService {
 
     @GET(prefix + "/pdfs/stats/{eventId}")
     Call<ResponseBody> triggerEventStatsPDFDownload(@Path("eventId") Long eventId);
+
+    @GET(prefix + "/unreviewed/{userId}")
+    Call<UnreviewedEvent[]> getUnreviewedAcceptedEventsByUserId(@Path("userId") Long userId);
 }
