@@ -50,7 +50,6 @@ import retrofit2.Response;
 public class HomeFragment extends Fragment implements EventFilterBottomSheetFragment.FilterListener,
                                                       SolutionFilterBottomSheetFragment.FilterListener {
     private FragmentHomeBinding binding;
-    private ViewGroup container;
 
     private EventsFragment eventsFragment;
     private EventFilters eventFilters;
@@ -84,7 +83,6 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        this.container = container;
 
         loadInitialView();
 

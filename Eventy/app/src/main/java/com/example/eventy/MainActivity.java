@@ -82,7 +82,8 @@ public class MainActivity extends AppCompatActivity {
                 R.id.nav_event_organization, R.id.nav_own_services_test, R.id.nav_event_types, R.id.nav_add_event_type,
                 R.id.nav_edit_event_type, R.id.nav_event_type_details, R.id.nav_other_user_profile_page,
                 R.id.nav_edit_user, R.id.nav_my_profile, R.id.service_reservation, R.id.fast_registration,
-                R.id.upgrade_profile, R.id.nav_category_home, R.id.nav_event_details, R.id.nav_solution_details, R.id.nav_event_stats)
+                R.id.upgrade_profile, R.id.nav_category_home, R.id.nav_event_details, R.id.nav_solution_details,
+                R.id.nav_event_stats, R.id.nav_notifications)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
@@ -166,16 +167,19 @@ public class MainActivity extends AppCompatActivity {
         if (data != null && "event-details".equals(data.getHost())) {
             String eventId = data.getQueryParameter("id");
 
-            Bundle bundle = new Bundle();
-            bundle.putString("eventId", eventId);
+            if (eventId != null) {
+                Bundle bundle = new Bundle();
+                bundle.putLong("EventID", Long.parseLong(eventId));
 
-            navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            navController.popBackStack();
-            // DODATI OVDE DA NAVIGIRA U EVENT DETAILS I PROSLIJEDITI eventId U FRAGMENT preko Bundle
-            // api/events/{eventId} --> za sad nav_home jer ne postoji event view? (nmg naci?)
-            navController.navigate(R.id.nav_home);
+                navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+                navController.popBackStack();
+                navController.navigate(R.id.nav_event_details, bundle);
+            } else {
+                navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+                navController.popBackStack();
+                navController.navigate(R.id.nav_home);
+            }
         }
-
     }
 
     @Override
@@ -199,26 +203,24 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.action_profile) {
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-
             navController.popBackStack();
-
             navController.navigate(R.id.nav_my_profile);
             return true;
+
         } else if (id == R.id.action_messages) {
-
             return true;
+
         } else if (id == R.id.action_notifications) {
-
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.nav_notifications);
             return true;
+
         } else if(id == R.id.action_logout) {
             this.logout();
-
             LoggedInHelperService.manageNavigationItems();
 
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-
             navController.popBackStack();
-
             navController.navigate(R.id.nav_home);
             return true;
         }
