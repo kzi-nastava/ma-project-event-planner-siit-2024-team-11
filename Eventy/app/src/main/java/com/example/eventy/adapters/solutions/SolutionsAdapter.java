@@ -73,9 +73,9 @@ public class SolutionsAdapter extends RecyclerView.Adapter<SolutionsAdapter.Solu
             if (solutionCard.getType().equals(SolutionType.PRODUCT)) {
                 holder.description.setText(solutionCard.getDescription());
             } else {
-                int d1 = solutionCard.getMinReservationTime();
-                int d2 = solutionCard.getMaxReservationTime();
-                String durationText = "Duration: " + ((d1 == d2) ? d1 : d1 + "-" + d2) + "min";
+                Integer d1 = solutionCard.getMinReservationTime();
+                Integer d2 = solutionCard.getMaxReservationTime();
+                String durationText = "Duration: " + ((d2 == null) ? d1 : d1 + "-" + d2) + "min";
                 holder.duration.setText(durationText);
 
                 String reservationType = solutionCard.getReservationType().equals(ReservationConfirmationType.MANUAL) ? "manual" : "auto";
