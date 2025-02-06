@@ -2,6 +2,7 @@ package com.example.eventy.solutions.services;
 
 import com.example.eventy.common.PagedResponse;
 import com.example.eventy.solutions.model.SolutionCard;
+import com.example.eventy.solutions.model.SolutionDetails;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -47,4 +48,7 @@ public interface SolutionService {
 
     @PUT(prefix + "/favorite/{solutionId}")
     Call<Boolean> toggleFavorite(@Path("solutionId") Long solutionId);
+
+    @GET(prefix + "/{solutionId}")
+    Call<SolutionDetails> getSolutionDetails(@Path("solutionId") Long solutionId);
 }
