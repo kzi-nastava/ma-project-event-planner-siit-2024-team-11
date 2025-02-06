@@ -2,7 +2,6 @@ package com.example.eventy.users.services;
 
 import com.example.eventy.common.PagedResponse;
 import com.example.eventy.events.model.EventCard;
-import com.example.eventy.model.solution.Solution;
 import com.example.eventy.solutions.model.SolutionCard;
 import com.example.eventy.users.model.CalendarOccupancy;
 import com.example.eventy.users.model.UpdateUser;
