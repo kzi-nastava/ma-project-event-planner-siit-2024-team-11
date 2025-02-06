@@ -85,7 +85,7 @@ public class ReservationSelectEventFragment extends Fragment implements EventFil
         if (isServiceLoading) return;
         isServiceLoading = true;
 
-        Call<SolutionCard> call = ClientUtils.serviceService.getService(6L);
+        Call<SolutionCard> call = ClientUtils.serviceService.getServiceCard(6L);
         call.enqueue(new Callback<SolutionCard>() {
             @Override
             public void onResponse(Call<SolutionCard> call, Response<SolutionCard> response) {
