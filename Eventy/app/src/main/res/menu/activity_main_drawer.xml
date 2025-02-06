@@ -48,5 +48,13 @@
             android:id="@+id/nav_event_stats"
             android:icon="@drawable/icon_bar_chart"
             android:title="Event Stats"/>
+        <item
+            android:id="@+id/nav_product_creation"
+            android:icon="@drawable/icon_add_product"
+            android:title="Add Product"/>
+        <item
+            android:id="@+id/nav_product_update"
+            android:icon="@drawable/icon_add_product"
+            android:title="Update Product"/>
     </group>
 </menu>

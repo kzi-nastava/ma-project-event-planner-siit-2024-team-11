@@ -129,4 +129,16 @@
         android:label="Solution Details"
         tools:layout="@layout/fragment_solution_details"/>
 
+    <fragment
+        android:id="@+id/nav_product_creation"
+        android:name="com.example.eventy.products.ProductCreationFragment"
+        android:label="Product Creation"
+        tools:layout="@layout/fragment_product_creation"/>
+
+    <fragment
+        android:id="@+id/nav_product_update"
+        android:name="com.example.eventy.products.ProductUpdateFragment"
+        android:label="Product Update"
+        tools:layout="@layout/fragment_product_update"/>
+
 </navigation>
