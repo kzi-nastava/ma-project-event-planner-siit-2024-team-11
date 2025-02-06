@@ -282,6 +282,13 @@ public class ServiceManipulationFragment extends Fragment {
             }
         }
 
+        List<String> imageUrls = service.getImageUrls();
+        if (imageUrls != null && !imageUrls.isEmpty()) {
+            images.clear();
+            images.addAll(imageUrls);
+            carouselAdapter.updateImages(images);
+        }
+
         binding.submitButton.setText("Confirm changes");
     }
 
