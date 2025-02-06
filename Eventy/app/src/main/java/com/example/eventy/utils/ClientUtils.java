@@ -8,6 +8,7 @@ import com.example.eventy.BuildConfig;
 import com.example.eventy.events.services.EventService;
 import com.example.eventy.events.services.EventTypeService;
 import com.example.eventy.events.services.LocationService;
+import com.example.eventy.interactions.service.NotificationService;
 import com.example.eventy.reviews.service.ReviewService;
 import com.example.eventy.services.services.ReservationService;
 import com.example.eventy.services.services.ServiceService;
@@ -53,6 +54,7 @@ public class ClientUtils {
         reservationService = retrofit.create(ReservationService.class);
         categoryService = retrofit.create(SolutionCategoryService.class);
         reviewService = retrofit.create(ReviewService.class);
+        notificationService = retrofit.create(NotificationService.class);
     }
 
     /*
@@ -91,4 +93,5 @@ public class ClientUtils {
     public static ReservationService reservationService;
     public static SolutionCategoryService categoryService;
     public static ReviewService reviewService;
+    public static NotificationService notificationService;
 }

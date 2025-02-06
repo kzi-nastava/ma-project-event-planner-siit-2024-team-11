@@ -1,32 +1,169 @@
 package com.example.eventy.interactions.notifications;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.eventy.R;
+import com.example.eventy.adapters.notifications.NotificationsAdapter;
+import com.example.eventy.common.PagedResponse;
+import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentNotificationsBinding;
+import com.example.eventy.interactions.model.Notification;
+import com.example.eventy.users.services.LoggedInHelperService;
+import com.example.eventy.utils.ClientUtils;
+
+import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class NotificationsFragment extends Fragment {
     private FragmentNotificationsBinding binding;
+    private NotificationsAdapter notificationsAdapter;
+    private int page = 0;
+    private int pageSize = 5;
+    private int totalPages = 99;
+    private ArrayList<Notification> paginatedNotifications;
+    private boolean isLoading = false;
+    private Long loggedInUserId;
 
     public NotificationsFragment() {}
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentNotificationsBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-
-
-        return root;
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        this.paginatedNotifications = new ArrayList<>();
+
+        loggedInUserId = LoggedInHelperService.getId();
+        if (loggedInUserId == null) {
+            return;
+        }
+
+        setupRecyclerView();
+        setupPaginationControls();
+        fetchNotifications(page, pageSize);
+    }
+
+    private void setupRecyclerView() {
+        notificationsAdapter = new NotificationsAdapter(requireContext(), paginatedNotifications);
+        binding.notificationsRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.notificationsRecycler.setAdapter(notificationsAdapter);
+    }
+
+    private void setupPaginationControls() {
+        if (!isAdded()) {
+            return;
+        }
+
+        binding.btnPrevious.setOnClickListener(v -> {
+            if (page > 0) {
+                page--;
+                fetchNotifications(page, pageSize);
+            }
+        });
+
+        binding.btnNext.setOnClickListener(v -> {
+            if (page < totalPages - 1) {
+                page++;
+                fetchNotifications(page, pageSize);
+            }
+        });
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                requireContext(),
+                R.array.page_size_notifications_options,
+                R.layout.custom_spinner_item
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.spinnerPageSize.setAdapter(adapter);
+        binding.spinnerPageSize.setSelection(0);
+
+        binding.spinnerPageSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                pageSize = Integer.parseInt(parent.getItemAtPosition(position).toString());
+                page = 0;
+                fetchNotifications(page, pageSize);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // do nothing
+            }
+        });
+    }
+
+    private void fetchNotifications(int page, int pageSize) {
+        if (!isAdded()) {
+            return;
+        }
+
+        if (isLoading) return;
+        isLoading = true;
+
+        Call<PagedResponse<Notification>> call = ClientUtils.notificationService.getNotificationsByUserId(loggedInUserId, page, pageSize);
+        call.enqueue(new Callback<PagedResponse<Notification>>() {
+            @Override
+            public void onResponse(Call<PagedResponse<Notification>> call, Response<PagedResponse<Notification>> response) {
+                if (response.isSuccessful() && response.body() != null && getActivity() != null) {
+                    PagedResponse<Notification> pagedResponse = response.body();
+                    paginatedNotifications.clear();
+                    paginatedNotifications.addAll(pagedResponse.getContent());
+                    notificationsAdapter.notifyDataSetChanged();
+
+                    totalPages = pagedResponse.getTotalPages();
+                    updatePaginationControls();
+
+                } else {
+                    showErrorDialog("Error while loading events!");
+                    showErrorDialog(response.message());
+                }
+                isLoading = false;
+            }
+
+            @Override
+            public void onFailure(Call<PagedResponse<Notification>> call, Throwable t) {
+                showErrorDialog("Error while loading events!");
+                showErrorDialog(t.getMessage());
+                isLoading = false;
+            }
+        });
+    }
+
+    private void updatePaginationControls() {
+        if (!isAdded()) {
+            return;
+        }
+
+        binding.btnPrevious.setEnabled(page > 0);
+        binding.btnNext.setEnabled(page < totalPages - 1);
+
+        binding.tvPageInfo.setText(String.format("Page %d of %d", page + 1, totalPages));
+    }
+
+    private void showErrorDialog(String message) {
+        if (isAdded() && getActivity() != null) {
+            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", message);
+            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            errorOkDialog.show();
+        }
     }
 
     @Override

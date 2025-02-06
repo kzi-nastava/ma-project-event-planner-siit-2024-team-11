@@ -58,19 +58,16 @@ public class MainActivity extends AppCompatActivity {
 
         if(jwtToken != null) {
             DecodedJWT decodedJWT = JWT.decode(jwtToken);
-
             LocalDateTime tokenExpires = decodedJWT.getExpiresAt().toInstant()
                     .atZone(ZoneId.systemDefault())
                     .toLocalDateTime();
+
             if(tokenExpires.isBefore(LocalDateTime.now())) {
                 this.logout();
-
                 LoggedInHelperService.manageNavigationItems();
 
                 NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-
                 navController.popBackStack();
-
                 navController.navigate(R.id.nav_home);
             }
         }
@@ -96,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
                 getSupportActionBar().setTitle("");
             }
         });
-
         LoggedInHelperService.manageNavigationItems();
 
         Intent intent = getIntent();
