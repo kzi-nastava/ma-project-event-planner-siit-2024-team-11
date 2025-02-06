@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -21,7 +23,9 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.eventy.common.EncryptionUtil;
 import com.example.eventy.databinding.ActivityMainBinding;
 import com.example.eventy.users.model.AuthResponse;
+import com.example.eventy.users.model.UserNotificationInfo;
 import com.example.eventy.users.services.LoggedInHelperService;
+import com.example.eventy.users.view_model.UserNotificationInfoViewModel;
 import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
@@ -34,9 +38,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
-
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
+    private MenuItem notificationItem;
+    private Boolean openedNotifications = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,37 +57,48 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = binding.navView;
 
         LoggedInHelperService.init(getApplicationContext(), binding.navView, this);
-
         String jwtToken = getApplicationContext().getSharedPreferences("EventyPreferences", Context.MODE_PRIVATE)
                 .getString("JWT_TOKEN", null);
 
-        if(jwtToken != null) {
+        if (jwtToken != null) {
             DecodedJWT decodedJWT = JWT.decode(jwtToken);
             LocalDateTime tokenExpires = decodedJWT.getExpiresAt().toInstant()
                     .atZone(ZoneId.systemDefault())
                     .toLocalDateTime();
 
-            if(tokenExpires.isBefore(LocalDateTime.now())) {
+            if (tokenExpires.isBefore(LocalDateTime.now())) {
                 this.logout();
                 LoggedInHelperService.manageNavigationItems();
 
                 NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
                 navController.popBackStack();
                 navController.navigate(R.id.nav_home);
+                openedNotifications = false;
+            } else {
+                UserNotificationInfoViewModel userNotificationInfoViewModel = new ViewModelProvider(this).get(UserNotificationInfoViewModel.class);
+                userNotificationInfoViewModel.setLoggedInUserId(LoggedInHelperService.getId());
             }
         }
+
+        UserNotificationInfoViewModel userViewModel = new ViewModelProvider(this).get(UserNotificationInfoViewModel.class);
+        userViewModel.getNotificationInfo().observe(this, userNotificationInfo -> {
+            if (userNotificationInfo != null) {
+                invalidateOptionsMenu();
+            }
+        });
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_login, R.id.nav_register, R.id.nav_add_service, R.id.nav_edit_service,
-                R.id.nav_event_organization, R.id.nav_own_services_test, R.id.nav_event_types, R.id.nav_add_event_type,
-                R.id.nav_edit_event_type, R.id.nav_event_type_details, R.id.nav_other_user_profile_page,
-                R.id.nav_edit_user, R.id.nav_my_profile, R.id.service_reservation, R.id.fast_registration,
-                R.id.upgrade_profile, R.id.nav_category_home, R.id.nav_event_details, R.id.nav_solution_details,
-                R.id.nav_event_stats, R.id.nav_notifications)
-                .setOpenableLayout(drawer)
-                .build();
+            R.id.nav_home, R.id.nav_login, R.id.nav_register, R.id.nav_add_service, R.id.nav_edit_service,
+            R.id.nav_event_organization, R.id.nav_own_services_test, R.id.nav_event_types, R.id.nav_add_event_type,
+            R.id.nav_edit_event_type, R.id.nav_event_type_details, R.id.nav_other_user_profile_page,
+            R.id.nav_edit_user, R.id.nav_my_profile, R.id.service_reservation, R.id.fast_registration,
+            R.id.upgrade_profile, R.id.nav_category_home, R.id.nav_event_details, R.id.nav_solution_details,
+            R.id.nav_event_stats, R.id.nav_notifications)
+            .setOpenableLayout(drawer)
+            .build();
+
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
@@ -183,12 +199,31 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
 
-//        String role = LoggedInHelperService.getRole();
-//
-//        menu.findItem(R.id.action_profile).setVisible(role != null);
-//        menu.findItem(R.id.action_messages).setVisible(role != null);
-//        menu.findItem(R.id.action_notifications).setVisible(role != null);
-//        menu.findItem(R.id.action_logout).setVisible(role != null);
+        String role = LoggedInHelperService.getRole();
+
+        menu.findItem(R.id.action_profile).setVisible(role != null);
+        menu.findItem(R.id.action_messages).setVisible(role != null);
+        notificationItem = menu.findItem(R.id.action_notifications);
+        menu.findItem(R.id.action_notifications).setVisible(role != null);
+        menu.findItem(R.id.action_logout).setVisible(role != null);
+
+        return true;
+    }
+
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        UserNotificationInfoViewModel viewModel = new ViewModelProvider(MainActivity.this).get(UserNotificationInfoViewModel.class);
+        UserNotificationInfo currentInfo = viewModel.getNotificationInfo().getValue();
+
+        if (notificationItem != null && currentInfo != null) {
+            boolean hasNewNotifications = currentInfo.getHasNewNotifications();
+            boolean isMuted = currentInfo.getAreNotificationsMuted();
+
+            notificationItem.setIcon(hasNewNotifications && !isMuted
+                    ? R.drawable.icon_notifications_red_dot
+                    : R.drawable.icon_notifications);
+        }
 
         return true;
     }
@@ -198,15 +233,24 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_profile) {
+            if (openedNotifications) {
+                updateNotificationsInfo();
+                openedNotifications = false;
+            }
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
             navController.popBackStack();
             navController.navigate(R.id.nav_my_profile);
             return true;
 
         } else if (id == R.id.action_messages) {
+            if (openedNotifications) {
+                updateNotificationsInfo();
+                openedNotifications = false;
+            }
             return true;
 
         } else if (id == R.id.action_notifications) {
+            openedNotifications = true;
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.nav_notifications);
             return true;
@@ -236,5 +280,38 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("JWT_TOKEN");
         editor.apply();
+    }
+
+    private void updateNotificationsInfo() {
+        Long loggedInUserId = LoggedInHelperService.getId();
+
+        if (loggedInUserId != null) {
+            Call<LocalDateTime> call = ClientUtils.userService.updateLastReadNotifications(loggedInUserId);
+            call.enqueue(new Callback<LocalDateTime>() {
+                @Override
+                public void onResponse(Call<LocalDateTime> call, Response<LocalDateTime> response) {
+                    if (response.isSuccessful() && response.body() != null && this != null) {
+                        LocalDateTime lastRead = response.body();
+
+                        UserNotificationInfoViewModel viewModel = new ViewModelProvider(MainActivity.this).get(UserNotificationInfoViewModel.class);
+                        UserNotificationInfo currentInfo = viewModel.getNotificationInfo().getValue();
+                        if (currentInfo != null) {
+                            UserNotificationInfo updatedInfo = new UserNotificationInfo(
+                                    currentInfo.getUserId(),
+                                    currentInfo.getAreNotificationsMuted(),
+                                    lastRead,  // update lastReadNotifications
+                                    false      // set hasNewNotifications to false
+                            );
+                            viewModel.setNotificationInfo(updatedInfo); // update back to MainActivity
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<LocalDateTime> call, Throwable t) {
+                    Log.wtf("TAMARA ERROR: NotificationInfo", "Can't load UsedNotificationInfo");
+                }
+            });
+        }
     }
 }
