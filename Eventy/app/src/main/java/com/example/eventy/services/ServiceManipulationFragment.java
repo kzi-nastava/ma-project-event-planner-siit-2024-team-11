@@ -29,9 +29,11 @@ import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentServiceManipulationBinding;
 import com.example.eventy.events.model.EventType;
 import com.example.eventy.events.model.EventTypeCard;
+import com.example.eventy.model.enums.Status;
 import com.example.eventy.model.solution.Service;
 import com.example.eventy.services.model.CreateService;
 import com.example.eventy.services.model.UpdateService;
+import com.example.eventy.solutions.model.Category;
 import com.example.eventy.solutions.model.CategoryWithID;
 import com.example.eventy.users.register.CarouselAdapter;
 import com.example.eventy.users.services.LoggedInHelperService;
@@ -147,12 +149,24 @@ public class ServiceManipulationFragment extends Fragment {
             public void onResponse(Call<List<CategoryWithID>> call, Response<List<CategoryWithID>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     MaterialAutoCompleteTextView categoryAutoCompleteTextView = binding.categoryAutoCompleteTextView;
-                    ArrayAdapter<CategoryWithID> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, response.body());
+                    CategoryWithID stubNewCategory = new CategoryWithID(-1337L, "New Category", "New Category", Status.ACCEPTED);
+                    List<CategoryWithID> allSolutionCategories = new ArrayList<>();
+                    allSolutionCategories.add(stubNewCategory);
+                    allSolutionCategories.addAll(response.body());
+                    ArrayAdapter<CategoryWithID> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, allSolutionCategories);
                     categoryAutoCompleteTextView.setAdapter(adapter);
 
                     categoryAutoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
                         CategoryWithID selectedCard = (CategoryWithID) parent.getItemAtPosition(position);
                         selectedCategoryId = selectedCard.getId();
+
+                        if (selectedCategoryId == -1337L) {
+                            binding.serviceNewCategoryNameInputLayout.setVisibility(View.VISIBLE);
+                            binding.serviceNewCategoryDescriptionInputLayout.setVisibility(View.VISIBLE);
+                        } else {
+                            binding.serviceNewCategoryNameInputLayout.setVisibility(View.GONE);
+                            binding.serviceNewCategoryDescriptionInputLayout.setVisibility(View.GONE);
+                        }
                     });
 
                     categoryAutoCompleteTextView.setOnClickListener(v -> {
@@ -294,61 +308,139 @@ public class ServiceManipulationFragment extends Fragment {
 
     private void submit() {
         if (service == null) {
-            CreateService newService = new CreateService();
+            if (selectedCategoryId == -1337L) {
+                Category newCategory = new Category(binding.serviceNewCategoryNameInput.getText().toString(), binding.serviceNewCategoryDescriptionInput.getText().toString(), Status.PENDING);
+                Call<CategoryWithID> call = ClientUtils.categoryService.createCategory(newCategory);
+                call.enqueue(new Callback<CategoryWithID>() {
+                    @Override
+                    public void onResponse(Call<CategoryWithID> call, Response<CategoryWithID> response) {
+                        if (response.isSuccessful()) {
+                            CreateService newService = new CreateService();
 
-            newService.setName(binding.serviceNameInput.getText().toString());
-            newService.setDescription(binding.serviceDescriptionInput.getText().toString());
-            newService.setSpecifics(binding.serviceSpecificsInput.getText().toString());
-            newService.setCategoryId(selectedCategoryId);
-            newService.setProviderId(LoggedInHelperService.getId());
-            newService.setAutomaticReservationAcceptance(binding.checkbox.isChecked());
-            newService.setPrice(Double.parseDouble(binding.servicePriceInput.getText().toString()));
-            newService.setDiscount(Double.parseDouble(binding.serviceDiscountInput.getText().toString()));
-            newService.setReservationDeadline(Integer.parseInt(binding.serviceDaysNoticeReservationInput.getText().toString()));
-            newService.setCancellationDeadline(Integer.parseInt(binding.serviceDaysNoticeCancellationInput.getText().toString()));
-            if (binding.fixedDurationRadioButton.isChecked()) {
-                newService.setMinReservationTime(Integer.parseInt(binding.fixedDurationInput.getText().toString()));
-                newService.setMaxReservationTime(null);
-            } else {
-                newService.setMinReservationTime(Integer.parseInt(binding.minimumDurationInput.getText().toString()));
-                newService.setMaxReservationTime(Integer.parseInt(binding.maximumDurationInput.getText().toString()));
-            }
+                            newService.setName(binding.serviceNameInput.getText().toString());
+                            newService.setDescription(binding.serviceDescriptionInput.getText().toString());
+                            newService.setSpecifics(binding.serviceSpecificsInput.getText().toString());
+                            newService.setCategoryId(response.body().getId());
+                            newService.setProviderId(LoggedInHelperService.getId());
+                            newService.setAutomaticReservationAcceptance(binding.checkbox.isChecked());
+                            newService.setPrice(Double.parseDouble(binding.servicePriceInput.getText().toString()));
+                            newService.setDiscount(Double.parseDouble(binding.serviceDiscountInput.getText().toString()));
+                            newService.setReservationDeadline(Integer.parseInt(binding.serviceDaysNoticeReservationInput.getText().toString()));
+                            newService.setCancellationDeadline(Integer.parseInt(binding.serviceDaysNoticeCancellationInput.getText().toString()));
+                            if (binding.fixedDurationRadioButton.isChecked()) {
+                                newService.setMinReservationTime(Integer.parseInt(binding.fixedDurationInput.getText().toString()));
+                                newService.setMaxReservationTime(null);
+                            } else {
+                                newService.setMinReservationTime(Integer.parseInt(binding.minimumDurationInput.getText().toString()));
+                                newService.setMaxReservationTime(Integer.parseInt(binding.maximumDurationInput.getText().toString()));
+                            }
 
-            List<Long> selectedEventTypeIds = new ArrayList<>();
-            for (int i = 0; i < binding.chipGroup.getChildCount(); i++) {
-                Chip chip = (Chip) binding.chipGroup.getChildAt(i);
-                if (chip.isChecked()) {
-                    selectedEventTypeIds.add((Long) chip.getTag());
-                }
-            }
-            newService.setRelatedEventTypeIds(selectedEventTypeIds);
-            newService.setImageUrls(images);
+                            List<Long> selectedEventTypeIds = new ArrayList<>();
+                            for (int i = 0; i < binding.chipGroup.getChildCount(); i++) {
+                                Chip chip = (Chip) binding.chipGroup.getChildAt(i);
+                                if (chip.isChecked()) {
+                                    selectedEventTypeIds.add((Long) chip.getTag());
+                                }
+                            }
+                            newService.setRelatedEventTypeIds(selectedEventTypeIds);
+                            newService.setImageUrls(images);
 
-            Call<Service> call = ClientUtils.serviceService.createService(newService);
-            call.enqueue(new Callback<Service>() {
-                @Override
-                public void onResponse(Call<Service> call, Response<Service> response) {
-                    if (response.isSuccessful()) {
-                        Bundle args = new Bundle();
-                        args.putLong("solutionId", response.body().getId());
+                            Call<Service> call2 = ClientUtils.serviceService.createService(newService);
+                            call2.enqueue(new Callback<Service>() {
+                                @Override
+                                public void onResponse(Call<Service> call, Response<Service> response) {
+                                    if (response.isSuccessful()) {
+                                        Bundle args = new Bundle();
+                                        args.putLong("solutionId", response.body().getId());
 
-                        NavController navController = Navigation.findNavController(getView());
-                        navController.popBackStack();
-                        navController.navigate(R.id.nav_solution_details, args);
-                    } else {
-                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Could not create the service!");
+                                        NavController navController = Navigation.findNavController(getView());
+                                        navController.popBackStack();
+                                        navController.navigate(R.id.nav_solution_details, args);
+                                    } else {
+                                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Could not create the service!");
+                                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                        errorOkDialog.show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<Service> call, Throwable t) {
+                                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Network error!");
+                                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                    errorOkDialog.show();
+                                }
+                            });
+                        } else {
+                            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error creating a new category!");
+                            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            errorOkDialog.show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<CategoryWithID> call, Throwable t) {
+                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Network error!");
                         errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                         errorOkDialog.show();
                     }
+                });
+            } else {
+                CreateService newService = new CreateService();
+
+                newService.setName(binding.serviceNameInput.getText().toString());
+                newService.setDescription(binding.serviceDescriptionInput.getText().toString());
+                newService.setSpecifics(binding.serviceSpecificsInput.getText().toString());
+                newService.setCategoryId(selectedCategoryId);
+                newService.setProviderId(LoggedInHelperService.getId());
+                newService.setAutomaticReservationAcceptance(binding.checkbox.isChecked());
+                newService.setPrice(Double.parseDouble(binding.servicePriceInput.getText().toString()));
+                newService.setDiscount(Double.parseDouble(binding.serviceDiscountInput.getText().toString()));
+                newService.setReservationDeadline(Integer.parseInt(binding.serviceDaysNoticeReservationInput.getText().toString()));
+                newService.setCancellationDeadline(Integer.parseInt(binding.serviceDaysNoticeCancellationInput.getText().toString()));
+                if (binding.fixedDurationRadioButton.isChecked()) {
+                    newService.setMinReservationTime(Integer.parseInt(binding.fixedDurationInput.getText().toString()));
+                    newService.setMaxReservationTime(null);
+                } else {
+                    newService.setMinReservationTime(Integer.parseInt(binding.minimumDurationInput.getText().toString()));
+                    newService.setMaxReservationTime(Integer.parseInt(binding.maximumDurationInput.getText().toString()));
                 }
 
-                @Override
-                public void onFailure(Call<Service> call, Throwable t) {
-                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Network error!");
-                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    errorOkDialog.show();
+                List<Long> selectedEventTypeIds = new ArrayList<>();
+                for (int i = 0; i < binding.chipGroup.getChildCount(); i++) {
+                    Chip chip = (Chip) binding.chipGroup.getChildAt(i);
+                    if (chip.isChecked()) {
+                        selectedEventTypeIds.add((Long) chip.getTag());
+                    }
                 }
-            });
+                newService.setRelatedEventTypeIds(selectedEventTypeIds);
+                newService.setImageUrls(images);
+
+                Call<Service> call = ClientUtils.serviceService.createService(newService);
+                call.enqueue(new Callback<Service>() {
+                    @Override
+                    public void onResponse(Call<Service> call, Response<Service> response) {
+                        if (response.isSuccessful()) {
+                            Bundle args = new Bundle();
+                            args.putLong("solutionId", response.body().getId());
+
+                            NavController navController = Navigation.findNavController(getView());
+                            navController.popBackStack();
+                            navController.navigate(R.id.nav_solution_details, args);
+                        } else {
+                            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Could not create the service!");
+                            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            errorOkDialog.show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Service> call, Throwable t) {
+                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Network error!");
+                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        errorOkDialog.show();
+                    }
+                });
+            }
         } else {
             UpdateService updateService = new UpdateService();
 
