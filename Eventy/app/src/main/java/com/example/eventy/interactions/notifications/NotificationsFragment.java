@@ -3,6 +3,7 @@ package com.example.eventy.interactions.notifications;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.eventy.R;
@@ -20,9 +22,12 @@ import com.example.eventy.common.PagedResponse;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentNotificationsBinding;
 import com.example.eventy.interactions.model.Notification;
+import com.example.eventy.users.model.UserNotificationInfo;
 import com.example.eventy.users.services.LoggedInHelperService;
+import com.example.eventy.users.view_model.UserNotificationInfoViewModel;
 import com.example.eventy.utils.ClientUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -62,7 +67,10 @@ public class NotificationsFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        notificationsAdapter = new NotificationsAdapter(requireContext(), paginatedNotifications);
+        UserNotificationInfoViewModel viewModel = new ViewModelProvider(requireActivity()).get(UserNotificationInfoViewModel.class);
+        UserNotificationInfo currentInfo = viewModel.getNotificationInfo().getValue();
+
+        notificationsAdapter = new NotificationsAdapter(requireContext(), paginatedNotifications, currentInfo);
         binding.notificationsRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.notificationsRecycler.setAdapter(notificationsAdapter);
     }
@@ -167,8 +175,52 @@ public class NotificationsFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        updateNotificationsInfo();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        updateNotificationsInfo();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        updateNotificationsInfo();  // Trigger last-read update
+    }
+
+    private void updateNotificationsInfo() {
+        if (loggedInUserId != null) {
+            Call<LocalDateTime> call = ClientUtils.userService.updateLastReadNotifications(loggedInUserId);
+            call.enqueue(new Callback<LocalDateTime>() {
+                @Override
+                public void onResponse(Call<LocalDateTime> call, Response<LocalDateTime> response) {
+                    if (response.isSuccessful() && response.body() != null && getActivity() != null) {
+                        LocalDateTime lastRead = response.body();
+
+                        UserNotificationInfoViewModel viewModel = new ViewModelProvider(requireActivity()).get(UserNotificationInfoViewModel.class);
+                        UserNotificationInfo currentInfo = viewModel.getNotificationInfo().getValue();
+                        if (currentInfo != null) {
+                            UserNotificationInfo updatedInfo = new UserNotificationInfo(
+                                    currentInfo.getUserId(),
+                                    currentInfo.getAreNotificationsMuted(),
+                                    lastRead,  // update lastReadNotifications
+                                    false      // set hasNewNotifications to false
+                            );
+                            viewModel.setNotificationInfo(updatedInfo); // update back to MainActivity
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<LocalDateTime> call, Throwable t) {
+                    Log.wtf("TAMARA ERROR: NotificationInfo", "Can't load UsedNotificationInfo");
+                }
+            });
+        }
     }
 }

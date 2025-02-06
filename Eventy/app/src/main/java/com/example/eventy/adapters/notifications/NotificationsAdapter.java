@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import com.example.eventy.R;
 import com.example.eventy.common.PictureHelperService;
 import com.example.eventy.interactions.model.Notification;
 import com.example.eventy.interactions.model.NotificationType;
+import com.example.eventy.users.model.UserNotificationInfo;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -29,10 +31,12 @@ import java.util.ArrayList;
 public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdapter.NotificationViewHolder> {
     private ArrayList<Notification> notifications;
     private LayoutInflater layoutInflater;
+    private UserNotificationInfo userNotificationInfo;
 
-    public NotificationsAdapter(Context context, ArrayList<Notification> notifications) {
+    public NotificationsAdapter(Context context, ArrayList<Notification> notifications, UserNotificationInfo userNotificationInfo) {
         this.notifications = notifications;
         this.layoutInflater = LayoutInflater.from(context);
+        this.userNotificationInfo = userNotificationInfo;
     }
 
     @NonNull
@@ -49,6 +53,14 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         Notification notification = notifications.get(position);
 
         if (notification != null) {
+            if (userNotificationInfo != null) {
+                if (notification.getTimestamp().isAfter(userNotificationInfo.getLastReadNotifications()) && !userNotificationInfo.getAreNotificationsMuted()) {
+                    holder.redDot.setVisibility(View.VISIBLE);
+                } else {
+                    holder.redDot.setVisibility(View.GONE);
+                }
+            }
+
             if (notification.getType().equals(NotificationType.EVENT_CHANGE)) {
                 holder.leftSide.setBackgroundResource(R.drawable.notification_type_eventy_blue);
                 holder.notificationCard.setOnClickListener(v -> {
@@ -214,6 +226,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         AppCompatButton star1, star2, star3, star4, star5;
         ConstraintLayout leftSide;
         ImageView graderImage;
+        FrameLayout redDot;
 
         public NotificationViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -230,6 +243,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
             dateText = itemView.findViewById(R.id.date_text);
             leftSide = itemView.findViewById(R.id.left_side);
             graderImage = itemView.findViewById(R.id.grader_picture);
+            redDot = itemView.findViewById(R.id.red_dot);
         }
     }
 }
