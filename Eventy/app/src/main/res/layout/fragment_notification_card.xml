@@ -73,7 +73,7 @@
                         <FrameLayout
                             android:id="@+id/red_dot"
                             android:layout_width="20dp"
-                            android:visibility="visible"
+                            android:visibility="gone"
                             android:layout_height="match_parent">
 
                             <FrameLayout

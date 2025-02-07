@@ -1,5 +1,6 @@
 package com.example.eventy;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,6 +25,7 @@ import com.example.eventy.common.EncryptionUtil;
 import com.example.eventy.databinding.ActivityMainBinding;
 import com.example.eventy.interactions.model.Notification;
 import com.example.eventy.interactions.notifications.NotificationsFragment;
+import com.example.eventy.interactions.service.NotificationHelper;
 import com.example.eventy.users.model.AuthResponse;
 import com.example.eventy.users.model.UserNotificationInfo;
 import com.example.eventy.users.services.LoggedInHelperService;
@@ -57,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private MenuItem notificationItem;
     private Boolean openedNotifications = false;
-    private static final String TAG = "WebSocket";
     private StompClient mStompClient;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     NotificationsFragment notificationsFragment;
@@ -74,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(binding.appBarMain.toolbar);
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
+
+        NotificationHelper.createNotificationChannel(this);
 
         LoggedInHelperService.init(getApplicationContext(), binding.navView, this);
         String jwtToken = getApplicationContext().getSharedPreferences("EventyPreferences", Context.MODE_PRIVATE)
@@ -134,6 +137,18 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         Uri data = intent.getData();
+
+        if (intent.getBooleanExtra("open_notifications", false)) {
+            Long userId = LoggedInHelperService.getId();
+
+            if (userId != null) {
+                UserNotificationInfoViewModel userNotificationInfoViewModel = new ViewModelProvider(this).get(UserNotificationInfoViewModel.class);
+                userNotificationInfoViewModel.setLoggedInUserId(LoggedInHelperService.getId());
+
+                notificationsFragment = new NotificationsFragment();
+                FragmentTransition.to(notificationsFragment, this, true, R.id.nav_host_fragment_content_main);
+            }
+        }
 
         if (data != null && "confirm-registration".equals(data.getHost())) {
             String id = data.getQueryParameter("id");
@@ -360,7 +375,7 @@ public class MainActivity extends AppCompatActivity {
         List<StompHeader> headers = new ArrayList<>();
         headers.add(new StompHeader("Authorization", TOKEN));
 
-        mStompClient.withClientHeartbeat(1000).withServerHeartbeat(1000);
+        mStompClient.withClientHeartbeat(2000).withServerHeartbeat(2000);
         resetSubscriptions();
 
         // Manage connection lifecycle
@@ -431,15 +446,31 @@ public class MainActivity extends AppCompatActivity {
                         currentInfo.getLastReadNotifications(),
                         true
                 );
-                viewModel.setNotificationInfo(updatedInfo); // update back to MainActivity
+                viewModel.setNotificationInfo(updatedInfo);
             }
 
-            Log.d("NotificationHandler", "Handling notification with title: " + notification.getTitle());
-            Log.d("NotificationHandler", "Message: " + notification.getMessage());
+            if (!isAppInForeground()) {
+                NotificationHelper.showNotification(this, notification.getTitle(), notification.getMessage());
+            }
 
         } catch (Exception e) {
             Log.e("NotificationHandler", "Error deserializing message", e);
         }
+    }
+
+    private boolean isAppInForeground() {
+        ActivityManager activityManager = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> processes = activityManager.getRunningAppProcesses();
+
+        if (processes != null) {
+            for (ActivityManager.RunningAppProcessInfo processInfo : processes) {
+                if (processInfo.processName.equals(this.getPackageName()) &&
+                        processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
