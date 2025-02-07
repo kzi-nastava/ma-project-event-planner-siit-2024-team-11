@@ -87,6 +87,12 @@ public class SolutionDetailsFragment extends Fragment {
             handleDelete();
         });
 
+        if(LoggedInHelperService.getRole() != null && LoggedInHelperService.getRole().equals("ROLE_Organizer"))
+        {
+            binding.chatButton.setVisibility(View.VISIBLE);
+            binding.purchaseButton.setVisibility(View.VISIBLE);
+        }
+
         if (id == -1L) {
             ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Solution could not be found.");
             errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -175,7 +181,13 @@ public class SolutionDetailsFragment extends Fragment {
             navController.navigate(R.id.nav_other_user_profile_page, args);
         });
 
-        binding.purchaseButton.setText("Buy product");
+        if(solution.getAvailable()) {
+            binding.purchaseButton.setText("Buy product");
+        } else {
+            binding.purchaseButton.setText("Product unavailable");
+            binding.purchaseButton.setBackgroundTintList(ContextCompat.getColorStateList(getContext(), R.color.button_color));
+            binding.purchaseButton.setEnabled(false);
+        }
 
         if (solution.getType().equals(SolutionType.SERVICE)) {
             binding.specifics.setText(solution.getSpecifics());
@@ -205,7 +217,13 @@ public class SolutionDetailsFragment extends Fragment {
             binding.acceptanceType.setText(solution.getReservationType().equals(ReservationConfirmationType.AUTOMATIC) ? "Your reservation will be immediately accepted." : "Your reservation will be reviewed by the provider before being accepted or rejected.");
             binding.acceptanceType.setVisibility(View.VISIBLE);
 
-            binding.purchaseButton.setText("Reserve service");
+            if(solution.getAvailable()) {
+                binding.purchaseButton.setText("Reserve service");
+            } else {
+                binding.purchaseButton.setText("Service unavailable");
+                binding.purchaseButton.setBackgroundTintList(ContextCompat.getColorStateList(getContext(), R.color.button_color));
+                binding.purchaseButton.setEnabled(false);
+            }
         }
 
         if (solution.isFavorite()) {
