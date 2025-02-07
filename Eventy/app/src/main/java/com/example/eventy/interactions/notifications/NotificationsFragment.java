@@ -223,4 +223,10 @@ public class NotificationsFragment extends Fragment {
             });
         }
     }
+
+    public void addNewNotification(Notification notification) {
+        paginatedNotifications.add(0, notification);
+        notificationsAdapter.notifyItemInserted(0);
+        binding.notificationsRecycler.scrollToPosition(0);
+    }
 }

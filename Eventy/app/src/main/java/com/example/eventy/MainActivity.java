@@ -23,11 +23,13 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.eventy.common.EncryptionUtil;
 import com.example.eventy.databinding.ActivityMainBinding;
 import com.example.eventy.interactions.model.Notification;
+import com.example.eventy.interactions.notifications.NotificationsFragment;
 import com.example.eventy.users.model.AuthResponse;
 import com.example.eventy.users.model.UserNotificationInfo;
 import com.example.eventy.users.services.LoggedInHelperService;
 import com.example.eventy.users.view_model.UserNotificationInfoViewModel;
 import com.example.eventy.utils.ClientUtils;
+import com.example.eventy.utils.FragmentTransition;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "WebSocket";
     private StompClient mStompClient;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    NotificationsFragment notificationsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -270,7 +273,17 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.action_notifications) {
             openedNotifications = true;
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.nav_notifications);
+
+            // Check if the fragment already exists using the FragmentManager
+            NotificationsFragment notificationsFragmentNew = (NotificationsFragment) getSupportFragmentManager()
+                    .findFragmentByTag(NotificationsFragment.class.getSimpleName());
+
+            if (notificationsFragmentNew == null) {
+                notificationsFragmentNew = new NotificationsFragment();
+            }
+            this.notificationsFragment = notificationsFragmentNew;
+
+            FragmentTransition.to(notificationsFragmentNew, this, true, R.id.nav_host_fragment_content_main);
             return true;
 
         } else if(id == R.id.action_logout) {
@@ -406,14 +419,17 @@ public class MainActivity extends AppCompatActivity {
         try {
             Notification notification = objectMapper.readValue(message, Notification.class);
 
+            if (notificationsFragment != null) {
+                notificationsFragment.addNewNotification(notification);
+            }
             UserNotificationInfoViewModel viewModel = new ViewModelProvider(MainActivity.this).get(UserNotificationInfoViewModel.class);
             UserNotificationInfo currentInfo = viewModel.getNotificationInfo().getValue();
             if (currentInfo != null) {
                 UserNotificationInfo updatedInfo = new UserNotificationInfo(
                         currentInfo.getUserId(),
                         currentInfo.getAreNotificationsMuted(),
-                        currentInfo.getLastReadNotifications(),  // update lastReadNotifications
-                        true      // set hasNewNotifications to false
+                        currentInfo.getLastReadNotifications(),
+                        true
                 );
                 viewModel.setNotificationInfo(updatedInfo); // update back to MainActivity
             }
