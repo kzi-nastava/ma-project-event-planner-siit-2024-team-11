@@ -29,6 +29,8 @@ import com.example.eventy.users.services.LoggedInHelperService;
 import com.example.eventy.users.view_model.UserNotificationInfoViewModel;
 import com.example.eventy.utils.ClientUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 
@@ -292,6 +294,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logout() {
+        if (mStompClient != null) {
+            mStompClient.disconnect();
+            Log.d("WebSocket", "Disconnected on logout");
+        }
+
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("EventyPreferences", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("JWT_TOKEN");
@@ -373,7 +380,6 @@ public class MainActivity extends AppCompatActivity {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(topicMessage -> {
-                Log.d("WebSocket", "Received notification: " + topicMessage.getPayload());
                 handleNotification(topicMessage.getPayload());
             }, throwable -> {
                 Log.e("WebSocket", "Error subscribing to topic", throwable);
@@ -394,15 +400,38 @@ public class MainActivity extends AppCompatActivity {
 
     private void handleNotification(String message) {
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         try {
             Notification notification = objectMapper.readValue(message, Notification.class);
+
+            UserNotificationInfoViewModel viewModel = new ViewModelProvider(MainActivity.this).get(UserNotificationInfoViewModel.class);
+            UserNotificationInfo currentInfo = viewModel.getNotificationInfo().getValue();
+            if (currentInfo != null) {
+                UserNotificationInfo updatedInfo = new UserNotificationInfo(
+                        currentInfo.getUserId(),
+                        currentInfo.getAreNotificationsMuted(),
+                        currentInfo.getLastReadNotifications(),  // update lastReadNotifications
+                        true      // set hasNewNotifications to false
+                );
+                viewModel.setNotificationInfo(updatedInfo); // update back to MainActivity
+            }
 
             Log.d("NotificationHandler", "Handling notification with title: " + notification.getTitle());
             Log.d("NotificationHandler", "Message: " + notification.getMessage());
 
         } catch (Exception e) {
             Log.e("NotificationHandler", "Error deserializing message", e);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mStompClient != null) {
+            mStompClient.disconnect();
+            Log.d("WebSocket", "Disconnected on activity destroy");
         }
     }
 }
