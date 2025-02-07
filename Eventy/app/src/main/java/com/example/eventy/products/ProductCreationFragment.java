@@ -30,7 +30,9 @@ import com.example.eventy.databinding.FragmentProductCreationBinding;
 import com.example.eventy.events.model.EventTypeCard;
 import com.example.eventy.products.model.CreateProduct;
 import com.example.eventy.products.model.Product;
+import com.example.eventy.solutions.model.Category;
 import com.example.eventy.solutions.model.CategoryWithID;
+import com.example.eventy.model.enums.Status;
 import com.example.eventy.users.register.CarouselAdapter;
 import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.chip.Chip;
@@ -38,7 +40,6 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -129,12 +130,26 @@ public class ProductCreationFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null) {
                     categories = response.body();
                     MaterialAutoCompleteTextView categoryAutoCompleteTextView = binding.categoryAutoCompleteTextView;
-                    ArrayAdapter<CategoryWithID> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, response.body());
+
+                    CategoryWithID stubNewCategory = new CategoryWithID(-1337L, "New Category", "New Category", Status.ACCEPTED);
+                    List<CategoryWithID> allSolutionCategories = new ArrayList<>();
+                    allSolutionCategories.add(stubNewCategory);
+                    allSolutionCategories.addAll(response.body());
+                    ArrayAdapter<CategoryWithID> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, allSolutionCategories);
+
                     categoryAutoCompleteTextView.setAdapter(adapter);
 
                     categoryAutoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
                         CategoryWithID selectedCard = (CategoryWithID) parent.getItemAtPosition(position);
                         selectedCategoryId = selectedCard.getId();
+
+                        if (selectedCategoryId == -1337L) {
+                            binding.productNewCategoryNameInputLayout.setVisibility(View.VISIBLE);
+                            binding.productNewCategoryDescriptionInputLayout.setVisibility(View.VISIBLE);
+                        } else {
+                            binding.productNewCategoryNameInputLayout.setVisibility(View.GONE);
+                            binding.productNewCategoryDescriptionInputLayout.setVisibility(View.GONE);
+                        }
                     });
 
                     categoryAutoCompleteTextView.setOnClickListener(v -> {
@@ -200,9 +215,6 @@ public class ProductCreationFragment extends Fragment {
 
         newProduct.setName(binding.productNameInput.getText().toString());
         newProduct.setDescription(binding.productDescriptionInput.getText().toString());
-        newProduct.setCategory(categories.stream()
-                .filter(category -> category.getId().equals(selectedCategoryId))
-                .findFirst().orElse(null));
         newProduct.setPrice(Double.parseDouble(binding.productPriceInput.getText().toString()));
         newProduct.setDiscount(Integer.parseInt(binding.productDiscountInput.getText().toString()));
         newProduct.setIsAvailable(binding.isAvailable.isChecked());
@@ -218,30 +230,79 @@ public class ProductCreationFragment extends Fragment {
         newProduct.setRelatedEventTypes(selectedEventTypeIds.stream().map(typeId -> eventTypes.stream().filter(type -> type.getId().equals(typeId)).findFirst().orElse(null)).collect(Collectors.toList()));
         newProduct.setImageUrls(images);
 
-        Call<Product> call = ClientUtils.productService.create(newProduct);
-        call.enqueue(new Callback<Product>() {
-            @Override
-            public void onResponse(Call<Product> call, Response<Product> response) {
-                if (response.isSuccessful()) {
-                    Bundle args = new Bundle();
-                    args.putLong("solutionId", response.body().getId());
+        if (selectedCategoryId == -1337L) {
+            Category newCategory = new Category(binding.productNewCategoryNameInput.getText().toString(), binding.productNewCategoryDescriptionInput.getText().toString(), Status.PENDING);
+            Call<CategoryWithID> call = ClientUtils.categoryService.createCategory(newCategory);
+            call.enqueue(new Callback<CategoryWithID>() {
+                @Override
+                public void onResponse(Call<CategoryWithID> call, Response<CategoryWithID> response) {
+                    newProduct.setCategory(response.body());
 
-                    NavController navController = Navigation.findNavController(getView());
-                    navController.popBackStack();
-                    navController.navigate(R.id.nav_solution_details, args);
-                } else {
-                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Could not create the product!");
+                    Call<Product> call2 = ClientUtils.productService.create(newProduct);
+                    call2.enqueue(new Callback<Product>() {
+                        @Override
+                        public void onResponse(Call<Product> call, Response<Product> response) {
+                            if (response.isSuccessful()) {
+                                Bundle args = new Bundle();
+                                args.putLong("solutionId", response.body().getId());
+
+                                NavController navController = Navigation.findNavController(getView());
+                                navController.popBackStack();
+                                navController.navigate(R.id.nav_solution_details, args);
+                            } else {
+                                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Could not create the product!");
+                                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                errorOkDialog.show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Product> call, Throwable t) {
+                            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Network error!");
+                            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            errorOkDialog.show();
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailure(Call<CategoryWithID> call, Throwable t) {
+                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Network error! Couldn't create the category!");
                     errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     errorOkDialog.show();
                 }
-            }
+            });
+        }
+        else {
+            newProduct.setCategory(categories.stream()
+                    .filter(category -> category.getId().equals(selectedCategoryId))
+                    .findFirst().orElse(null));
 
-            @Override
-            public void onFailure(Call<Product> call, Throwable t) {
-                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Network error!");
-                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                errorOkDialog.show();
-            }
-        });
+            Call<Product> call = ClientUtils.productService.create(newProduct);
+            call.enqueue(new Callback<Product>() {
+                @Override
+                public void onResponse(Call<Product> call, Response<Product> response) {
+                    if (response.isSuccessful()) {
+                        Bundle args = new Bundle();
+                        args.putLong("solutionId", response.body().getId());
+
+                        NavController navController = Navigation.findNavController(getView());
+                        navController.popBackStack();
+                        navController.navigate(R.id.nav_solution_details, args);
+                    } else {
+                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Could not create the product!");
+                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        errorOkDialog.show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Product> call, Throwable t) {
+                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Network error!");
+                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    errorOkDialog.show();
+                }
+            });
+        }
     }
 }
