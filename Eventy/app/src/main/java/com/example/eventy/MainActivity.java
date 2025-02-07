@@ -22,26 +22,40 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.eventy.common.EncryptionUtil;
 import com.example.eventy.databinding.ActivityMainBinding;
+import com.example.eventy.interactions.model.Notification;
 import com.example.eventy.users.model.AuthResponse;
 import com.example.eventy.users.model.UserNotificationInfo;
 import com.example.eventy.users.services.LoggedInHelperService;
 import com.example.eventy.users.view_model.UserNotificationInfoViewModel;
 import com.example.eventy.utils.ClientUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import ua.naiksoftware.stomp.Stomp;
+import ua.naiksoftware.stomp.StompClient;
+import ua.naiksoftware.stomp.dto.StompHeader;
 
 public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
     private MenuItem notificationItem;
     private Boolean openedNotifications = false;
+    private static final String TAG = "WebSocket";
+    private StompClient mStompClient;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 UserNotificationInfoViewModel userNotificationInfoViewModel = new ViewModelProvider(this).get(UserNotificationInfoViewModel.class);
                 userNotificationInfoViewModel.setLoggedInUserId(LoggedInHelperService.getId());
+
+                connectToMobileWebSocket(jwtToken);
             }
         }
 
@@ -312,6 +328,81 @@ public class MainActivity extends AppCompatActivity {
                     Log.wtf("TAMARA ERROR: NotificationInfo", "Can't load UsedNotificationInfo");
                 }
             });
+        }
+    }
+
+    public void connectToMobileWebSocket(String jwtToken) {
+        String WEBSOCKET_URL = "ws://192.168.100.16:8080/web-notifications";
+        String TOKEN = "Bearer " + jwtToken;
+
+        mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, WEBSOCKET_URL);
+
+        List<StompHeader> headers = new ArrayList<>();
+        headers.add(new StompHeader("Authorization", TOKEN));
+
+        mStompClient.withClientHeartbeat(1000).withServerHeartbeat(1000);
+        resetSubscriptions();
+
+        // Manage connection lifecycle
+        Disposable dispLifecycle = mStompClient.lifecycle()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(lifecycleEvent -> {
+                switch (lifecycleEvent.getType()) {
+                    case OPENED:
+                        Log.d("WebSocket", "STOMP connection opened");
+                        break;
+                    case ERROR:
+                        Log.e("WebSocket", "STOMP connection error", lifecycleEvent.getException());
+                        break;
+                    case CLOSED:
+                        Log.d("WebSocket", "STOMP connection closed");
+                        resetSubscriptions();
+                        break;
+                    case FAILED_SERVER_HEARTBEAT:
+                        Log.w("WebSocket", "STOMP failed server heartbeat");
+                        break;
+                }
+            });
+
+        compositeDisposable.add(dispLifecycle);
+
+        // Subscribe to user-specific mobile notifications
+        Long userId = LoggedInHelperService.getId();
+        Disposable dispTopic = mStompClient.topic("/topic/mobile/" + userId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(topicMessage -> {
+                Log.d("WebSocket", "Received notification: " + topicMessage.getPayload());
+                handleNotification(topicMessage.getPayload());
+            }, throwable -> {
+                Log.e("WebSocket", "Error subscribing to topic", throwable);
+            });
+
+        compositeDisposable.add(dispTopic);
+
+        // Connect
+        mStompClient.connect(headers);
+    }
+
+    private void resetSubscriptions() {
+        if (compositeDisposable != null) {
+            compositeDisposable.dispose();
+        }
+        compositeDisposable = new CompositeDisposable();
+    }
+
+    private void handleNotification(String message) {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            Notification notification = objectMapper.readValue(message, Notification.class);
+
+            Log.d("NotificationHandler", "Handling notification with title: " + notification.getTitle());
+            Log.d("NotificationHandler", "Message: " + notification.getMessage());
+
+        } catch (Exception e) {
+            Log.e("NotificationHandler", "Error deserializing message", e);
         }
     }
 }

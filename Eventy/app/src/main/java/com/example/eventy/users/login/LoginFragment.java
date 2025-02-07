@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.example.eventy.MainActivity;
 import com.example.eventy.R;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentLoginBinding;
@@ -57,8 +58,13 @@ public class LoginFragment extends Fragment {
 
                         LoggedInHelperService.manageNavigationItems();
 
+                        // for notifications
                         UserNotificationInfoViewModel userNotificationInfoViewModel = new ViewModelProvider(requireActivity()).get(UserNotificationInfoViewModel.class);
                         userNotificationInfoViewModel.setLoggedInUserId(LoggedInHelperService.getId());
+                        String token = response.body().getAccessToken();
+                        if (getActivity() instanceof MainActivity) {
+                            ((MainActivity) getActivity()).connectToMobileWebSocket(token);
+                        }
 
                         Bundle bundle = new Bundle();
                         bundle.putBoolean("reviewEvents", true);
