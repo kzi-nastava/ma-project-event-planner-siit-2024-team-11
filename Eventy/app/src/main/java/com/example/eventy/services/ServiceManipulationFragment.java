@@ -260,8 +260,8 @@ public class ServiceManipulationFragment extends Fragment {
 
         binding.serviceCategoryInputLayout.setVisibility(View.GONE);
 
-        Integer maxTime = service.getMaxReservationTime();;
-        if (maxTime == null) {
+        Integer maxTime = service.getMaxReservationTime();
+        if (maxTime.intValue() == service.getMinReservationTime().intValue()) {
             binding.fixedDurationRadioButton.setChecked(true);
             binding.fixedDurationInputLayout.setVisibility(View.VISIBLE);
             binding.minimumDurationInputLayout.setVisibility(View.GONE);
