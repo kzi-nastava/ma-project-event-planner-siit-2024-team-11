@@ -329,7 +329,7 @@ public class ServiceManipulationFragment extends Fragment {
                             newService.setCancellationDeadline(Integer.parseInt(binding.serviceDaysNoticeCancellationInput.getText().toString()));
                             if (binding.fixedDurationRadioButton.isChecked()) {
                                 newService.setMinReservationTime(Integer.parseInt(binding.fixedDurationInput.getText().toString()));
-                                newService.setMaxReservationTime(null);
+                                newService.setMaxReservationTime(Integer.parseInt(binding.fixedDurationInput.getText().toString()));
                             } else {
                                 newService.setMinReservationTime(Integer.parseInt(binding.minimumDurationInput.getText().toString()));
                                 newService.setMaxReservationTime(Integer.parseInt(binding.maximumDurationInput.getText().toString()));
@@ -399,7 +399,7 @@ public class ServiceManipulationFragment extends Fragment {
                 newService.setCancellationDeadline(Integer.parseInt(binding.serviceDaysNoticeCancellationInput.getText().toString()));
                 if (binding.fixedDurationRadioButton.isChecked()) {
                     newService.setMinReservationTime(Integer.parseInt(binding.fixedDurationInput.getText().toString()));
-                    newService.setMaxReservationTime(null);
+                    newService.setMaxReservationTime(Integer.parseInt(binding.fixedDurationInput.getText().toString()));
                 } else {
                     newService.setMinReservationTime(Integer.parseInt(binding.minimumDurationInput.getText().toString()));
                     newService.setMaxReservationTime(Integer.parseInt(binding.maximumDurationInput.getText().toString()));
@@ -457,7 +457,7 @@ public class ServiceManipulationFragment extends Fragment {
             updateService.setCancellationDeadline(Integer.parseInt(binding.serviceDaysNoticeCancellationInput.getText().toString()));
             if (binding.fixedDurationRadioButton.isChecked()) {
                 updateService.setMinReservationTime(Integer.parseInt(binding.fixedDurationInput.getText().toString()));
-                updateService.setMaxReservationTime(null);
+                updateService.setMaxReservationTime(Integer.parseInt(binding.fixedDurationInput.getText().toString()));
             } else {
                 updateService.setMinReservationTime(Integer.parseInt(binding.minimumDurationInput.getText().toString()));
                 updateService.setMaxReservationTime(Integer.parseInt(binding.maximumDurationInput.getText().toString()));

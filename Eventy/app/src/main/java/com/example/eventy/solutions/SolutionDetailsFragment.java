@@ -183,7 +183,7 @@ public class SolutionDetailsFragment extends Fragment {
 
             StringBuilder lengthBuilder = new StringBuilder("Service length: ");
             lengthBuilder.append(solution.getMinReservationTime());
-            if (solution.getMaxReservationTime() != null) {
+            if (solution.getMaxReservationTime().intValue() != solution.getMinReservationTime().intValue()) {
                 lengthBuilder.append(" - ");
                 lengthBuilder.append(solution.getMaxReservationTime());
             }
