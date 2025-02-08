@@ -65,6 +65,8 @@ public class ProductUpdateFragment extends Fragment {
     private List<EventTypeCard> eventTypes;
     private Long id = -1L;
 
+    private Product newProduct;
+
     public ProductUpdateFragment() {
         // Required empty public constructor
     }
@@ -152,6 +154,10 @@ public class ProductUpdateFragment extends Fragment {
                         @Override
                         public void onResponse(Call<SolutionDetails> call, Response<SolutionDetails> response) {
                             if (response.isSuccessful()) {
+                                newProduct.setId(id);
+                                newProduct.setIsAvailable(response.body().getAvailable());
+                                newProduct.setIsVisible(response.body().getVisible());
+
                                 images = response.body().getImages();
                                 carouselAdapter.updateImages(images);
                                 binding.productNameInput.setText(response.body().getName());
@@ -159,8 +165,6 @@ public class ProductUpdateFragment extends Fragment {
                                 binding.productPriceInput.setText(response.body().getPrice().toString());
                                 binding.productDiscountInput.setText(response.body().getDiscount().toString());
                                 binding.categoryAutoCompleteTextView.setText(response.body().getCategoryName());
-                                binding.isAvailable.setChecked(response.body().getAvailable());
-                                binding.isVisible.setChecked(response.body().getVisible());
 
                                 for (EventTypeCard et : chips) {
                                     Chip chip = new Chip(getContext());
@@ -223,15 +227,10 @@ public class ProductUpdateFragment extends Fragment {
             return;
         }
 
-        Product newProduct = new Product();
-
-        newProduct.setId(id);
         newProduct.setName(binding.productNameInput.getText().toString());
         newProduct.setDescription(binding.productDescriptionInput.getText().toString());
         newProduct.setPrice(Double.parseDouble(binding.productPriceInput.getText().toString()));
         newProduct.setDiscount(Integer.parseInt(binding.productDiscountInput.getText().toString()));
-        newProduct.setIsAvailable(binding.isAvailable.isChecked());
-        newProduct.setIsVisible(binding.isVisible.isChecked());
 
         List<Long> selectedEventTypeIds = new ArrayList<>();
         for (int i = 0; i < binding.chipGroup.getChildCount(); i++) {
