@@ -191,7 +191,7 @@ public class ProductCreationFragment extends Fragment {
             @Override
             public void onResponse(Call<EventTypeCard[]> call, Response<EventTypeCard[]> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    eventTypes.clear();
+                    eventTypes = new ArrayList<>();
                     for (EventTypeCard et : response.body()) {
                         Chip chip = new Chip(getContext());
                         chip.setText(et.getName()); // text
