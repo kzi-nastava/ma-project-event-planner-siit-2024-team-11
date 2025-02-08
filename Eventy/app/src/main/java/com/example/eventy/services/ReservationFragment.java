@@ -22,6 +22,7 @@ import androidx.navigation.Navigation;
 
 import com.example.eventy.R;
 import com.example.eventy.common.PictureHelperService;
+import com.example.eventy.custom.CreateReviewDialog;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.custom.LoadingDialog;
 import com.example.eventy.custom.ValidOkDialog;
@@ -29,8 +30,10 @@ import com.example.eventy.databinding.FragmentServiceReservationBinding;
 import com.example.eventy.events.EventDetailsDialog;
 import com.example.eventy.model.enums.ReservationConfirmationType;
 import com.example.eventy.events.model.EventCard;
+import com.example.eventy.reviews.model.CreateReview;
 import com.example.eventy.services.model.Reservation;
 import com.example.eventy.solutions.model.SolutionCard;
+import com.example.eventy.users.services.LoggedInHelperService;
 import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointForward;
@@ -136,20 +139,6 @@ public class ReservationFragment extends Fragment {
                 endDateTime.set(Calendar.MINUTE, selectedEndMinute);
             }
 
-            String startDateTimeString = startDateTime == null ? "start: NULL" :
-                    startDateTime.get(Calendar.DAY_OF_MONTH) + "." +
-                    startDateTime.get(Calendar.MONTH) + "." +
-                    startDateTime.get(Calendar.YEAR) + ". " +
-                    startDateTime.get(Calendar.HOUR_OF_DAY) + "h " +
-                    startDateTime.get(Calendar.MINUTE) + "min";
-
-            String endDateTimeString = endDateTime == null ? "end: NULL" :
-                    endDateTime.get(Calendar.DAY_OF_MONTH) + "." +
-                    endDateTime.get(Calendar.MONTH) + "." +
-                    endDateTime.get(Calendar.YEAR) + ". " +
-                    endDateTime.get(Calendar.HOUR_OF_DAY) + "h " +
-                    endDateTime.get(Calendar.MINUTE) + "min";
-
             if (isTimeValid) {
                 Reservation newReservation = new Reservation();
                 newReservation.setSelectedEventId(selectedEventCard.getEventId());
@@ -160,7 +149,6 @@ public class ReservationFragment extends Fragment {
                 createReservation(newReservation, this.getContext(), container);
 
             } else {
-                //Toast.makeText(this.getContext(), "Time is not valid!", Toast.LENGTH_SHORT).show();
                 showErrorDialog("Time is not valid!");
             }
         });
@@ -193,9 +181,7 @@ public class ReservationFragment extends Fragment {
                         ValidOkDialog validOkDialog = new ValidOkDialog(getActivity(), "Creation Successful", "Your service reservation was successful!");
                         validOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                         validOkDialog.setOnDismissListener(dialog -> {
-                            NavController navController = Navigation.findNavController(container);
-                            navController.popBackStack();
-                            navController.navigate(R.id.nav_home);
+                            handleReviewService(container);
                         });
                         validOkDialog.show();
                     }
@@ -226,6 +212,48 @@ public class ReservationFragment extends Fragment {
                 showErrorDialog(t.getMessage());
                 isReservationCreating = false;
             }
+        });
+    }
+
+    private void handleReviewService(ViewGroup container) {
+        Call<Boolean> call = ClientUtils.reviewService.isSolutionReviewedByUser(LoggedInHelperService.getId(), selectedServiceCard.getSolutionId());
+        call.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful() && response.body() != null && getActivity() != null) {
+                    if (isAdded() && getActivity() != null) {
+                        Boolean isReviewed = response.body();
+
+                        if (!isReviewed) {
+                            CreateReview createReview = new CreateReview(
+                                LoggedInHelperService.getId(),
+                                selectedServiceCard.getSolutionId(),
+                                null,
+                                null,
+                                null
+                            );
+
+                            CreateReviewDialog createReviewDialog = new CreateReviewDialog(getActivity(), "\"" + selectedServiceCard.getName() + "\"", "Please rate the service you reserved!", createReview);
+                            createReviewDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            createReviewDialog.setCanceledOnTouchOutside(false);
+                            createReviewDialog.setOnDismissListener(dialog -> {
+                                NavController navController = Navigation.findNavController(container);
+                                navController.popBackStack();
+                                navController.navigate(R.id.nav_home);
+                            });
+                            createReviewDialog.show();
+
+                        } else {
+                            NavController navController = Navigation.findNavController(container);
+                            navController.popBackStack();
+                            navController.navigate(R.id.nav_home);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {}
         });
     }
 
@@ -316,7 +344,7 @@ public class ReservationFragment extends Fragment {
 
         // Calculate the minimum date (5 days from today)
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, selectedServiceCard.getReservationDeadline()); // Add 5 days to the current date
+        calendar.add(Calendar.DAY_OF_YEAR, selectedServiceCard.getReservationDeadline() - 1);
         long minDate = calendar.getTimeInMillis();
 
         // Set constraints to disable past dates

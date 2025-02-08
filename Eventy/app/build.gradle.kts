@@ -51,7 +51,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -71,4 +70,10 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:3.12.1")
     implementation("com.auth0:java-jwt:4.4.0")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation("org.java-websocket:Java-WebSocket:1.5.2")
+    implementation("com.github.NaikSoftware:StompProtocolAndroid:1.6.6")
+    implementation("io.reactivex.rxjava2:rxjava:2.2.21")
+    implementation("io.reactivex.rxjava2:rxandroid:2.1.1")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.15.0")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.0")
 }
