@@ -1,67 +1,41 @@
-package com.example.eventy.model.solution;
-
-import com.example.eventy.model.enums.ReservationConfirmationType;
-import com.example.eventy.events.model.EventType;
-import com.example.eventy.solutions.model.Category;
-import com.example.eventy.solutions.model.CategoryWithID;
-import com.fasterxml.jackson.annotation.JsonProperty;
+package com.example.eventy.services.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
-public class Service {
-
-    private Long id;
+public class CreateService {
     private String name;
     private String description;
     private Double price;
-    private Integer discount;
-    private List<String> imageUrls;
-    @JsonProperty("isVisible")
-    private Boolean isVisible;
-    @JsonProperty("isAvailable")
-    private Boolean isAvailable;
-    private Category category;
-    private Collection<EventType> relatedEventTypes;
+    private Double discount;
+    private ArrayList<String> imageUrls;
+    private Long providerId;
+    private Long categoryId;
+    private List<Long> relatedEventTypeIds;
     private String specifics;
     private Integer minReservationTime;
     private Integer maxReservationTime;
     private Integer reservationDeadline;
     private Integer cancellationDeadline;
-    @JsonProperty("automaticReservationAcceptance")
     private Boolean automaticReservationAcceptance;
 
-    public Service() {
+    public CreateService() {}
 
-    }
-
-    public Service(long id, String name, String description, double price, int discount, List<String> imageUrls, boolean isVisible, boolean isAvailable, Category category, Collection<EventType> relatedEventTypes, String specifics, int minReservationTime, int maxReservationTime, int reservationDeadline, int cancellationDeadline, boolean automaticReservationAcceptance) {
-        this.id = id;
+    public CreateService(String name, String description, double price, double discount, ArrayList<String> imageUrls, Long providerId, Long categoryId, List<Long> relatedEventTypeIds, String specifics, int minReservationTime, int maxReservationTime, int reservationDeadline, int cancellationDeadline, boolean automaticReservationAcceptance) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.discount = discount;
         this.imageUrls = imageUrls;
-        this.isVisible = isVisible;
-        this.isAvailable = isAvailable;
-        this.category = category;
-        this.relatedEventTypes = relatedEventTypes;
+        this.providerId = providerId;
+        this.categoryId = categoryId;
+        this.relatedEventTypeIds = relatedEventTypeIds;
         this.specifics = specifics;
         this.minReservationTime = minReservationTime;
         this.maxReservationTime = maxReservationTime;
         this.reservationDeadline = reservationDeadline;
         this.cancellationDeadline = cancellationDeadline;
         this.automaticReservationAcceptance = automaticReservationAcceptance;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -88,52 +62,44 @@ public class Service {
         this.price = price;
     }
 
-    public Integer getDiscount() {
+    public Double getDiscount() {
         return discount;
     }
 
-    public void setDiscount(Integer discount) {
+    public void setDiscount(Double discount) {
         this.discount = discount;
     }
 
-    public List<String> getImageUrls() {
+    public ArrayList<String> getImageUrls() {
         return imageUrls;
     }
 
-    public void setImageUrls(List<String> imageUrls) {
+    public void setImageUrls(ArrayList<String> imageUrls) {
         this.imageUrls = imageUrls;
     }
 
-    public Boolean getVisible() {
-        return isVisible;
+    public Long getProviderId() {
+        return providerId;
     }
 
-    public void setVisible(Boolean visible) {
-        isVisible = visible;
+    public void setProviderId(Long providerId) {
+        this.providerId = providerId;
     }
 
-    public Boolean getAvailable() {
-        return isAvailable;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setAvailable(Boolean available) {
-        isAvailable = available;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
-    public Category getCategory() {
-        return category;
+    public List<Long> getRelatedEventTypeIds() {
+        return relatedEventTypeIds;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public Collection<EventType> getRelatedEventTypes() {
-        return relatedEventTypes;
-    }
-
-    public void setRelatedEventTypes(Collection<EventType> relatedEventTypes) {
-        this.relatedEventTypes = relatedEventTypes;
+    public void setRelatedEventTypeIds(List<Long> relatedEventTypeIds) {
+        this.relatedEventTypeIds = relatedEventTypeIds;
     }
 
     public String getSpecifics() {

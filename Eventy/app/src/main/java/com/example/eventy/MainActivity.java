@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-            R.id.nav_home, R.id.nav_login, R.id.nav_register, R.id.nav_add_service, R.id.nav_edit_service,
+            R.id.nav_home, R.id.nav_login, R.id.nav_register, R.id.nav_manipulate_service,
             R.id.nav_event_organization, R.id.nav_own_services_test, R.id.nav_event_types, R.id.nav_add_event_type,
             R.id.nav_edit_event_type, R.id.nav_event_type_details, R.id.nav_other_user_profile_page,
             R.id.nav_edit_user, R.id.nav_my_profile, R.id.service_reservation, R.id.fast_registration,

@@ -25,8 +25,6 @@ import com.example.eventy.R;
 import com.example.eventy.common.PictureHelperService;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.model.enums.ReservationConfirmationType;
-import com.example.eventy.model.solution.Service;
-import com.example.eventy.model.solution.Solution;
 import com.example.eventy.solutions.enums.SolutionType;
 import com.example.eventy.solutions.model.SolutionCard;
 import com.example.eventy.utils.ClientUtils;

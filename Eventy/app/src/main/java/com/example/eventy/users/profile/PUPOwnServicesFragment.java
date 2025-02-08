@@ -16,7 +16,6 @@ import com.example.eventy.adapters.solutions.SolutionsAdapter;
 import com.example.eventy.common.PagedResponse;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentPupOwnServicesBinding;
-import com.example.eventy.model.solution.Solution;
 import com.example.eventy.solutions.model.SolutionCard;
 import com.example.eventy.utils.ClientUtils;
 
