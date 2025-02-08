@@ -18,6 +18,8 @@ import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,9 +40,12 @@ import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import retrofit2.Call;
@@ -115,6 +120,13 @@ public class ProductCreationFragment extends Fragment {
                     }
                 }
         );
+
+        addValidation(binding.productNameInputLayout, binding.productNameInput, this::validateRequired);
+        addValidation(binding.productDescriptionInputLayout, binding.productDescriptionInput, this::validateRequired);
+        addValidation(binding.productPriceInputLayout, binding.productPriceInput, this::validateRequired);
+        addValidation(binding.productDiscountInputLayout, binding.productDiscountInput, this::validateRequired);
+        addValidation(binding.productNewCategoryNameInputLayout, binding.productNewCategoryNameInput, this::validateRequired);
+        addValidation(binding.productNewCategoryDescriptionInputLayout, binding.productNewCategoryDescriptionInput, this::validateRequired);
 
         binding.addProductPhotosButton.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -211,6 +223,27 @@ public class ProductCreationFragment extends Fragment {
     }
 
     private void submit() {
+        binding.productNameInput.setText(binding.productNameInput.getText());
+        binding.productDescriptionInput.setText(binding.productDescriptionInput.getText());
+        binding.productPriceInput.setText(binding.productPriceInput.getText());
+        binding.productDiscountInput.setText(binding.productDiscountInput.getText());
+
+        if (selectedCategoryId == -1337L) {
+            binding.productNewCategoryNameInput.setText(binding.productNewCategoryNameInput.getText());
+            binding.productNewCategoryDescriptionInput.setText(binding.productNewCategoryDescriptionInput.getText());
+        }
+
+        if(binding.productNameInputLayout.getError() != null || binding.productDescriptionInputLayout.getError() != null ||
+        binding.productPriceInputLayout.getError() != null || binding.productDiscountInputLayout.getError() != null ||
+                selectedCategoryId == null || images == null || images.isEmpty() ||
+                (selectedCategoryId == -1337L && (binding.productNewCategoryNameInputLayout.getError() != null || binding.productNewCategoryDescriptionInputLayout.getError() != null))) {
+            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Validation failed! Check your input fields again!");
+            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            errorOkDialog.show();
+
+            return;
+        }
+
         CreateProduct newProduct = new CreateProduct();
 
         newProduct.setName(binding.productNameInput.getText().toString());
@@ -303,6 +336,31 @@ public class ProductCreationFragment extends Fragment {
                     errorOkDialog.show();
                 }
             });
+        }
+    }
+
+    private void addValidation(TextInputLayout textInputLayout, TextInputEditText textInputEditText, BiConsumer<String, TextInputLayout> action) {
+        textInputEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                action.accept(s.toString(), textInputLayout);
+            }
+            @Override
+            public void afterTextChanged(Editable s) { }
+        });
+
+        textInputEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            action.accept(String.valueOf(textInputEditText.getText()), textInputLayout);
+        });
+    }
+
+    private void validateRequired(String inputText, TextInputLayout textInputLayout) {
+        if (inputText.trim().isEmpty()) {
+            textInputLayout.setError("This field is required");
+        } else {
+            textInputLayout.setError(null);
         }
     }
 }
