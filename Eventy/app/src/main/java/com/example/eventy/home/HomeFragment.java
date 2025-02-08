@@ -560,7 +560,7 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
             null
         );
 
-        CreateReviewDialog createReviewDialog = new CreateReviewDialog(getActivity(), "\"" + unreviewedEvent.getName() + "\"", "Please rate the event you attended!", createReview);
+        CreateReviewDialog createReviewDialog = new CreateReviewDialog(getActivity(), "\"" + unreviewedEvent.getName() + "\"", "Please rate the event you have attended!", createReview);
         createReviewDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         createReviewDialog.setCanceledOnTouchOutside(false);
         createReviewDialog.setOnDismissListener(dialog -> {
