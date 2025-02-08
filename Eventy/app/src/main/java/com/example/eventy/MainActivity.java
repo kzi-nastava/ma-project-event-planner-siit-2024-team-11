@@ -367,7 +367,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void connectToMobileWebSocket(String jwtToken) {
-        String WEBSOCKET_URL = "ws://192.168.100.16:8080/web-notifications";
+        String ip_addr = BuildConfig.IP_ADDR;
+        String WEBSOCKET_URL = "ws://" + ip_addr + ":8080/web-notifications";
         String TOKEN = "Bearer " + jwtToken;
 
         mStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, WEBSOCKET_URL);
