@@ -80,6 +80,7 @@ public class ProductUpdateFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        newProduct = new Product();
         binding = FragmentProductUpdateBinding.inflate(inflater, container, false);
 
         ViewPager2 viewPager = binding.productPhotos;
