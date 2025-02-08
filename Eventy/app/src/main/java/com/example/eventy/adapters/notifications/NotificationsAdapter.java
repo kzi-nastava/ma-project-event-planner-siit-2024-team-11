@@ -166,7 +166,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
                 });
             }
 
-            holder.title.setText("\"" + notification.getTitle() + "\"");
+            holder.title.setText(notification.getTitle());
             holder.message.setText(notification.getMessage());
 
             if (notification.getGrade() != null) {
@@ -245,5 +245,9 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
             graderImage = itemView.findViewById(R.id.grader_picture);
             redDot = itemView.findViewById(R.id.red_dot);
         }
+    }
+
+    public void updateNotificationsInfo(UserNotificationInfo userNotificationInfo) {
+        this.userNotificationInfo = userNotificationInfo;
     }
 }

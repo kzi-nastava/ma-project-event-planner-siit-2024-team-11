@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -63,6 +64,7 @@ public class NotificationsFragment extends Fragment {
 
         setupRecyclerView();
         setupPaginationControls();
+        setupMuteButton();
         fetchNotifications(page, pageSize);
     }
 
@@ -116,6 +118,64 @@ public class NotificationsFragment extends Fragment {
                 // do nothing
             }
         });
+    }
+
+    private void setupMuteButton() {
+        UserNotificationInfoViewModel viewModel = new ViewModelProvider(requireActivity()).get(UserNotificationInfoViewModel.class);
+        LiveData<UserNotificationInfo> liveData = viewModel.getNotificationInfo();
+
+        liveData.observe(getViewLifecycleOwner(), currentInfo -> {
+            if (currentInfo != null) {
+                updateMuteButtonUI(currentInfo.getAreNotificationsMuted());
+            }
+        });
+
+        binding.muteAll.setOnClickListener(v -> {
+            UserNotificationInfo currentInfo = liveData.getValue();
+            if (currentInfo != null) {
+                boolean newMuteState = !currentInfo.getAreNotificationsMuted();
+
+                Call<Boolean> call = ClientUtils.userService.toggleNotifications(loggedInUserId, newMuteState);
+                call.enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        if (response.isSuccessful() && response.body() != null && getActivity() != null) {
+                            Boolean currentMuteState = response.body();
+
+                            UserNotificationInfo updatedInfo = new UserNotificationInfo(
+                                    currentInfo.getUserId(),
+                                    currentMuteState,
+                                    currentInfo.getLastReadNotifications(),
+                                    currentInfo.getHasNewNotifications()
+                            );
+                            viewModel.setNotificationInfo(updatedInfo);
+
+                            updateMuteButtonUI(currentMuteState);
+
+                        } else {
+                            showErrorDialog("Error while changing the mute state!");
+                            showErrorDialog(response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+                        showErrorDialog("Error while changing the mute state!");
+                        showErrorDialog(t.getMessage());
+                    }
+                });
+            }
+        });
+    }
+
+    private void updateMuteButtonUI(boolean areMuted) {
+        if (areMuted) {
+            binding.muteAll.setBackgroundResource(R.drawable.notifications_unmute_all);
+            binding.muteAll.setText("Unmute All");
+        } else {
+            binding.muteAll.setBackgroundResource(R.drawable.notifications_mute_all);
+            binding.muteAll.setText("Mute All");
+        }
     }
 
     private void fetchNotifications(int page, int pageSize) {
@@ -190,7 +250,7 @@ public class NotificationsFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        updateNotificationsInfo();  // Trigger last-read update
+        updateNotificationsInfo();
     }
 
     private void updateNotificationsInfo() {
@@ -208,10 +268,10 @@ public class NotificationsFragment extends Fragment {
                             UserNotificationInfo updatedInfo = new UserNotificationInfo(
                                     currentInfo.getUserId(),
                                     currentInfo.getAreNotificationsMuted(),
-                                    lastRead,  // update lastReadNotifications
-                                    false      // set hasNewNotifications to false
+                                    lastRead,
+                                    false
                             );
-                            viewModel.setNotificationInfo(updatedInfo); // update back to MainActivity
+                            viewModel.setNotificationInfo(updatedInfo);
                         }
                     }
                 }
@@ -225,6 +285,17 @@ public class NotificationsFragment extends Fragment {
     }
 
     public void addNewNotification(Notification notification) {
+        UserNotificationInfoViewModel viewModel = new ViewModelProvider(requireActivity()).get(UserNotificationInfoViewModel.class);
+        UserNotificationInfo currentInfo = viewModel.getNotificationInfo().getValue();
+        if (currentInfo != null) {
+            UserNotificationInfo updatedInfo = new UserNotificationInfo(
+                    currentInfo.getUserId(),
+                    currentInfo.getAreNotificationsMuted(),
+                    currentInfo.getLastReadNotifications(),
+                    currentInfo.getHasNewNotifications()
+            );
+            notificationsAdapter.updateNotificationsInfo(updatedInfo);
+        }
         paginatedNotifications.add(0, notification);
         notificationsAdapter.notifyItemInserted(0);
         binding.notificationsRecycler.scrollToPosition(0);

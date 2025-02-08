@@ -55,5 +55,4 @@ public class UserNotificationInfoViewModel extends ViewModel {
             }
         });
     }
-
 }

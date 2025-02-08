@@ -434,9 +434,6 @@ public class MainActivity extends AppCompatActivity {
         try {
             Notification notification = objectMapper.readValue(message, Notification.class);
 
-            if (notificationsFragment != null) {
-                notificationsFragment.addNewNotification(notification);
-            }
             UserNotificationInfoViewModel viewModel = new ViewModelProvider(MainActivity.this).get(UserNotificationInfoViewModel.class);
             UserNotificationInfo currentInfo = viewModel.getNotificationInfo().getValue();
             if (currentInfo != null) {
@@ -447,10 +444,14 @@ public class MainActivity extends AppCompatActivity {
                         true
                 );
                 viewModel.setNotificationInfo(updatedInfo);
+
+                if (!isAppInForeground() && !currentInfo.getAreNotificationsMuted()) {
+                    NotificationHelper.showNotification(this, notification.getTitle(), notification.getMessage());
+                }
             }
 
-            if (!isAppInForeground()) {
-                NotificationHelper.showNotification(this, notification.getTitle(), notification.getMessage());
+            if (notificationsFragment != null) {
+                notificationsFragment.addNewNotification(notification);
             }
 
         } catch (Exception e) {
