@@ -1,43 +1,32 @@
-package com.example.eventy.model.solution;
+package com.example.eventy.services.model;
 
-import com.example.eventy.model.enums.ReservationConfirmationType;
-import com.example.eventy.events.model.EventType;
-import com.example.eventy.solutions.model.Category;
-import com.example.eventy.solutions.model.CategoryWithID;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
 
-public class Service {
-
+public class UpdateService {
     private Long id;
     private String name;
     private String description;
     private Double price;
     private Integer discount;
-    private List<String> imageUrls;
+    private ArrayList<String> imageUrls;
     @JsonProperty("isVisible")
     private Boolean isVisible;
     @JsonProperty("isAvailable")
     private Boolean isAvailable;
-    private Category category;
-    private Collection<EventType> relatedEventTypes;
+    private Collection<Long> relatedEventTypeIds;
     private String specifics;
     private Integer minReservationTime;
     private Integer maxReservationTime;
     private Integer reservationDeadline;
     private Integer cancellationDeadline;
-    @JsonProperty("automaticReservationAcceptance")
     private Boolean automaticReservationAcceptance;
 
-    public Service() {
+    public UpdateService() {}
 
-    }
-
-    public Service(long id, String name, String description, double price, int discount, List<String> imageUrls, boolean isVisible, boolean isAvailable, Category category, Collection<EventType> relatedEventTypes, String specifics, int minReservationTime, int maxReservationTime, int reservationDeadline, int cancellationDeadline, boolean automaticReservationAcceptance) {
+    public UpdateService(long id, String name, String description, double price, int discount, ArrayList<String> imageUrls, boolean isVisible, boolean isAvailable, Collection<Long> relatedEventTypeIds, String specifics, int minReservationTime, int maxReservationTime, int reservationDeadline, int cancellationDeadline, boolean automaticReservationAcceptance) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -46,8 +35,7 @@ public class Service {
         this.imageUrls = imageUrls;
         this.isVisible = isVisible;
         this.isAvailable = isAvailable;
-        this.category = category;
-        this.relatedEventTypes = relatedEventTypes;
+        this.relatedEventTypeIds = relatedEventTypeIds;
         this.specifics = specifics;
         this.minReservationTime = minReservationTime;
         this.maxReservationTime = maxReservationTime;
@@ -96,11 +84,11 @@ public class Service {
         this.discount = discount;
     }
 
-    public List<String> getImageUrls() {
+    public ArrayList<String> getImageUrls() {
         return imageUrls;
     }
 
-    public void setImageUrls(List<String> imageUrls) {
+    public void setImageUrls(ArrayList<String> imageUrls) {
         this.imageUrls = imageUrls;
     }
 
@@ -120,20 +108,12 @@ public class Service {
         isAvailable = available;
     }
 
-    public Category getCategory() {
-        return category;
+    public Collection<Long> getRelatedEventTypeIds() {
+        return relatedEventTypeIds;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public Collection<EventType> getRelatedEventTypes() {
-        return relatedEventTypes;
-    }
-
-    public void setRelatedEventTypes(Collection<EventType> relatedEventTypes) {
-        this.relatedEventTypes = relatedEventTypes;
+    public void setRelatedEventTypeIds(Collection<Long> relatedEventTypeIds) {
+        this.relatedEventTypeIds = relatedEventTypeIds;
     }
 
     public String getSpecifics() {

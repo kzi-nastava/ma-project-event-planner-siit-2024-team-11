@@ -1,4 +1,4 @@
-package com.example.eventy;
+package com.example.eventy.utils;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -29,3 +29,4 @@ public class FragmentTransition {
         transaction.commit();
     }
 }
+

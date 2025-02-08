@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -51,4 +52,13 @@ public interface SolutionService {
 
     @GET(prefix + "/{solutionId}")
     Call<SolutionDetails> getSolutionDetails(@Path("solutionId") Long solutionId);
+
+    @PUT(prefix + "/{solutionId}/visibility")
+    Call<Void> toggleVisibility(@Path("solutionId") Long solutionId);
+
+    @PUT(prefix + "/{solutionId}/availability")
+    Call<Void> toggleAvailability(@Path("solutionId") Long solutionId);
+
+    @DELETE(prefix + "/{solutionId}")
+    Call<Void> delete(@Path("solutionId") Long solutionId);
 }

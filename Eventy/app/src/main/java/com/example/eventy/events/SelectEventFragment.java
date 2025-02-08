@@ -21,6 +21,7 @@ import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentServiceReservationSelectEventRecyclerBinding;
 import com.example.eventy.events.model.EventCard;
 import com.example.eventy.events.model.EventFilters;
+import com.example.eventy.users.services.LoggedInHelperService;
 import com.example.eventy.utils.ClientUtils;
 
 import java.util.ArrayList;
@@ -138,7 +139,8 @@ public class SelectEventFragment extends Fragment implements EventsSingleSelecti
         }
         String location = eventFilters.getSelectedLocation().equals("-") ? null : eventFilters.getSelectedLocation();
 
-        Call<PagedResponse<EventCard>> call = ClientUtils.eventService.getEvents(
+        Call<PagedResponse<EventCard>> call = ClientUtils.eventService.getEventsByUserId(
+                LoggedInHelperService.getId(),
                 search, eventFilters.getSelectedEventTypes(), maxParticipants, location,
                 eventFilters.getSelectedStartDateTime(), eventFilters.getSelectedEndDateTime(),
                 page, pageSize, sort
