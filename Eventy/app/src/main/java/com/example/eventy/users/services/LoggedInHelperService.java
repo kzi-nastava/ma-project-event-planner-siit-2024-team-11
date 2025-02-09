@@ -65,6 +65,7 @@ public class LoggedInHelperService {
 //        menu.findItem(R.id.upgrade_profile).setVisible(false);
 //        menu.findItem(R.id.nav_category_management).setVisible(false);
 //        menu.findItem(R.id.nav_event_stats).setVisible(false);
+//        menu.findItem(R.id.nav_create_product).setVisible(false);
 //
 //        // Example logic: Show/Hide items based on role
 //        if ("ROLE_Admin".equals(role)) {
@@ -79,6 +80,7 @@ public class LoggedInHelperService {
 //            menu.findItem(R.id.nav_add_service).setVisible(true);
 //            menu.findItem(R.id.nav_edit_service).setVisible(true);
 //            menu.findItem(R.id.nav_own_services_test).setVisible(true);
+//            menu.findItem(R.id.nav_create_product).setVisible(true);
 //        } else if ("ROLE_AuthenticatedUser".equals(role)) {
 //            menu.findItem(R.id.upgrade_profile).setVisible(true);
 //        } else if (role == null) {
