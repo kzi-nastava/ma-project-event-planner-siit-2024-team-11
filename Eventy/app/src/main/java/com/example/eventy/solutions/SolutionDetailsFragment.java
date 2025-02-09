@@ -78,9 +78,16 @@ public class SolutionDetailsFragment extends Fragment {
             Bundle args = new Bundle();
             args.putLong("id", finalId);
 
+            if(solution.getType() == SolutionType.SERVICE) {
+                NavController navController = Navigation.findNavController(getView());
+                navController.popBackStack();
+                navController.navigate(R.id.nav_manipulate_service, args);
+                return;
+            }
+
             NavController navController = Navigation.findNavController(getView());
             navController.popBackStack();
-            navController.navigate(R.id.nav_manipulate_service, args);
+            navController.navigate(R.id.nav_product_update, args);
         });
 
         binding.deleteButton.setOnClickListener(v -> {
