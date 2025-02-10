@@ -190,6 +190,14 @@ public class SolutionDetailsFragment extends Fragment {
 
         if(solution.getAvailable()) {
             binding.purchaseButton.setText("Buy product");
+            binding.purchaseButton.setOnClickListener(v -> {
+                Bundle args = new Bundle();
+                args.putLong("productId", solution.getSolutionId());
+                args.putString("productName", solution.getName());
+                NavController navController = Navigation.findNavController(getView());
+                navController.popBackStack();
+                navController.navigate(R.id.nav_purchase, args);
+            });
         } else {
             binding.purchaseButton.setText("Product unavailable");
             binding.purchaseButton.setBackgroundTintList(ContextCompat.getColorStateList(getContext(), R.color.button_color));
