@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/background_color"
+        tools:context=".home.events.EventsFragment">
+
+        <!-- All notifications container -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/white">
+
+            <!-- Header with Notifications title and Mute All button -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="18dp"
+                android:layout_marginRight="18dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:fontFamily="@font/albert_sans"
+                    android:layout_marginTop="6dp"
+                    android:text="Notifications"
+                    android:textColor="#717171"
+                    android:textSize="21sp"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/mute_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:fontFamily="@font/albert_sans"
+                    android:textFontWeight="900"
+                    android:text="Mute All"
+                    android:paddingRight="13dp"
+                    android:paddingLeft="13dp"
+                    android:textAllCaps="false"
+                    android:textSize="16sp"
+                    android:background="@drawable/notifications_mute_all"
+                    android:textColor="#FFFFFF"
+                    android:layout_alignParentEnd="true"/>
+            </RelativeLayout>
+
+            <!-- Divider line -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#DADADA"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"/>
+
+            <!-- All notifications dynamically inserted with RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/notifications_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:paddingTop="15dp"
+                android:paddingEnd="12dp"
+                android:paddingStart="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:background="#FFFFFF"
+                android:elevation="15dp"
+                android:id="@+id/pagination_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:layout_marginBottom="0.5dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <Button
+                    android:id="@+id/btn_previous"
+                    android:layout_width="37dp"
+                    android:layout_height="33dp"
+                    android:layout_marginStart="22dp"
+                    android:background="@drawable/pagination_previous" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:fontFamily="@font/albert_sans"
+                    android:text="Items:"
+                    android:maxLines="1"
+                    android:textSize="14.5sp" />
+
+                <Spinner
+                    android:id="@+id/spinner_page_size"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.2"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="7dp"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/page_size_options"/>
+
+                <TextView
+                    android:id="@+id/tv_page_info"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.2"
+                    android:textColor="#ABABAB"
+                    android:textSize="13sp"
+                    android:maxLines="1"
+                    android:fontFamily="@font/albert_sans"
+                    android:layout_marginRight="15dp"
+                    android:layout_height="wrap_content"
+                    android:text="Page 1 of 10" />
+
+                <Button
+                    android:id="@+id/btn_next"
+                    android:layout_width="37dp"
+                    android:layout_height="33dp"
+                    android:layout_marginEnd="22dp"
+                    android:background="@drawable/pagination_next" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </FrameLayout>

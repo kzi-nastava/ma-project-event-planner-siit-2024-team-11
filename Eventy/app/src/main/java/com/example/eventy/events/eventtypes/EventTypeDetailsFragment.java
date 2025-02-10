@@ -108,7 +108,7 @@ public class EventTypeDetailsFragment extends Fragment {
                     if (response.isSuccessful() && response.body() != null) {
                         setToggleActivityButton(!response.body().getIsActive());
                     } else {
-                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while changing activity!");
+                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Deactivation unsuccessful", "You can't deactivate an event type that is in use!");
                         errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                         errorOkDialog.show();
                     }
@@ -116,7 +116,7 @@ public class EventTypeDetailsFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<EventTypeWithActivity> call, Throwable t) {
-                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while changing activity!");
+                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Deactivation unsuccessful", "You can't deactivate an event type that is in use!");
                     errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     errorOkDialog.show();
                 }

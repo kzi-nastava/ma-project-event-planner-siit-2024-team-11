@@ -5,6 +5,7 @@ import com.example.eventy.events.model.EventCard;
 import com.example.eventy.events.model.EventStats;
 import com.example.eventy.events.model.OrganizeEvent;
 import com.example.eventy.events.model.Event;
+import com.example.eventy.reviews.model.UnreviewedEvent;
 import com.example.eventy.users.model.EventDetails;
 
 import java.time.LocalDateTime;
@@ -35,6 +36,18 @@ public interface EventService {
                                              @Query("page") int page,
                                              @Query("size") int pageSize,
                                              @Query("sort") String sort);
+
+    @GET(prefix + "/user/{userId}")
+    Call<PagedResponse<EventCard>> getEventsByUserId(@Path("userId") Long userId,
+                                                     @Query("search") String search,
+                                                     @Query("eventTypes") ArrayList<String> eventTypes,
+                                                     @Query("maxParticipants") Integer maxParticipants,
+                                                     @Query("location") String location,
+                                                     @Query("startDate") LocalDateTime startDate,
+                                                     @Query("endDate") LocalDateTime endDate,
+                                                     @Query("page") int page,
+                                                     @Query("size") int pageSize,
+                                                     @Query("sort") String sort);
 
     @GET(prefix + "/featured")
     Call<EventCard[]> getFeaturedEvents();
@@ -70,4 +83,7 @@ public interface EventService {
 
     @GET(prefix + "/pdfs/stats/{eventId}")
     Call<ResponseBody> triggerEventStatsPDFDownload(@Path("eventId") Long eventId);
+
+    @GET(prefix + "/unreviewed/{userId}")
+    Call<UnreviewedEvent[]> getUnreviewedAcceptedEventsByUserId(@Path("userId") Long userId);
 }

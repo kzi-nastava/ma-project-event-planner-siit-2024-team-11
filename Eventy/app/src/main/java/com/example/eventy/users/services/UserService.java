@@ -6,8 +6,10 @@ import com.example.eventy.solutions.model.SolutionCard;
 import com.example.eventy.users.model.CalendarOccupancy;
 import com.example.eventy.users.model.UpdateUser;
 import com.example.eventy.users.model.User;
+import com.example.eventy.users.model.UserNotificationInfo;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -50,4 +52,14 @@ public interface UserService {
     @GET(eventsPrefix + "/catalog/{userId}")
     Call<PagedResponse<SolutionCard>> getMySolutions(@Path("userId") Long userId, @Query("search") String search,
                                                      @Query("page") int page, @Query("size") int size);
+
+    @GET(userProfilePrefix + "/{userId}/notifications-info")
+    Call<UserNotificationInfo> getUserNotificationsInfo(@Path("userId") Long userId);
+
+    @PUT(userProfilePrefix + "/{userId}/last-read-notifications")
+    Call<LocalDateTime> updateLastReadNotifications(@Path("userId") Long userId);
+
+    @PUT(userProfilePrefix + "/{userId}/notifications-info")
+    Call<Boolean> toggleNotifications(@Path("userId") Long userId,
+                                      @Body Boolean toggleValue);
 }
