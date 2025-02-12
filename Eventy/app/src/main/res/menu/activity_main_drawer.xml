@@ -44,5 +44,10 @@
             android:id="@+id/nav_event_stats"
             android:icon="@drawable/icon_bar_chart"
             android:title="Event Stats"/>
+
+        <item
+            android:id="@+id/nav_pending_reviews"
+            android:icon="@drawable/icon_pending_reviews"
+            android:title="Pending Reviews"/>
     </group>
 </menu>

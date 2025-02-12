@@ -35,7 +35,7 @@
         android:label="Organize Event"
         tools:layout="@layout/fragment_event_organization"/>
 
-  <fragment
+    <fragment
         android:id="@+id/nav_own_services_test"
         android:name="com.example.eventy.users.profile.PUPOwnServicesFragment"
         android:label="test"
@@ -87,6 +87,7 @@
         android:name="com.example.eventy.services.ReservationSelectEventFragment"
         android:label="Service Reservation"
         tools:layout="@layout/fragment_service_reservation_select_event"/>
+
     <fragment
         android:id="@+id/nav_category_home"
         android:name="com.example.eventy.solutions.solutionCategories.CategoryHomeFragment"
@@ -128,5 +129,11 @@
         android:name="com.example.eventy.interactions.notifications.NotificationsFragment"
         android:label="Notifications"
         tools:layout="@layout/fragment_notifications"/>
+
+    <fragment
+        android:id="@+id/nav_pending_reviews"
+        android:name="com.example.eventy.reviews.PendingReviewsFragment"
+        android:label="Pending Reviews"
+        tools:layout="@layout/fragment_pending_reviews"/>
 
 </navigation>

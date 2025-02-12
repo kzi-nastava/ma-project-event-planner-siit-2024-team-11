@@ -71,6 +71,7 @@ public class LoggedInHelperService {
 //            menu.findItem(R.id.nav_event_types).setVisible(true);
 //            menu.findItem(R.id.nav_category_management).setVisible(true);
 //            menu.findItem(R.id.nav_event_stats).setVisible(false);
+//            menu.findItem(R.id.nav_pending_reviews).setVisible(false);
 //        } else if ("ROLE_Organizer".equals(role)){
 //            menu.findItem(R.id.nav_event_organization).setVisible(true);
 //            menu.findItem(R.id.service_reservation).setVisible(true);
