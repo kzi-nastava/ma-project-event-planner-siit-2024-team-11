@@ -1,0 +1,173 @@
+package com.example.eventy.reviews;
+
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
+import com.example.eventy.R;
+import com.example.eventy.adapters.reviews.PendingReviewsAdapter;
+import com.example.eventy.common.PagedResponse;
+import com.example.eventy.custom.ErrorOkDialog;
+import com.example.eventy.databinding.FragmentPendingReviewsBinding;
+import com.example.eventy.reviews.model.Review;
+import com.example.eventy.utils.ClientUtils;
+
+import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class PendingReviewsFragment extends Fragment {
+    private FragmentPendingReviewsBinding binding;
+    private PendingReviewsAdapter pendingReviewsAdapter;
+    private int page = 0;
+    private int pageSize = 10;
+    private int totalPages = 99;
+    private ArrayList<Review> paginatedReviews;
+    private boolean isLoading = false;
+
+    public PendingReviewsFragment() {}
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentPendingReviewsBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        this.paginatedReviews = new ArrayList<>();
+
+        setupRecyclerView();
+        setupPaginationControls();
+        fetchPendingReviews(page, pageSize);
+    }
+
+    private void setupRecyclerView() {
+        pendingReviewsAdapter = new PendingReviewsAdapter(requireContext(), paginatedReviews, this);
+        binding.allReviews.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.allReviews.setAdapter(pendingReviewsAdapter);
+    }
+
+    private void setupPaginationControls() {
+        if (!isAdded()) {
+            return;
+        }
+
+        binding.btnPrevious.setOnClickListener(v -> {
+            if (page > 0) {
+                page--;
+                fetchPendingReviews(page, pageSize);
+            }
+        });
+
+        binding.btnNext.setOnClickListener(v -> {
+            if (page < totalPages - 1) {
+                page++;
+                fetchPendingReviews(page, pageSize);
+            }
+        });
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                requireContext(),
+                R.array.page_size_pending_reviews_options,
+                R.layout.custom_spinner_item
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.spinnerPageSize.setAdapter(adapter);
+        binding.spinnerPageSize.setSelection(1);
+
+        binding.spinnerPageSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                pageSize = Integer.parseInt(parent.getItemAtPosition(position).toString());
+                page = 0;
+                fetchPendingReviews(page, pageSize);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // do nothing
+            }
+        });
+    }
+
+    public void fetchPendingReviews(int page, int pageSize) {
+        if (!isAdded()) {
+            return;
+        }
+
+        if (isLoading) return;
+        isLoading = true;
+
+        Call<PagedResponse<Review>> call = ClientUtils.reviewService.getPendingReviews(page, pageSize);
+        call.enqueue(new Callback<PagedResponse<Review>>() {
+            @Override
+            public void onResponse(Call<PagedResponse<Review>> call, Response<PagedResponse<Review>> response) {
+                if (response.isSuccessful() && response.body() != null && getActivity() != null) {
+                    PagedResponse<Review> pagedResponse = response.body();
+                    paginatedReviews.clear();
+                    paginatedReviews.addAll(pagedResponse.getContent());
+                    pendingReviewsAdapter.notifyDataSetChanged();
+
+                    totalPages = pagedResponse.getTotalPages();
+                    updatePaginationControls();
+
+                } else {
+                    showErrorDialog("Error while loading pending reviews!");
+                    showErrorDialog(response.message());
+                }
+                isLoading = false;
+            }
+
+            @Override
+            public void onFailure(Call<PagedResponse<Review>> call, Throwable t) {
+                showErrorDialog("Error while loading pending reviews!");
+                showErrorDialog(t.getMessage());
+                isLoading = false;
+            }
+        });
+    }
+
+    private void updatePaginationControls() {
+        if (!isAdded()) {
+            return;
+        }
+
+        binding.btnPrevious.setEnabled(page > 0);
+        binding.btnNext.setEnabled(page < totalPages - 1);
+
+        binding.tvPageInfo.setText(String.format("Page %d of %d", page + 1, totalPages));
+    }
+
+    private void showErrorDialog(String message) {
+        if (isAdded() && getActivity() != null) {
+            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", message);
+            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            errorOkDialog.show();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
+}
