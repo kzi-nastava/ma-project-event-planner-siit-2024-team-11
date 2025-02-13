@@ -78,9 +78,16 @@ public class SolutionDetailsFragment extends Fragment {
             Bundle args = new Bundle();
             args.putLong("id", finalId);
 
+            if(solution.getType() == SolutionType.SERVICE) {
+                NavController navController = Navigation.findNavController(getView());
+                navController.popBackStack();
+                navController.navigate(R.id.nav_manipulate_service, args);
+                return;
+            }
+
             NavController navController = Navigation.findNavController(getView());
             navController.popBackStack();
-            navController.navigate(R.id.nav_manipulate_service, args);
+            navController.navigate(R.id.nav_product_update, args);
         });
 
         binding.deleteButton.setOnClickListener(v -> {
@@ -183,6 +190,14 @@ public class SolutionDetailsFragment extends Fragment {
 
         if(solution.getAvailable()) {
             binding.purchaseButton.setText("Buy product");
+            binding.purchaseButton.setOnClickListener(v -> {
+                Bundle args = new Bundle();
+                args.putLong("productId", solution.getSolutionId());
+                args.putString("productName", solution.getName());
+                NavController navController = Navigation.findNavController(getView());
+                navController.popBackStack();
+                navController.navigate(R.id.nav_purchase, args);
+            });
         } else {
             binding.purchaseButton.setText("Product unavailable");
             binding.purchaseButton.setBackgroundTintList(ContextCompat.getColorStateList(getContext(), R.color.button_color));

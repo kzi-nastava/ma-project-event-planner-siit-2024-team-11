@@ -125,15 +125,33 @@
         tools:layout="@layout/fragment_solution_details"/>
 
     <fragment
+        android:id="@+id/nav_product_creation"
+        android:name="com.example.eventy.products.ProductCreationFragment"
+        android:label="Product Creation"
+        tools:layout="@layout/fragment_product_creation"/>
+
+    <fragment
+        android:id="@+id/nav_product_update"
+        android:name="com.example.eventy.products.ProductUpdateFragment"
+        android:label="Product Update"
+        tools:layout="@layout/fragment_product_update"/>
+
+    <fragment
         android:id="@+id/nav_notifications"
         android:name="com.example.eventy.interactions.notifications.NotificationsFragment"
         android:label="Notifications"
         tools:layout="@layout/fragment_notifications"/>
-
+  
     <fragment
         android:id="@+id/nav_pending_reviews"
         android:name="com.example.eventy.reviews.PendingReviewsFragment"
         android:label="Pending Reviews"
         tools:layout="@layout/fragment_pending_reviews"/>
+  
+    <fragment
+        android:id="@+id/nav_purchase"
+        android:name="com.example.eventy.products.ProductPurchaseFragment"
+        android:label="Purchase"
+        tools:layout="@layout/fragment_product_purchase"/>
 
 </navigation>
