@@ -62,8 +62,14 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:text=""
+            android:clickable="true"
+            android:background="@drawable/event_card_see_more_border"
             android:textColor="@color/black"
-            android:textSize="24sp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:textSize="22sp"
             android:fontFamily="@font/albert_sans"/>
 
         <TextView

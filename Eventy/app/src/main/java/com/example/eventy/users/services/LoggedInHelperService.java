@@ -47,12 +47,12 @@ public class LoggedInHelperService {
         return null;
     }
 
-    public static void manageNavigationItems() {LoggedInHelperService.mainActivity.supportInvalidateOptionsMenu();;
-//
-//        String role = LoggedInHelperService.getRole();
-//
-//        Menu menu = LoggedInHelperService.navigationView.getMenu();
-//
+    public static void manageNavigationItems() {LoggedInHelperService.mainActivity.supportInvalidateOptionsMenu();
+        /*
+        String role = LoggedInHelperService.getRole();
+        Menu menu = LoggedInHelperService.navigationView.getMenu();
+        */
+
 //        menu.findItem(R.id.nav_login).setVisible(false);
 //        menu.findItem(R.id.nav_register).setVisible(false);
 //        menu.findItem(R.id.nav_add_service).setVisible(false);
@@ -66,13 +66,16 @@ public class LoggedInHelperService {
 //        menu.findItem(R.id.nav_category_management).setVisible(false);
 //        menu.findItem(R.id.nav_event_stats).setVisible(false);
 //        menu.findItem(R.id.nav_create_product).setVisible(false);
-//
+//        menu.findItem(R.id.nav_pending_reviews).setVisible(false);
+//        menu.findItem(R.id.nav_pending_reports).setVisible(false);
+
 //        // Example logic: Show/Hide items based on role
 //        if ("ROLE_Admin".equals(role)) {
 //            menu.findItem(R.id.nav_event_types).setVisible(true);
 //            menu.findItem(R.id.nav_category_management).setVisible(true);
 //            menu.findItem(R.id.nav_event_stats).setVisible(false);
-//            menu.findItem(R.id.nav_pending_reviews).setVisible(false);
+//            menu.findItem(R.id.nav_pending_reviews).setVisible(true);
+//            menu.findItem(R.id.nav_pending_reports).setVisible(true);
 //        } else if ("ROLE_Organizer".equals(role)){
 //            menu.findItem(R.id.nav_event_organization).setVisible(true);
 //            menu.findItem(R.id.service_reservation).setVisible(true);

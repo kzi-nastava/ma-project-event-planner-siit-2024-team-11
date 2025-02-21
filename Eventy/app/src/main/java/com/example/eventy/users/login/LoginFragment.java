@@ -25,6 +25,8 @@ import com.example.eventy.users.services.LoggedInHelperService;
 import com.example.eventy.users.view_model.UserNotificationInfoViewModel;
 import com.example.eventy.utils.ClientUtils;
 
+import org.json.JSONObject;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -72,6 +74,27 @@ public class LoginFragment extends Fragment {
                         NavController navController = Navigation.findNavController(v);
                         navController.popBackStack();
                         navController.navigate(R.id.nav_home, bundle);
+
+                    } else if (response.code() == 403) {  // ---> suspended user
+                        try {
+                            String errorBody = response.errorBody().string();
+                            JSONObject jsonObject = new JSONObject(errorBody);
+
+                            String message = jsonObject.getString("message");
+                            String suspensionEndsAt = jsonObject.getString("suspensionEndsAt");
+                            String timeLeft = jsonObject.getString("timeLeft");
+
+                            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Account Suspended!",
+                                    message + "\nYou will be unsuspended on " + suspensionEndsAt + ".\nTime left: " + timeLeft + ".");
+                            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            errorOkDialog.show();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "An unexpected error occurred!");
+                            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            errorOkDialog.show();
+                        }
 
                     } else {
                         ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Email and password don't match!");

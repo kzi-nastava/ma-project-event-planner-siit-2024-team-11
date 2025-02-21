@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/dialog_valid_ok"
+    android:id="@+id/dialog_error_ok"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="3dp">
@@ -18,8 +18,8 @@
         android:background="@drawable/dialog_error_ok_background"
         android:elevation="2dp"
         android:orientation="vertical"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
+        android:paddingLeft="7dp"
+        android:paddingRight="7dp"
         android:paddingTop="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,6 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:paddingStart="15dp"
             android:paddingTop="11dp"
             android:paddingEnd="7dp">
 
@@ -51,11 +52,19 @@
                     android:layout_marginTop="3dp"
                     android:layout_weight="1">
 
+                    <ImageView
+                        android:id="@+id/icon"
+                        android:layout_width="29dp"
+                        android:layout_height="29dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_info" />
+
                     <TextView
                         android:id="@+id/title"
                         android:layout_width="wrap_content"
                         android:layout_height="31dp"
                         android:layout_marginLeft="13dp"
+                        android:layout_marginRight="12dp"
                         android:layout_weight="1"
                         android:background="@drawable/event_card_name_container_background"
                         android:fontFamily="@font/albert_sans"
@@ -68,118 +77,84 @@
                         app:layout_constraintTop_toTopOf="parent" />
                 </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/close_button"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginStart="10dp"
-                    android:background="@drawable/icon_remove"/>
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- description container -->
         <LinearLayout
             android:id="@+id/description_container"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="13dp"
             android:layout_marginTop="9dp"
             android:layout_marginRight="13dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="13dp"
             android:elevation="2dp"
             android:orientation="vertical">
 
+            <!-- description text -->
             <TextView
+                android:id="@+id/message"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fontFamily="@font/albert_sans"
-                android:text="From:"
-                android:textColor="@color/home_event_card_label"
-                android:textSize="13.5sp" />
-
-            <TextView
-                android:id="@+id/from_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/albert_sans"
                 android:maxLines="5"
-                android:layout_marginTop="3dp"
                 android:text="Your message lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum"
                 android:textColor="@color/home_event_card_text"
                 android:textSize="15.5sp" />
+        </LinearLayout>
 
-            <TextView
-                android:layout_marginTop="13dp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fontFamily="@font/albert_sans"
-                android:text="For:"
-                android:textColor="@color/home_event_card_label"
-                android:textSize="13.5sp" />
+        <!-- Description Field -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:elevation="2dp"
+            android:id="@+id/report_message_container"
+            android:hint="Message"
+            android:layout_width="match_parent"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/event_card_description_background"
+            app:hintTextColor="@color/home_event_card_label"
+            app:endIconMode="clear_text"
+            android:textColor="@color/home_event_card_text"
+            app:boxBackgroundColor="@color/white"
+            app:boxStrokeColor="#A0ABC7"
+            app:endIconDrawable="@drawable/icon_remove">
 
-            <TextView
-                android:id="@+id/for_email"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/report_message"
+                android:inputType="textMultiLine"
+                android:minLines="1"
+                android:maxLines="3"
+                android:gravity="top|start"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/albert_sans"
-                android:maxLines="5"
-                android:layout_marginTop="3dp"
-                android:text="Your message lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum"
+                android:textSize="15sp"
                 android:textColor="@color/home_event_card_text"
-                android:textSize="15.5sp" />
+                android:background="@drawable/event_card_description_background"/>
+            />
+        </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:layout_marginTop="13dp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fontFamily="@font/albert_sans"
-                android:text="Grade:"
-                android:textColor="@color/home_event_card_label"
-                android:textSize="13.5sp" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/confirm_button"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="18dp"
+            android:textColor="@color/white"
+            android:background="@drawable/filter_button_background"
+            android:fontFamily="@font/albert_sans"
+            android:letterSpacing="0.05"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:text="CONFIRM"
+            android:textAllCaps="false"
+            android:textFontWeight="900"
+            android:textSize="17sp" />
 
-            <LinearLayout
-                android:id="@+id/stars_container"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:elevation="2dp"
-                android:orientation="horizontal">
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/star1"
-                android:layout_width="40dp"
-                android:layout_height="38dp"
-                android:layout_marginEnd="2dp"
-                android:background="@drawable/icon_star_gold" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/star2"
-                android:layout_width="40dp"
-                android:layout_height="38dp"
-                android:layout_marginEnd="2dp"
-                android:background="@drawable/icon_star_grey" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/star3"
-                android:layout_width="40dp"
-                android:layout_height="38dp"
-                android:layout_marginEnd="2dp"
-                android:background="@drawable/icon_star_grey" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/star4"
-                android:layout_width="40dp"
-                android:layout_height="38dp"
-                android:layout_marginEnd="2dp"
-                android:background="@drawable/icon_star_grey" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/star5"
-                android:layout_width="40dp"
-                android:layout_height="38dp"
-                android:background="@drawable/icon_star_grey" />
-        </LinearLayout>
-
-        </LinearLayout>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

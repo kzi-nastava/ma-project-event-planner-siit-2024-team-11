@@ -1,21 +1,14 @@
 package com.example.eventy.events.eventdetails;
 
-import android.Manifest;
 import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -39,6 +32,7 @@ import com.example.eventy.databinding.FragmentEventDetailsBinding;
 import com.example.eventy.events.model.CreateActivity;
 import com.example.eventy.events.organizeevent.ActivityTableAdapter;
 import com.example.eventy.users.model.EventDetails;
+import com.example.eventy.users.services.LoggedInHelperService;
 import com.example.eventy.utils.ClientUtils;
 
 import org.osmdroid.api.IMapController;
@@ -46,17 +40,13 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapListener;
 import org.osmdroid.events.ScrollEvent;
 import org.osmdroid.events.ZoomEvent;
-import org.osmdroid.tileprovider.MapTileProviderBasic;
-import org.osmdroid.tileprovider.modules.TileDownloader;
 import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.util.MapTileIndex;
 import org.osmdroid.views.overlay.Marker;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.security.cert.X509Certificate;
 import java.time.format.DateTimeFormatter;
@@ -73,9 +63,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class EventDetailsFragment extends Fragment {
-
     private FragmentEventDetailsBinding binding;
-
     private EventDetails event;
 
     @Override
@@ -188,6 +176,20 @@ public class EventDetailsFragment extends Fragment {
                     binding.favoriteButton.setOnClickListener(v -> toggleFavButton());
                     binding.downloadEventDetailsButton.setOnClickListener(v -> downloadEventDetails());
                     binding.downloadGuestListButton.setOnClickListener(v -> downloadGuestList());
+
+                    if (event.getOrganizerId() != LoggedInHelperService.getId()) {
+                        binding.eventOrganizerText.setOnClickListener(v -> {
+                            Bundle args = new Bundle();
+                            args.putLong("userId", event.getOrganizerId());
+                            NavController navController = Navigation.findNavController(v);
+                            navController.navigate(R.id.nav_other_user_profile_page, args);
+                        });
+                    } else {
+                        binding.eventOrganizerText.setOnClickListener(v -> {
+                            NavController navController = Navigation.findNavController(v);
+                            navController.navigate(R.id.nav_my_profile);
+                        });
+                    }
 
                     RecyclerView recyclerView = binding.recyclerView;
                     recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));

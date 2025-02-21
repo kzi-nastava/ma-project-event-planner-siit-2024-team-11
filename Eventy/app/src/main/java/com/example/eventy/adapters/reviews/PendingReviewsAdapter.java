@@ -110,8 +110,4 @@ public class PendingReviewsAdapter extends RecyclerView.Adapter<PendingReviewsAd
             declineReview = itemView.findViewById(R.id.decline_review_button);
         }
     }
-
-    public interface OnReviewActionListener {
-        void onReviewAction();
-    }
 }

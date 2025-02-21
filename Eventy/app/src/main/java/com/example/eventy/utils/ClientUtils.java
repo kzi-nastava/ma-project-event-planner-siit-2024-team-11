@@ -16,6 +16,7 @@ import com.example.eventy.services.services.ServiceService;
 import com.example.eventy.solutions.services.SolutionCategoryService;
 import com.example.eventy.solutions.services.SolutionService;
 import com.example.eventy.users.services.AuthService;
+import com.example.eventy.users.services.ReportService;
 import com.example.eventy.users.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -56,6 +57,7 @@ public class ClientUtils {
         categoryService = retrofit.create(SolutionCategoryService.class);
         productService = retrofit.create(ProductService.class);
         reviewService = retrofit.create(ReviewService.class);
+        reportService = retrofit.create(ReportService.class);
         notificationService = retrofit.create(NotificationService.class);
     }
 
@@ -96,5 +98,6 @@ public class ClientUtils {
     public static SolutionCategoryService categoryService;
     public static ProductService productService;
     public static ReviewService reviewService;
+    public static ReportService reportService;
     public static NotificationService notificationService;
 }

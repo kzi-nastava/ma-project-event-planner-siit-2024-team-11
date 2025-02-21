@@ -312,7 +312,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Provider name"
+                android:paddingTop="7dp"
+                android:paddingBottom="7dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
                 android:textSize="20sp"
+                android:background="@drawable/event_card_see_more_border"
                 android:layout_marginLeft="10dp"/>
 
         </LinearLayout>

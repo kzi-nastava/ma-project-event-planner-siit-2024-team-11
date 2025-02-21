@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/dialog_valid_ok"
+    android:id="@+id/dialog_report_details"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="3dp">
@@ -98,13 +98,12 @@
                 android:textSize="13.5sp" />
 
             <TextView
-                android:id="@+id/from_email"
-                android:layout_width="match_parent"
+                android:id="@+id/sender_email"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/albert_sans"
-                android:maxLines="5"
                 android:layout_marginTop="3dp"
-                android:text="Your message lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum"
+                android:text="ves@gmail.com"
                 android:textColor="@color/home_event_card_text"
                 android:textSize="15.5sp" />
 
@@ -118,66 +117,56 @@
                 android:textSize="13.5sp" />
 
             <TextView
-                android:id="@+id/for_email"
-                android:layout_width="match_parent"
+                android:id="@+id/reported_user"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/albert_sans"
-                android:maxLines="5"
                 android:layout_marginTop="3dp"
-                android:text="Your message lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum"
+                android:fontFamily="@font/albert_sans"
+                android:text="tac@gmail.com"
                 android:textColor="@color/home_event_card_text"
                 android:textSize="15.5sp" />
 
-            <TextView
-                android:layout_marginTop="13dp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fontFamily="@font/albert_sans"
-                android:text="Grade:"
-                android:textColor="@color/home_event_card_label"
-                android:textSize="13.5sp" />
-
             <LinearLayout
                 android:id="@+id/stars_container"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_width="wrap_content"
                 android:elevation="2dp"
                 android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/star1"
-                android:layout_width="40dp"
-                android:layout_height="38dp"
-                android:layout_marginEnd="2dp"
-                android:background="@drawable/icon_star_gold" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/star1"
+                    android:layout_width="40dp"
+                    android:layout_height="38dp"
+                    android:layout_marginEnd="2dp"
+                    android:background="@drawable/icon_star_gold" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/star2"
-                android:layout_width="40dp"
-                android:layout_height="38dp"
-                android:layout_marginEnd="2dp"
-                android:background="@drawable/icon_star_grey" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/star2"
+                    android:layout_width="40dp"
+                    android:layout_height="38dp"
+                    android:layout_marginEnd="2dp"
+                    android:background="@drawable/icon_star_grey" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/star3"
-                android:layout_width="40dp"
-                android:layout_height="38dp"
-                android:layout_marginEnd="2dp"
-                android:background="@drawable/icon_star_grey" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/star3"
+                    android:layout_width="40dp"
+                    android:layout_height="38dp"
+                    android:layout_marginEnd="2dp"
+                    android:background="@drawable/icon_star_grey" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/star4"
-                android:layout_width="40dp"
-                android:layout_height="38dp"
-                android:layout_marginEnd="2dp"
-                android:background="@drawable/icon_star_grey" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/star4"
+                    android:layout_width="40dp"
+                    android:layout_height="38dp"
+                    android:layout_marginEnd="2dp"
+                    android:background="@drawable/icon_star_grey" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/star5"
-                android:layout_width="40dp"
-                android:layout_height="38dp"
-                android:background="@drawable/icon_star_grey" />
-        </LinearLayout>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/star5"
+                    android:layout_width="40dp"
+                    android:layout_height="38dp"
+                    android:background="@drawable/icon_star_grey" />
+            </LinearLayout>
 
         </LinearLayout>
     </LinearLayout>
