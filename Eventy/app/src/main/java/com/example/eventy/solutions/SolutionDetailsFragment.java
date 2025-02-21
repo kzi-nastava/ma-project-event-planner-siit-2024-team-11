@@ -180,13 +180,20 @@ public class SolutionDetailsFragment extends Fragment {
         }
 
         binding.providerName.setText(solution.getProviderName());
-        binding.providerName.setOnClickListener(v -> {
-            NavController navController = Navigation.findNavController(v);
-            Bundle args = new Bundle();
-            args.putLong("userId", solution.getProviderId());
-            navController.popBackStack();
-            navController.navigate(R.id.nav_other_user_profile_page, args);
-        });
+
+        if (solution.getProviderId() != LoggedInHelperService.getId()) {
+            binding.providerName.setOnClickListener(v -> {
+                NavController navController = Navigation.findNavController(v);
+                Bundle args = new Bundle();
+                args.putLong("userId", solution.getProviderId());
+                navController.navigate(R.id.nav_other_user_profile_page, args);
+            });
+        } else {
+            binding.providerName.setOnClickListener(v -> {
+                NavController navController = Navigation.findNavController(v);
+                navController.navigate(R.id.nav_my_profile);
+            });
+        }
 
         if(solution.getAvailable()) {
             binding.purchaseButton.setText("Buy product");
