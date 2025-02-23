@@ -88,42 +88,6 @@ public class EventEditFragment extends Fragment {
             binding.radioPublic.setChecked(false);
             binding.radioPrivate.setChecked(true);
         });
-        Call<EventTypeCard[]> call = ClientUtils.eventTypeService.getActiveEventTypes();
-        call.enqueue(new Callback<EventTypeCard[]>() {
-            @Override
-            public void onResponse(Call<EventTypeCard[]> call, Response<EventTypeCard[]> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    MaterialAutoCompleteTextView eventTypeAutoCompleteTextView = binding.eventTypeAutoCompleteTextView;
-                    ArrayAdapter<EventTypeCard> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, response.body());
-                    eventTypeAutoCompleteTextView.setAdapter(adapter);
-
-                    eventTypeAutoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
-                        // Get the selected EventTypeCard object
-                        EventTypeCard selectedCard = (EventTypeCard) parent.getItemAtPosition(position);
-
-                        // Get the ID of the selected card
-                        selectedEventTypeId = selectedCard.getId();
-                    });
-
-                    eventTypeAutoCompleteTextView.setOnClickListener(v -> {
-                        if (!eventTypeAutoCompleteTextView.isPopupShowing()) {
-                            eventTypeAutoCompleteTextView.showDropDown();
-                        }
-                    });
-                } else {
-                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while getting the event types!");
-                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    errorOkDialog.show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<EventTypeCard[]> call, Throwable t) {
-                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while getting the event types!");
-                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                errorOkDialog.show();
-            }
-        });
 
         OnlineTileSourceBase cartoTileSource = new OnlineTileSourceBase(
                 "CartoDB",
@@ -201,6 +165,45 @@ public class EventEditFragment extends Fragment {
         binding.mapview.getOverlays().add(mapEventsOverlay);
 
         binding.dateRangeInput.setOnClickListener(v -> showDateRangePicker());
+
+        Call<EventTypeCard[]> call = ClientUtils.eventTypeService.getActiveEventTypes();
+        call.enqueue(new Callback<EventTypeCard[]>() {
+            @Override
+            public void onResponse(Call<EventTypeCard[]> call, Response<EventTypeCard[]> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    MaterialAutoCompleteTextView eventTypeAutoCompleteTextView = binding.eventTypeAutoCompleteTextView;
+                    ArrayAdapter<EventTypeCard> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, response.body());
+                    eventTypeAutoCompleteTextView.setAdapter(adapter);
+
+                    eventTypeAutoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
+                        // Get the selected EventTypeCard object
+                        EventTypeCard selectedCard = (EventTypeCard) parent.getItemAtPosition(position);
+
+                        // Get the ID of the selected card
+                        selectedEventTypeId = selectedCard.getId();
+                    });
+
+                    eventTypeAutoCompleteTextView.setOnClickListener(v -> {
+                        if (!eventTypeAutoCompleteTextView.isPopupShowing()) {
+                            eventTypeAutoCompleteTextView.showDropDown();
+                        }
+                    });
+
+                    //...
+                } else {
+                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while getting the event types!");
+                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    errorOkDialog.show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EventTypeCard[]> call, Throwable t) {
+                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while getting the event types!");
+                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                errorOkDialog.show();
+            }
+        });
 
         return root;
     }
