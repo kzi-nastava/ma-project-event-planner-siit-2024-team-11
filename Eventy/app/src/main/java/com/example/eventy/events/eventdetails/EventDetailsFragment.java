@@ -49,6 +49,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.security.cert.X509Certificate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
@@ -196,6 +197,24 @@ public class EventDetailsFragment extends Fragment {
 
                     ActivityTableAdapter adapter = new ActivityTableAdapter(event.getAgenda().stream().map(CreateActivity::new).collect(Collectors.toList()));
                     recyclerView.setAdapter(adapter);
+
+                    if(event.getOrganizerId() == LoggedInHelperService.getId()) {
+                        binding.chatButton.setVisibility(View.GONE);
+
+                        if (event.getDate().isAfter(LocalDateTime.now())) {
+                            binding.editButton.setVisibility(View.VISIBLE);
+
+                            binding.editButton.setOnClickListener(v -> {
+                                Bundle args = new Bundle();
+                                args.putLong("EventID", event.getId());
+                                NavController navController = Navigation.findNavController(v);
+
+                                navController.popBackStack();
+
+                                navController.navigate(R.id.nav_event_edit, args);
+                            });
+                        }
+                    }
                 }
                 else {
                     ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while loading the event.");
