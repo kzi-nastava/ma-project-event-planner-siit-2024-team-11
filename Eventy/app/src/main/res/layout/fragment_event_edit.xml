@@ -107,40 +107,6 @@ android:gravity="center">
         android:background="@color/input_color"/>
 </com.google.android.material.textfield.TextInputLayout>
 
-<LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="12dp">
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/privacyTypeLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Privacy Type:"
-        android:textSize="16sp"
-        android:layout_marginBottom="8dp"
-        app:fontFamily="@font/roboto"
-        android:textColor="#222222"/>
-
-    <androidx.appcompat.widget.AppCompatRadioButton
-        android:id="@+id/radioPublic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Public"
-        android:textColor="@color/black"
-        app:buttonTint="@color/button_color"
-        android:layout_marginStart="16dp" />
-
-    <androidx.appcompat.widget.AppCompatRadioButton
-        android:id="@+id/radioPrivate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Private"
-        android:textColor="@color/black"
-        app:buttonTint="@color/button_color"
-        android:layout_marginStart="16dp" />
-</LinearLayout>
-
 <com.google.android.material.textfield.TextInputLayout
     android:id="@+id/event_type_input_layout"
     android:layout_width="match_parent"
@@ -179,14 +145,14 @@ android:gravity="center">
     android:textAlignment="center"/>
 
 <com.google.android.material.textfield.TextInputLayout
-    android:id="@+id/date_range_input_layout"
+    android:id="@+id/date_input_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="12dp"
     android:hint="Select Date Range">
 
     <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/date_range_input"
+        android:id="@+id/date_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="none"
@@ -202,7 +168,7 @@ android:gravity="center">
         android:paddingRight="15dp"
         android:paddingBottom="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/formContainer">
+        app:layout_constraintTop_toBottomOf="@+id/agenda_container">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/submitButton"

@@ -23,9 +23,11 @@ import android.widget.ArrayAdapter;
 import com.example.eventy.R;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentEventEditBinding;
-import com.example.eventy.databinding.FragmentEventOrganizationBasicInformationBinding;
+import com.example.eventy.events.model.CreateActivity;
 import com.example.eventy.events.model.CreateLocation;
 import com.example.eventy.events.model.EventTypeCard;
+import com.example.eventy.events.model.UpdateEvent;
+import com.example.eventy.events.organizeevent.EventAgendaCreation;
 import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointForward;
@@ -47,6 +49,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -77,17 +80,7 @@ public class EventEditFragment extends Fragment {
         addValidation(binding.nameInputLayout, binding.nameInput, this::validateRequired);
         addValidation(binding.descriptionInputLayout, binding.descriptionInput, this::validateRequired);
         addValidation(binding.maxParticipantsInputLayout, binding.maxParticipantsInput, this::validateNumber);
-        addValidation(binding.dateRangeInputLayout, binding.dateRangeInput, this::validateRequired);
-
-        binding.radioPublic.setOnClickListener(v -> {
-            binding.radioPrivate.setChecked(false);
-            binding.radioPublic.setChecked(true);
-        });
-
-        binding.radioPrivate.setOnClickListener(v -> {
-            binding.radioPublic.setChecked(false);
-            binding.radioPrivate.setChecked(true);
-        });
+        addValidation(binding.dateInputLayout, binding.dateInput, this::validateRequired);
 
         OnlineTileSourceBase cartoTileSource = new OnlineTileSourceBase(
                 "CartoDB",
@@ -164,15 +157,16 @@ public class EventEditFragment extends Fragment {
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(mapEventsReceiver);
         binding.mapview.getOverlays().add(mapEventsOverlay);
 
-        binding.dateRangeInput.setOnClickListener(v -> showDateRangePicker());
+        binding.dateInput.setOnClickListener(v -> showDatePicker());
 
         Call<EventTypeCard[]> call = ClientUtils.eventTypeService.getActiveEventTypes();
         call.enqueue(new Callback<EventTypeCard[]>() {
             @Override
             public void onResponse(Call<EventTypeCard[]> call, Response<EventTypeCard[]> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    EventTypeCard[] eventTypeCards = response.body();
                     MaterialAutoCompleteTextView eventTypeAutoCompleteTextView = binding.eventTypeAutoCompleteTextView;
-                    ArrayAdapter<EventTypeCard> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, response.body());
+                    ArrayAdapter<EventTypeCard> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, eventTypeCards);
                     eventTypeAutoCompleteTextView.setAdapter(adapter);
 
                     eventTypeAutoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
@@ -189,7 +183,46 @@ public class EventEditFragment extends Fragment {
                         }
                     });
 
-                    //...
+                    Long eventId = getArguments().getLong("EventID");
+
+                    Call<UpdateEvent> call2 = ClientUtils.eventService.getEventForUpdate(eventId);
+                    call2.enqueue(new Callback<UpdateEvent>() {
+                        @Override
+                        public void onResponse(Call<UpdateEvent> call, Response<UpdateEvent> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+                                binding.nameInput.setText(response.body().getName());
+                                binding.descriptionInput.setText(response.body().getDescription());
+                                binding.maxParticipantsInput.setText(response.body().getMaxNumberParticipants());
+
+                                for (EventTypeCard eventTypeCard : eventTypeCards) {
+                                    if (eventTypeCard.getId() == response.body().getEventTypeId()) {
+                                        binding.eventTypeAutoCompleteTextView.setText(eventTypeCard.getName(), false);
+                                        selectedEventTypeId = eventTypeCard.getId();
+                                    }
+                                }
+
+                                mapController.setCenter(new GeoPoint(response.body().getLocation().getLatitude(), response.body().getLocation().getLongitude()));
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                                String selectedDate = sdf.format(response.body().getDate());
+                                binding.dateInput.setText(selectedDate);
+
+                                getChildFragmentManager().beginTransaction()
+                                        .replace(R.id.agenda_container, new EventAgendaCreation((ArrayList<CreateActivity>) response.body().getAgenda()))
+                                        .commit();
+                            } else {
+                                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while getting the event!");
+                                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                errorOkDialog.show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<UpdateEvent> call, Throwable t) {
+                            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while getting the event!");
+                            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            errorOkDialog.show();
+                        }
+                    });
                 } else {
                     ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while getting the event types!");
                     errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -256,43 +289,19 @@ public class EventEditFragment extends Fragment {
         }
     }
 
-    public void showDateRangePicker() {
-        CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder()
-                .setValidator(DateValidatorPointForward.now());
+    public void showDatePicker() {
+        MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Select Date")
+                .setSelection(MaterialDatePicker.todayInUtcMilliseconds()) // Prefill with today
+                .build();
 
-        MaterialDatePicker.Builder<androidx.core.util.Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
-        builder.setTitleText("Select Date Range");
-        builder.setCalendarConstraints(constraintsBuilder.build());
+        datePicker.show(getParentFragmentManager(), "DATE_PICKER");
 
-        final MaterialDatePicker<Pair<Long, Long>> dateRangePicker = builder.build();
-
-        dateRangePicker.show(getParentFragmentManager(), "date_range_picker");
-
-        dateRangePicker.addOnNegativeButtonClickListener(selection -> {
-            if(!binding.dateRangeInput.getText().toString().contains("-")) {
-                binding.dateRangeInputLayout.setError("You have to enter full range!");
-            }
-        });
-
-        dateRangePicker.addOnPositiveButtonClickListener(selection -> {
-            Long startDate = selection.first;
-            Long endDate = selection.second;
-
-            if (startDate != null && endDate != null) {
-                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                String formattedStart = formatter.format(new Date(startDate));
-                String formattedEnd = formatter.format(new Date(endDate));
-
-                binding.dateRangeInput.setText(formattedStart + " - " + formattedEnd);
-                binding.dateRangeInputLayout.setError(null);
-
-                selectedDate = Instant.ofEpochMilli(startDate).atZone(ZoneId.systemDefault()).toLocalDateTime();
-            }
-            else {
-                if(!binding.dateRangeInput.getText().toString().contains("-")) {
-                    binding.dateRangeInputLayout.setError("You have to enter full range!");
-                }
-            }
+        datePicker.addOnPositiveButtonClickListener(selection -> {
+            // Convert the selected date
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            String selectedDate = sdf.format(new Date(selection));
+            binding.dateInput.setText(selectedDate);
         });
     }
 
@@ -337,10 +346,6 @@ public class EventEditFragment extends Fragment {
         return Integer.valueOf(this.binding.maxParticipantsInput.getText().toString());
     }
 
-    public boolean isPublic() {
-        return this.binding.radioPublic.isChecked();
-    }
-
     public Long getEventTypeId() {
         return this.selectedEventTypeId;
     }
@@ -355,7 +360,7 @@ public class EventEditFragment extends Fragment {
     }
 
     public LocalDateTime getDate() {
-        if(this.binding.dateRangeInputLayout.getError() == null) {
+        if(this.binding.dateInputLayout.getError() == null) {
             return this.selectedDate;
         }
 
