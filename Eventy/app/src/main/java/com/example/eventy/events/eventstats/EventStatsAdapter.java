@@ -22,7 +22,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,7 +30,6 @@ import com.example.eventy.R;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.events.model.EventCard;
 import com.example.eventy.events.model.EventStats;
-import com.example.eventy.home.events.event_card.EventCardFragment;
 import com.example.eventy.utils.ClientUtils;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -96,9 +94,9 @@ public class EventStatsAdapter extends RecyclerView.Adapter<EventStatsAdapter.Ev
 
             holder.eventLocation.setText(eventCard.getLocationName());
 
-            String openOrFullString = (eventCard.isOpen() ? "OPEN EVENT" : "FULL EVENT") + "!";
-            holder.openOrFull.setText(openOrFullString);
-            holder.openOrFull.setTextColor(eventCard.isOpen() ? Color.parseColor("#3ED34F") : Color.parseColor("#E91A1A"));
+            String openOrPrivateString = (eventCard.getIsOpen() ? "PUBLIC" : "PRIVATE") + "!";
+            holder.openOrFull.setText(openOrPrivateString);
+            holder.openOrFull.setTextColor(eventCard.getIsOpen() ? Color.parseColor("#3ED34F") : Color.parseColor("#4ea0e7"));
 
             holder.description.setText(eventCard.getDescription());
 

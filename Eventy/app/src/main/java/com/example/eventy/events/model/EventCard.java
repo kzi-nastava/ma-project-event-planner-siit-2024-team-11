@@ -67,11 +67,11 @@ public class EventCard {
         this.maxNumberParticipants = maxNumberParticipants;
     }
 
-    public boolean isOpen() {
+    public boolean getIsOpen() {
         return isOpen;
     }
 
-    public void setOpen(boolean open) {
+    public void setIsOpen(boolean open) {
         isOpen = open;
     }
 

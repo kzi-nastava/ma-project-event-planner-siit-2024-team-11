@@ -3,6 +3,7 @@ package com.example.eventy.users.services;
 import com.example.eventy.common.PagedResponse;
 import com.example.eventy.events.model.EventCard;
 import com.example.eventy.solutions.model.SolutionCard;
+import com.example.eventy.users.model.BlockUser;
 import com.example.eventy.users.model.CalendarOccupancy;
 import com.example.eventy.users.model.UpdateUser;
 import com.example.eventy.users.model.User;
@@ -15,6 +16,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -62,4 +64,7 @@ public interface UserService {
     @PUT(userProfilePrefix + "/{userId}/notifications-info")
     Call<Boolean> toggleNotifications(@Path("userId") Long userId,
                                       @Body Boolean toggleValue);
+
+    @POST(userProfilePrefix + "/block")
+    Call<BlockUser> blockUser(@Body BlockUser blockUser);
 }
