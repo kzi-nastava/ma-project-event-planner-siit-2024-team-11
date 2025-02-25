@@ -1,5 +1,9 @@
 package com.example.eventy.events.eventedit;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
@@ -10,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -25,9 +31,12 @@ import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentEventEditBinding;
 import com.example.eventy.events.model.CreateActivity;
 import com.example.eventy.events.model.CreateLocation;
+import com.example.eventy.events.model.Event;
 import com.example.eventy.events.model.EventTypeCard;
+import com.example.eventy.events.model.OrganizeEvent;
 import com.example.eventy.events.model.UpdateEvent;
 import com.example.eventy.events.organizeevent.EventAgendaCreation;
+import com.example.eventy.users.services.LoggedInHelperService;
 import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointForward;
@@ -70,6 +79,8 @@ public class EventEditFragment extends Fragment {
 
     private double latitude = -1L;
     private double longtitude = -1L;
+    private EventAgendaCreation eventAgendaCreation;
+    private Long eventId;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -183,7 +194,7 @@ public class EventEditFragment extends Fragment {
                         }
                     });
 
-                    Long eventId = getArguments().getLong("EventID");
+                    eventId = getArguments().getLong("EventID");
 
                     Call<UpdateEvent> call2 = ClientUtils.eventService.getEventForUpdate(eventId);
                     call2.enqueue(new Callback<UpdateEvent>() {
@@ -206,8 +217,9 @@ public class EventEditFragment extends Fragment {
                                 String selectedDate = sdf.format(response.body().getDate());
                                 binding.dateInput.setText(selectedDate);
 
+                                eventAgendaCreation = new EventAgendaCreation((ArrayList<CreateActivity>) response.body().getAgenda());
                                 getChildFragmentManager().beginTransaction()
-                                        .replace(R.id.agenda_container, new EventAgendaCreation((ArrayList<CreateActivity>) response.body().getAgenda()))
+                                        .replace(R.id.agenda_container, eventAgendaCreation)
                                         .commit();
                             } else {
                                 ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while getting the event!");
@@ -236,6 +248,62 @@ public class EventEditFragment extends Fragment {
                 errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 errorOkDialog.show();
             }
+        });
+
+        binding.submitButton.setOnClickListener(v -> {
+            if (!this.isValid()) {
+                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Invalid input values!");
+                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                errorOkDialog.show();
+
+                return;
+            }
+
+            UpdateEvent updateEvent = new UpdateEvent(
+                    eventId,
+                    binding.nameInput.getText().toString(),
+                    binding.descriptionInput.getText().toString(),
+                    Integer.valueOf(binding.maxParticipantsInput.getText().toString()),
+                    selectedEventTypeId,
+                    new CreateLocation(
+                            this.binding.mapLocationText.getText().toString().substring(9),
+                            this.binding.mapLocationText.getText().toString().substring(9),
+                            this.latitude,
+                            this.longtitude
+                    ),
+                    selectedDate,
+                    eventAgendaCreation.getAgenda()
+            );
+            Call<Event> call2 = ClientUtils.eventService.edit(updateEvent);
+            call2.enqueue(new Callback<Event>() {
+                @Override
+                public void onResponse(Call<Event> call, Response<Event> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        new AlertDialog.Builder(getContext())
+                                .setTitle("Successful edit")
+                                .setMessage("Event is now edited.")
+                                .setIcon(R.drawable.icon_success_png)
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        NavController navController = Navigation.findNavController(v);
+                                        navController.popBackStack();
+                                        navController.navigate(R.id.nav_home);
+                                    }})
+                                .show();
+                    } else {
+                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while editing the event!");
+                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        errorOkDialog.show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Event> call, Throwable t) {
+                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while editing the event!");
+                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    errorOkDialog.show();
+                }
+            });
         });
 
         return root;
