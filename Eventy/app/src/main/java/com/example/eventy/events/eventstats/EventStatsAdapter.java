@@ -94,9 +94,9 @@ public class EventStatsAdapter extends RecyclerView.Adapter<EventStatsAdapter.Ev
 
             holder.eventLocation.setText(eventCard.getLocationName());
 
-            String openOrFullString = (eventCard.getIsOpen() ? "OPEN EVENT" : "FULL EVENT") + "!";
-            holder.openOrFull.setText(openOrFullString);
-            holder.openOrFull.setTextColor(eventCard.getIsOpen() ? Color.parseColor("#3ED34F") : Color.parseColor("#E91A1A"));
+            String openOrPrivateString = (eventCard.getIsOpen() ? "PUBLIC" : "PRIVATE") + "!";
+            holder.openOrFull.setText(openOrPrivateString);
+            holder.openOrFull.setTextColor(eventCard.getIsOpen() ? Color.parseColor("#3ED34F") : Color.parseColor("#4ea0e7"));
 
             holder.description.setText(eventCard.getDescription());
 
