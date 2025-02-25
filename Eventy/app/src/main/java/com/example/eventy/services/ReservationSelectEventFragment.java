@@ -13,6 +13,8 @@ import android.widget.Spinner;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.eventy.R;
 import com.example.eventy.custom.ErrorOkDialog;
@@ -55,7 +57,24 @@ public class ReservationSelectEventFragment extends Fragment implements EventFil
         binding = FragmentServiceReservationSelectEventBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        loadMockService();
+        Bundle arguments = getArguments();
+        if (arguments == null) {
+            if (isAdded() && getActivity() != null) {
+                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "No service selected!");
+                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                errorOkDialog.setOnDismissListener(dialog -> {
+                    NavController navController = Navigation.findNavController(getView());
+                    navController.navigate(R.id.nav_home);
+                });
+
+                errorOkDialog.show();
+            }
+
+            return root;
+        }
+
+        loadSelectedService(arguments.getLong("serviceId"));
 
         loadInitialItems();
 
@@ -81,11 +100,11 @@ public class ReservationSelectEventFragment extends Fragment implements EventFil
         return root;
     }
 
-    private void loadMockService() {
+    private void loadSelectedService(Long serviceId) {
         if (isServiceLoading) return;
         isServiceLoading = true;
 
-        Call<SolutionCard> call = ClientUtils.serviceService.getServiceCard(6L);
+        Call<SolutionCard> call = ClientUtils.serviceService.getServiceCard(serviceId);
         call.enqueue(new Callback<SolutionCard>() {
             @Override
             public void onResponse(Call<SolutionCard> call, Response<SolutionCard> response) {

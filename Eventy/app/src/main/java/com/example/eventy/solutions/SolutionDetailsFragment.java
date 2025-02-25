@@ -241,6 +241,12 @@ public class SolutionDetailsFragment extends Fragment {
 
             if(solution.getAvailable()) {
                 binding.purchaseButton.setText("Reserve service");
+                binding.purchaseButton.setOnClickListener(v -> {
+                    Bundle args = new Bundle();
+                    args.putLong("serviceId", solution.getSolutionId());
+                    NavController navController = Navigation.findNavController(getView());
+                    navController.navigate(R.id.service_reservation, args);
+                });
             } else {
                 binding.purchaseButton.setText("Service unavailable");
                 binding.purchaseButton.setBackgroundTintList(ContextCompat.getColorStateList(getContext(), R.color.button_color));
