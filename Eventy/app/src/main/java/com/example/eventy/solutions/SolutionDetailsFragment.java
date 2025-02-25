@@ -112,6 +112,17 @@ public class SolutionDetailsFragment extends Fragment {
                     if (response.isSuccessful()) {
                         solution = response.body();
                         loadPage();
+
+                    } else if (response.code() == 403) {  // ---> blocked user
+                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Content Blocked", "You cannot access the content of a blocked account!");
+                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        errorOkDialog.setOnDismissListener(dialog -> {
+                            NavController navController = Navigation.findNavController(container);
+                            navController.popBackStack();
+                            navController.navigate(R.id.nav_home);
+                        });
+                        errorOkDialog.show();
+
                     } else {
                         ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Solution could not be loaded.");
                         errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
