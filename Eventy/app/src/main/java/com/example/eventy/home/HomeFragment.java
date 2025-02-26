@@ -1,7 +1,10 @@
 package com.example.eventy.home;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
@@ -18,6 +22,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.eventy.R;
+import com.example.eventy.common.ShakeDetector;
 import com.example.eventy.custom.CreateReviewDialog;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentHomeBinding;
@@ -73,6 +78,12 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
     private int currentIndex = 0;
     private Long loggedInUserId;
 
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+    private ShakeDetector shakeDetector;
+    private boolean isSolutionTabActive = false;
+    private boolean isPriceAscending = true; // To toggle between asc and desc
+
     //////////////////////////////////////////////////
 
     public HomeFragment() {
@@ -83,6 +94,14 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        sensorManager = (SensorManager) requireActivity().getSystemService(Context.SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        shakeDetector = new ShakeDetector(() -> {
+            if (isSolutionTabActive) {
+                toggleSolutionSort();
+            }
+        });
 
         loadInitialView();
 
@@ -105,6 +124,38 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
         setupEventSearch();
         setupEventFilters();
         setupEventSort();
+    }
+
+    private void toggleSolutionSort() {
+        if (solutionsFragment != null) {
+           String sortOrder;
+
+            if (isPriceAscending) {
+                sortOrder = "price,asc";
+                binding.sortButton.setSelection(2);
+            } else {
+                sortOrder = "price,desc";
+                binding.sortButton.setSelection(3);
+            }
+            isPriceAscending = !isPriceAscending;
+
+            solutionsFragment.updateSort(sortOrder);
+            Toast.makeText(getContext(), "Sorted by " + (!isPriceAscending ? "Price ASC" : "Price DESC"), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (accelerometer != null) {
+            sensorManager.registerListener(shakeDetector, accelerometer, SensorManager.SENSOR_DELAY_UI);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(shakeDetector);
     }
 
     private void loadInitialTitle() {
@@ -130,6 +181,9 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
 
     private void setupTabEvents() {
         binding.tabEvent.setOnClickListener(v -> {
+            isSolutionTabActive = false;
+            isSolutionFilterOpened = false;
+
             binding.tabEvent.setTextColor(ContextCompat.getColor(v.getContext(), R.color.tab_active_text_color));
             binding.tabEvent.setBackground(ContextCompat.getDrawable(v.getContext(), R.drawable.home_tab_active_background));
 
@@ -307,6 +361,9 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
 
     private void setupTabSolutions() {
         binding.tabSolutions.setOnClickListener(v -> {
+            isSolutionTabActive = true;
+            isEventFilterOpened = false;
+
             binding.tabEvent.setTextColor(ContextCompat.getColor(v.getContext(), R.color.tab_inactive_text_color));
             binding.tabEvent.setBackground(ContextCompat.getDrawable(v.getContext(), R.drawable.home_tab_inactive_background));
 
@@ -320,6 +377,7 @@ public class HomeFragment extends Fragment implements EventFilterBottomSheetFrag
             setupSolutionSearch();
             setupSolutionFilters();
             setupSolutionSort();
+            solutionsFragment.updateSort("category,asc");
         });
     }
 
