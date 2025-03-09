@@ -21,6 +21,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -224,13 +225,16 @@ public class EventEditFragment extends Fragment {
                                 binding.mapview.getOverlays().add(pinMarker);
 
                                 getAddressFromCoordinates(location.getLatitude(), location.getLongitude());
+                                latitude = location.getLatitude();
+                                longtitude = location.getLongitude();
 
                                 LocalDateTime localDateTime = response.body().getDate();
                                 ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
                                 Date date = Date.from(zonedDateTime.toInstant());
                                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                                String selectedDate = sdf.format(date);
-                                binding.dateInput.setText(selectedDate);
+                                String selectedDateString = sdf.format(date);
+                                binding.dateInput.setText(selectedDateString);
+                                selectedDate = localDateTime;
 
                                 eventAgendaCreation = new EventAgendaCreation((ArrayList<CreateActivity>) response.body().getAgenda());
                                 getChildFragmentManager().beginTransaction()
@@ -300,9 +304,13 @@ public class EventEditFragment extends Fragment {
                                 .setIcon(R.drawable.icon_success_png)
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
+                                        Bundle args = new Bundle();
+                                        args.putLong("EventID", eventId);
                                         NavController navController = Navigation.findNavController(v);
+
                                         navController.popBackStack();
-                                        navController.navigate(R.id.nav_home);
+
+                                        navController.navigate(R.id.nav_event_details, args);
                                     }})
                                 .show();
                     } else {
@@ -461,11 +469,33 @@ public class EventEditFragment extends Fragment {
     }
 
     public boolean isValid() {
-        return this.binding.nameInputLayout.getError() == null &&
-                this.binding.descriptionInputLayout.getError() == null &&
-                this.binding.maxParticipantsInputLayout.getError() == null &&
-                this.selectedEventTypeId != -1 &&
-                this.selectedDate != null &&
-                this.latitude > 0 && this.longtitude > 0;
+        boolean isValid = true;
+
+        if (this.binding.nameInputLayout.getError() != null) {
+            Log.e("Validation", "Name input has an error: " + this.binding.nameInputLayout.getError());
+            isValid = false;
+        }
+
+        if (this.binding.descriptionInputLayout.getError() != null) {
+            Log.e("Validation", "Description input has an error: " + this.binding.descriptionInputLayout.getError());
+            isValid = false;
+        }
+
+        if (this.binding.maxParticipantsInputLayout.getError() != null) {
+            Log.e("Validation", "Max participants input has an error: " + this.binding.maxParticipantsInputLayout.getError());
+            isValid = false;
+        }
+
+        if (this.selectedEventTypeId == -1) {
+            Log.e("Validation", "Selected event type ID is invalid.");
+            isValid = false;
+        }
+
+        if (this.selectedDate == null) {
+            Log.e("Validation", "Selected date is null.");
+            isValid = false;
+        }
+
+        return isValid;
     }
 }
