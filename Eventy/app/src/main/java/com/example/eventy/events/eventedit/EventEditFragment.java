@@ -58,6 +58,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -87,6 +88,8 @@ public class EventEditFragment extends Fragment {
 
         binding = FragmentEventEditBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        eventId = getArguments().getLong("EventID");
 
         addValidation(binding.nameInputLayout, binding.nameInput, this::validateRequired);
         addValidation(binding.descriptionInputLayout, binding.descriptionInput, this::validateRequired);
@@ -194,8 +197,6 @@ public class EventEditFragment extends Fragment {
                         }
                     });
 
-                    eventId = getArguments().getLong("EventID");
-
                     Call<UpdateEvent> call2 = ClientUtils.eventService.getEventForUpdate(eventId);
                     call2.enqueue(new Callback<UpdateEvent>() {
                         @Override
@@ -203,7 +204,7 @@ public class EventEditFragment extends Fragment {
                             if (response.isSuccessful() && response.body() != null) {
                                 binding.nameInput.setText(response.body().getName());
                                 binding.descriptionInput.setText(response.body().getDescription());
-                                binding.maxParticipantsInput.setText(response.body().getMaxNumberParticipants());
+                                binding.maxParticipantsInput.setText(String.valueOf(response.body().getMaxNumberParticipants()));
 
                                 for (EventTypeCard eventTypeCard : eventTypeCards) {
                                     if (eventTypeCard.getId() == response.body().getEventTypeId()) {
@@ -212,9 +213,23 @@ public class EventEditFragment extends Fragment {
                                     }
                                 }
 
-                                mapController.setCenter(new GeoPoint(response.body().getLocation().getLatitude(), response.body().getLocation().getLongitude()));
+                                GeoPoint location = new GeoPoint(response.body().getLocation().getLatitude(), response.body().getLocation().getLongitude());
+                                mapController.setCenter(location);
+                                pinMarker = new Marker(binding.mapview);
+                                pinMarker.setPosition(location);
+                                pinMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+
+                                pinMarker.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_location_pin));
+
+                                binding.mapview.getOverlays().add(pinMarker);
+
+                                getAddressFromCoordinates(location.getLatitude(), location.getLongitude());
+
+                                LocalDateTime localDateTime = response.body().getDate();
+                                ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
+                                Date date = Date.from(zonedDateTime.toInstant());
                                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                                String selectedDate = sdf.format(response.body().getDate());
+                                String selectedDate = sdf.format(date);
                                 binding.dateInput.setText(selectedDate);
 
                                 eventAgendaCreation = new EventAgendaCreation((ArrayList<CreateActivity>) response.body().getAgenda());
@@ -304,6 +319,16 @@ public class EventEditFragment extends Fragment {
                     errorOkDialog.show();
                 }
             });
+        });
+
+        binding.backButton.setOnClickListener(v -> {
+            Bundle args = new Bundle();
+            args.putLong("EventID", eventId);
+            NavController navController = Navigation.findNavController(v);
+
+            navController.popBackStack();
+
+            navController.navigate(R.id.nav_event_details, args);
         });
 
         return root;
