@@ -21,6 +21,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.eventy.chat.AllChatsFragment;
+import com.example.eventy.chat.model.Message;
 import com.example.eventy.common.EncryptionUtil;
 import com.example.eventy.databinding.ActivityMainBinding;
 import com.example.eventy.interactions.model.Notification;
@@ -60,8 +62,11 @@ public class MainActivity extends AppCompatActivity {
     private MenuItem notificationItem;
     private Boolean openedNotifications = false;
     private StompClient mStompClient;
+    private StompClient chatStompClient;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private CompositeDisposable chatCompositeDisposable = new CompositeDisposable();
     NotificationsFragment notificationsFragment;
+    AllChatsFragment allChatsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 userNotificationInfoViewModel.setLoggedInUserId(LoggedInHelperService.getId());
 
                 connectToMobileWebSocket(jwtToken);
+                connectToChatSocket(jwtToken);
             }
         }
 
@@ -120,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
             R.id.nav_edit_user, R.id.nav_my_profile, R.id.service_reservation, R.id.fast_registration,
             R.id.upgrade_profile, R.id.nav_category_home, R.id.nav_event_details, R.id.nav_solution_details,
             R.id.nav_event_stats, R.id.nav_notifications, R.id.nav_product_creation, R.id.nav_product_update,
-            R.id.nav_purchase, R.id.nav_pending_reviews)
+            R.id.nav_purchase, R.id.nav_pending_reviews, R.id.nav_single_chat, R.id.nav_all_chats)
             .setOpenableLayout(drawer)
             .build();
 
@@ -284,6 +290,15 @@ public class MainActivity extends AppCompatActivity {
                 updateNotificationsInfo();
                 openedNotifications = false;
             }
+
+            AllChatsFragment allChatsFragmentNew = (AllChatsFragment) getSupportFragmentManager()
+                    .findFragmentByTag(AllChatsFragment.class.getSimpleName());
+            if (allChatsFragmentNew == null) {
+                allChatsFragmentNew = new AllChatsFragment(this);
+            }
+            this.allChatsFragment = allChatsFragmentNew;
+
+            FragmentTransition.to(allChatsFragmentNew, this, true, R.id.nav_host_fragment_content_main);
             return true;
 
         } else if (id == R.id.action_notifications) {
@@ -322,7 +337,13 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
+
     private void logout() {
+        if (chatStompClient != null) {
+            chatStompClient.disconnect();
+            Log.d("WebScoket", "Disconnected chat on logout");
+        }
+
         if (mStompClient != null) {
             mStompClient.disconnect();
             Log.d("WebSocket", "Disconnected on logout");
@@ -421,11 +442,72 @@ public class MainActivity extends AppCompatActivity {
         mStompClient.connect(headers);
     }
 
+    public void connectToChatSocket(String jwtToken) {
+        String ip_addr = BuildConfig.IP_ADDR;
+        String WEBSOCKET_URL = "ws://" + ip_addr + ":8080/chats";
+        String TOKEN = "Bearer " + jwtToken;
+
+        chatStompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, WEBSOCKET_URL);
+
+        List<StompHeader> headers = new ArrayList<>();
+        headers.add(new StompHeader("Authorization", TOKEN));
+
+        chatStompClient.withClientHeartbeat(2000).withServerHeartbeat(2000);
+        resetChatSubscriptions();
+
+        // Manage connection lifecycle
+        Disposable dispLifecycle = chatStompClient.lifecycle()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(lifecycleEvent -> {
+                    switch (lifecycleEvent.getType()) {
+                        case OPENED:
+                            Log.d("WebSocket", "CHAT STOMP connection opened");
+                            break;
+                        case ERROR:
+                            Log.e("WebSocket", "CHAT STOMP connection error", lifecycleEvent.getException());
+                            break;
+                        case CLOSED:
+                            Log.d("WebSocket", "CHAT STOMP connection closed");
+                            resetChatSubscriptions();
+                            break;
+                        case FAILED_SERVER_HEARTBEAT:
+                            Log.w("WebSocket", "CHAT STOMP failed server heartbeat");
+                            break;
+                    }
+                });
+
+        chatCompositeDisposable.add(dispLifecycle);
+
+        // Subscribe to user-specific mobile notifications
+        Long userId = LoggedInHelperService.getId();
+        Disposable dispTopic = chatStompClient.topic("/topic/chat/" + userId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(topicMessage -> {
+                    handleNewMessage(topicMessage.getPayload());
+                }, throwable -> {
+                    Log.e("WebSocket", "Error subscribing to topic", throwable);
+                });
+
+        chatCompositeDisposable.add(dispTopic);
+
+        // Connect
+        chatStompClient.connect(headers);
+    }
+
     private void resetSubscriptions() {
         if (compositeDisposable != null) {
             compositeDisposable.dispose();
         }
         compositeDisposable = new CompositeDisposable();
+    }
+
+    private void resetChatSubscriptions() {
+        if (chatCompositeDisposable != null) {
+            chatCompositeDisposable.dispose();
+        }
+        chatCompositeDisposable = new CompositeDisposable();
     }
 
     private void handleNotification(String message) {
@@ -458,6 +540,22 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (Exception e) {
             Log.e("NotificationHandler", "Error deserializing message", e);
+        }
+    }
+
+    private void handleNewMessage(String message) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        try {
+            Message newMessage = objectMapper.readValue(message, Message.class);
+            if (allChatsFragment != null) {
+                allChatsFragment.handleNewMessage(newMessage);
+            }
+
+        } catch (Exception e) {
+            Log.e("ChatHandler", "Error deserializing message", e);
         }
     }
 

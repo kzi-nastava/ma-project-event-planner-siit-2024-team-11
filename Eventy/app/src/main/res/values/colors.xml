@@ -40,4 +40,10 @@
     <color name="home_solution_card_before_price_crossed_out">#00F40F0F</color>
 
     <!-- <color name="mtrl_textinput_default_box_stroke_color">#fff</color> -->
+
+    <!-- chat -->
+    <color name="other_chatter_message_background_color">#C2C2C2</color>
+    <color name="other_chatter_message_text_color">#000000</color>
+    <color name="own_chatter_message_background_color">#007BFF</color>
+    <color name="own_chatter_message_text_color">#FFFFFF</color>
 </resources>
