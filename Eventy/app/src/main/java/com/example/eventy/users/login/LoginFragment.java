@@ -66,6 +66,7 @@ public class LoginFragment extends Fragment {
                         String token = response.body().getAccessToken();
                         if (getActivity() instanceof MainActivity) {
                             ((MainActivity) getActivity()).connectToMobileWebSocket(token);
+                            ((MainActivity) getActivity()).connectToChatSocket(token);
                         }
 
                         Bundle bundle = new Bundle();
