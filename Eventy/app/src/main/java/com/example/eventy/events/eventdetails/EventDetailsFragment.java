@@ -215,8 +215,17 @@ public class EventDetailsFragment extends Fragment {
                             });
                         }
                     }
-                }
-                else {
+                } else if (response.code() == 403) {  // ---> blocked user
+                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Content Blocked", "You cannot access the content of a blocked account!");
+                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    errorOkDialog.setOnDismissListener(dialog -> {
+                        NavController navController = Navigation.findNavController(container);
+                        navController.popBackStack();
+                        navController.navigate(R.id.nav_home);
+                    });
+                    errorOkDialog.show();
+
+                } else {
                     ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while loading the event.");
                     errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     errorOkDialog.show();

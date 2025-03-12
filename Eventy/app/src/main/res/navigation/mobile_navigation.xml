@@ -166,4 +166,16 @@
         android:label="Event Edit"
         tools:layout="@layout/fragment_event_edit"/>
 
+  <fragment
+        android:id="@+id/nav_all_chats"
+        android:name="com.example.eventy.chat.AllChatsFragment"
+        android:label="All chats"
+        tools:layout="@layout/fragment_all_chats" />
+
+    <fragment
+        android:id="@+id/nav_single_chat"
+        android:name="com.example.eventy.chat.SingleChatFragment"
+        android:label="Chat"
+        tools:layout="@layout/fragment_single_chat" />
+
 </navigation>

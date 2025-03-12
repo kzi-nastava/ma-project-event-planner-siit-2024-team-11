@@ -37,10 +37,6 @@
             android:icon="@drawable/icon_profile"
             android:title="Other user profile page"/>
         <item
-            android:id="@+id/service_reservation"
-            android:icon="@drawable/icon_service_reservation"
-            android:title="Service Reservation"/>
-        <item
             android:id="@+id/nav_event_stats"
             android:icon="@drawable/icon_bar_chart"
             android:title="Event Stats"/>

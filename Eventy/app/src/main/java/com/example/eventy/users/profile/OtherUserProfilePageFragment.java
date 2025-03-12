@@ -6,15 +6,20 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.eventy.R;
+import com.example.eventy.custom.BlockUserDialog;
 import com.example.eventy.custom.CreateReportDialog;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentOtherUserProfilePageBinding;
+import com.example.eventy.users.model.BlockUser;
 import com.example.eventy.users.model.CreateReport;
 import com.example.eventy.users.model.User;
 import com.example.eventy.users.model.UserType;
@@ -108,6 +113,28 @@ public class OtherUserProfilePageFragment extends Fragment {
                         createReportDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                         createReportDialog.show();
                     });
+
+                    binding.blockButtom.setOnClickListener(v -> {
+                        BlockUser blockUser = new BlockUser(
+                            user.getId(),
+                            LoggedInHelperService.getId()
+                        );
+
+                        BlockUserDialog blockUserDialog = new BlockUserDialog(getActivity(), "Block user?", "Are you sure you want to block \"" + user.getEmail() + "\"?", blockUser);
+                        blockUserDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        blockUserDialog.show();
+                    });
+
+                } else if (response.code() == 403) {  // ---> blocked user
+                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Account Blocked", "You cannot access this profile page!");
+                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    errorOkDialog.setOnDismissListener(dialog -> {
+                        NavController navController = Navigation.findNavController(container);
+                        navController.popBackStack();
+                        navController.navigate(R.id.nav_home);
+                    });
+                    errorOkDialog.show();
+
                 } else {
                     ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Unable to load user profile!");
                     errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

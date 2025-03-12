@@ -35,7 +35,7 @@ public class SolutionsFragment extends Fragment {
     private int page = 0;
     private int pageSize = 5;
     private int totalPages = 99;
-    private String sort = "id,asc";
+    private String sort = "category,asc";
     private String search = "";
     private SolutionsFilter solutionsFilter;
     private ArrayList<SolutionCard> paginatedSolutions;

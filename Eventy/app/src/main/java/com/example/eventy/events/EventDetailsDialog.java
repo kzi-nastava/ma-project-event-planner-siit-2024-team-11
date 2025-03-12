@@ -57,9 +57,9 @@ public class EventDetailsDialog extends Dialog implements android.view.View.OnCl
         eventLocationTextView.setText(selectedEventCard.getLocationName());
 
         TextView openOrFullTextView = findViewById(R.id.open_or_full);
-        String openOrFullString = (selectedEventCard.isOpen() ? "OPEN EVENT" : "FULL EVENT") + "!";
+        String openOrFullString = (selectedEventCard.getIsOpen() ? "PUBLIC" : "PRIVATE") + "!";
         openOrFullTextView.setText(openOrFullString);
-        openOrFullTextView.setTextColor(selectedEventCard.isOpen() ? Color.parseColor("#3ED34F") : Color.parseColor("#E91A1A"));
+        openOrFullTextView.setTextColor(selectedEventCard.getIsOpen() ? Color.parseColor("#3ED34F") : Color.parseColor("#4ea0e7"));
 
         TextView descriptionTextView = findViewById(R.id.description);
         descriptionTextView.setText(selectedEventCard.getDescription());
