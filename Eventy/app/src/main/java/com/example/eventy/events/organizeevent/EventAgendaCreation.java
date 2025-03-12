@@ -22,6 +22,14 @@ public class EventAgendaCreation extends Fragment {
     private FragmentEventAgendaCreationBinding binding;
     private ArrayList<CreateActivity> agenda;
 
+    public EventAgendaCreation() {
+
+    }
+
+    public EventAgendaCreation(ArrayList<CreateActivity> agenda) {
+        this.agenda = agenda;
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 

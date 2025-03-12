@@ -5,6 +5,7 @@ import com.example.eventy.events.model.EventCard;
 import com.example.eventy.events.model.EventStats;
 import com.example.eventy.events.model.OrganizeEvent;
 import com.example.eventy.events.model.Event;
+import com.example.eventy.events.model.UpdateEvent;
 import com.example.eventy.reviews.model.UnreviewedEvent;
 import com.example.eventy.users.model.EventDetails;
 
@@ -86,4 +87,10 @@ public interface EventService {
 
     @GET(prefix + "/unreviewed/{userId}")
     Call<UnreviewedEvent[]> getUnreviewedAcceptedEventsByUserId(@Path("userId") Long userId);
+
+    @PUT(prefix)
+    Call<Event> edit(@Body UpdateEvent updateEvent);
+
+    @GET(prefix + "/{eventId}/update")
+    Call<UpdateEvent> getEventForUpdate(@Path("eventId") Long eventId);
 }

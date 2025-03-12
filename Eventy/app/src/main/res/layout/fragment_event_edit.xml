@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".events.eventedit.EventEditFragment"
+    android:layout_margin="20dp">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center">
+
+        <!-- Top bar with back button and title -->
+        <LinearLayout
+            android:id="@+id/topBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/backButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="3dp"
+                android:src="@drawable/icon_arrow_back"
+                app:backgroundTint="@color/button_color_state"
+                app:fabSize="mini"
+                app:tint="@color/white" />
+
+            <!-- Title centered horizontally -->
+            <TextView
+                android:id="@+id/titleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/albert_sans"
+                android:gravity="center"
+                android:text="Edit Event"
+                android:textColor="@color/title_color"
+                android:textSize="40sp" />
+
+        </LinearLayout>
+
+        <!-- Name Field -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/name_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:hint="Name"
+            app:endIconMode="clear_text"
+            app:endIconDrawable="@drawable/icon_remove">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/name_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:background="@color/input_color"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Description Field -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/description_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Description"
+            app:endIconMode="clear_text"
+            app:endIconDrawable="@drawable/icon_remove">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/description_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:minLines="2"
+                android:gravity="top|start"
+                android:background="@color/input_color"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Maximum number of participants Field -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/max_participants_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Maximum number of participants"
+            app:endIconMode="clear_text"
+            app:endIconDrawable="@drawable/icon_remove">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/max_participants_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:background="@color/input_color"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/event_type_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Select Event Type">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/event_type_autoCompleteTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:background="@color/input_color"
+                android:paddingTop="24dp"
+                android:paddingHorizontal="16dp"
+                android:paddingBottom="8dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <org.osmdroid.views.MapView
+            android:id="@+id/mapview"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:longClickable="true"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="12dp"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/mapLocationText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Please select a location!"
+            android:textSize="16sp"
+            android:layout_marginBottom="24dp"
+            app:fontFamily="@font/roboto"
+            android:textColor="#222222"
+            android:textAlignment="center"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/date_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Select Date">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/date_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:focusable="false"
+                android:background="@color/input_color"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/albert_sans"
+            android:gravity="center"
+            android:text="Agenda"
+            android:textColor="@color/title_color"
+            android:textSize="30sp"
+            android:layout_margin="20dp"/>
+
+        <FrameLayout
+            android:id="@+id/agenda_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/submitButton"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="30dp"
+            android:padding="10dp"
+            android:text="EDIT"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/eventy_color"
+            app:cornerRadius="10dp"
+            app:icon="@drawable/icon_edit" />
+    </LinearLayout>
+</ScrollView>
