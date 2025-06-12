@@ -1,6 +1,7 @@
 package com.example.eventy.solutions.services;
 
 import com.example.eventy.common.PagedResponse;
+import com.example.eventy.solutions.model.PricelistItem;
 import com.example.eventy.solutions.model.SolutionCard;
 import com.example.eventy.solutions.model.SolutionDetails;
 
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.PUT;
@@ -61,4 +63,11 @@ public interface SolutionService {
 
     @DELETE(prefix + "/{solutionId}")
     Call<Void> delete(@Path("solutionId") Long solutionId);
+
+    @GET(prefix + "/pricelist")
+    Call<PagedResponse<PricelistItem>> getPricelist(@Query("page") int page,
+                                                    @Query("size") int pageSize);
+
+    @PUT(prefix + "/pricelist")
+    Call<PricelistItem> updatePrice(@Body PricelistItem updatedItem);
 }
