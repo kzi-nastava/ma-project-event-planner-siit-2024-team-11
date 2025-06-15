@@ -8,9 +8,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal">
 
+    <LinearLayout
+        android:id="@+id/header_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:gravity="center"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:id="@+id/pricelist_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pricelist"
+            android:textSize="20sp"
+            android:fontFamily="@font/albert_sans"
+            android:textStyle="bold"/>
+
+        <ImageButton
+            android:id="@+id/pricelist_download_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/icon_download"
+            android:backgroundTint="@color/dark_blue_button"/>
+    </LinearLayout>
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header_row"
+        android:layout_above="@id/pagination_container">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/pricelist_items_recycler"
             android:layout_width="match_parent"

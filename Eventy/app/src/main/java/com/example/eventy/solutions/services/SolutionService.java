@@ -8,6 +8,7 @@ import com.example.eventy.solutions.model.SolutionDetails;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -70,4 +71,7 @@ public interface SolutionService {
 
     @PUT(prefix + "/pricelist")
     Call<PricelistItem> updatePrice(@Body PricelistItem updatedItem);
+
+    @GET(prefix + "/pricelist/pdf")
+    Call<ResponseBody> getPricelistPdf();
 }
