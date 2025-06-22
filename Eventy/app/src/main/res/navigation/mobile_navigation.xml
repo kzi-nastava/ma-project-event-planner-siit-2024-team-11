@@ -178,4 +178,10 @@
         android:label="Chat"
         tools:layout="@layout/fragment_single_chat" />
 
+    <fragment
+        android:id="@+id/nav_pricelist"
+        android:name="com.example.eventy.solutions.PricelistFragment"
+        android:label="Pricelist"
+        tools:layout="@layout/fragment_pricelist"/>
+
 </navigation>

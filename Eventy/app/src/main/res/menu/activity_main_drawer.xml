@@ -52,5 +52,9 @@
             android:id="@+id/nav_product_creation"
             android:icon="@drawable/icon_add_product"
             android:title="Add Product"/>
+        <item
+            android:id="@+id/nav_pricelist"
+            android:icon="@drawable/icon_organize_event"
+            android:title="Pricelist"/>
     </group>
 </menu>
