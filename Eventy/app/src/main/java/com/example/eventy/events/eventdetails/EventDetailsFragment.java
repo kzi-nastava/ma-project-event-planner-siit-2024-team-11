@@ -201,6 +201,15 @@ public class EventDetailsFragment extends Fragment {
                     if(event.getOrganizerId() == LoggedInHelperService.getId()) {
                         binding.chatButton.setVisibility(View.GONE);
 
+                        binding.viewBudgetButton.setVisibility(View.VISIBLE);
+                        binding.viewBudgetButton.setOnClickListener(v -> {
+                            Bundle args = new Bundle();
+                            args.putLong("eventId", event.getId());
+                            NavController navController = Navigation.findNavController(v);
+                            navController.popBackStack();
+                            navController.navigate(R.id.nav_budget, args);
+                        });
+
                         if (event.getDate().isAfter(LocalDateTime.now())) {
                             binding.editButton.setVisibility(View.VISIBLE);
 
