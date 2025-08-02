@@ -4,6 +4,8 @@ import com.example.eventy.common.PagedResponse;
 import com.example.eventy.reviews.model.CreateReview;
 import com.example.eventy.reviews.model.Review;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -31,4 +33,7 @@ public interface ReviewService {
 
     @PUT(prefix + "/{reviewId}/decline")
     Call<Review> declineReview(@Path("reviewId") Long reviewId);
+
+    @GET(prefix + "/solution/{solutionId}")
+    Call<List<Review>> getReviewsForSolution(@Path("solutionId") Long solutionId);
 }
