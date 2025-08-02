@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.example.eventy.BuildConfig;
 import com.example.eventy.chat.services.ChatService;
+import com.example.eventy.events.services.BudgetService;
 import com.example.eventy.events.services.EventService;
 import com.example.eventy.events.services.EventTypeService;
 import com.example.eventy.events.services.LocationService;
@@ -61,6 +62,7 @@ public class ClientUtils {
         reportService = retrofit.create(ReportService.class);
         notificationService = retrofit.create(NotificationService.class);
         chatService = retrofit.create(ChatService.class);
+        budgetService = retrofit.create(BudgetService.class);
     }
 
     /*
@@ -103,4 +105,5 @@ public class ClientUtils {
     public static ReportService reportService;
     public static NotificationService notificationService;
     public static ChatService chatService;
+    public static BudgetService budgetService;
 }
