@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
             R.id.upgrade_profile, R.id.nav_category_home, R.id.nav_event_details, R.id.nav_solution_details,
             R.id.nav_event_stats, R.id.nav_notifications, R.id.nav_product_creation, R.id.nav_product_update,
             R.id.nav_purchase, R.id.nav_pending_reviews, R.id.nav_event_edit, R.id.nav_single_chat, R.id.nav_all_chats,
-            R.id.nav_pricelist)
+            R.id.nav_pricelist, R.id.nav_budget)
             .setOpenableLayout(drawer)
             .build();
 
