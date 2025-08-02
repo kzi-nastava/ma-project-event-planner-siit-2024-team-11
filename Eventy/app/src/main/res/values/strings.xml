@@ -1,6 +1,4 @@
 <resources>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="app_name">Eventy</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -97,4 +95,8 @@
     <!-- /categories -->
     <string name="active_categories">Active categories</string>
     <string name="category_requests">Requests</string>
+    
+    <string name="allocated_funds">Allocated:</string>
+    <string name="used_funds">Used:</string>
+    <string name="remainder">Remainder:</string>
 </resources>
