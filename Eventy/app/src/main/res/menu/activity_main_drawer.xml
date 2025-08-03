@@ -33,10 +33,6 @@
             android:icon="@drawable/icon_types"
             android:title="Event Types"/>
         <item
-            android:id="@+id/nav_other_user_profile_page"
-            android:icon="@drawable/icon_profile"
-            android:title="Other user profile page"/>
-        <item
             android:id="@+id/nav_event_stats"
             android:icon="@drawable/icon_bar_chart"
             android:title="Event Stats"/>
@@ -56,5 +52,9 @@
             android:id="@+id/nav_pricelist"
             android:icon="@drawable/icon_organize_event"
             android:title="Pricelist"/>
+        <item
+            android:id="@+id/nav_category_home"
+            android:icon="@drawable/category_management_icon"
+            android:title="Category Management"/>
     </group>
 </menu>
