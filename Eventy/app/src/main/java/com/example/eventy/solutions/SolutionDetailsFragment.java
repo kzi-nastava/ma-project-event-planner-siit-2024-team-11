@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -24,17 +25,21 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.eventy.R;
+import com.example.eventy.adapters.reviews.SolutionDetailsReviewsAdapter;
 import com.example.eventy.common.PictureHelperService;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.custom.ValidOkDialog;
 import com.example.eventy.databinding.FragmentSolutionDetailsBinding;
 import com.example.eventy.model.enums.ReservationConfirmationType;
+import com.example.eventy.reviews.model.Review;
 import com.example.eventy.solutions.enums.SolutionType;
 import com.example.eventy.solutions.model.SolutionCard;
 import com.example.eventy.solutions.model.SolutionDetails;
 import com.example.eventy.users.services.LoggedInHelperService;
 import com.example.eventy.utils.ClientUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -45,6 +50,8 @@ public class SolutionDetailsFragment extends Fragment {
 
     private SolutionDetails solution;
     private FragmentSolutionDetailsBinding binding;
+    private List<Review> reviews = new ArrayList<>();
+    private SolutionDetailsReviewsAdapter adapter;
 
     public SolutionDetailsFragment() {
         // Required empty public constructor
@@ -299,6 +306,7 @@ public class SolutionDetailsFragment extends Fragment {
                 }
             });
         });
+        loadReviews();
     }
 
     private void toggleVisibility() {
@@ -400,5 +408,26 @@ public class SolutionDetailsFragment extends Fragment {
                 .setNegativeButton("No", null)
                 .create()
                 .show();
+    }
+
+    private void loadReviews() {
+        Call<List<Review>> call = ClientUtils.reviewService.getReviewsForSolution(solution.getSolutionId());
+        call.enqueue(new Callback<List<Review>>() {
+            @Override
+            public void onResponse(Call<List<Review>> call, Response<List<Review>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    reviews.clear();
+                    reviews.addAll(response.body());
+                    adapter = new SolutionDetailsReviewsAdapter(requireContext(), reviews);
+                    binding.solutionDetailsReviewsRecycler.setAdapter(adapter);
+                    binding.solutionDetailsReviewsRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Review>> call, Throwable t) {
+
+            }
+        });
     }
 }

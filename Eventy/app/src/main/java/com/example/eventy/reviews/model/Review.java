@@ -11,6 +11,8 @@ public class Review {
     private String title; // event/product/service name
     private Status status;
     private Boolean isDeleted;
+    private String senderName;
+    private String senderAvatar;
 
     public Review() {
 
@@ -90,5 +92,21 @@ public class Review {
 
     public void setDeleted(Boolean deleted) {
         isDeleted = deleted;
+    }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
+
+    public String getSenderAvatar() {
+        return senderAvatar;
+    }
+
+    public void setSenderAvatar(String senderAvatar) {
+        this.senderAvatar = senderAvatar;
     }
 }

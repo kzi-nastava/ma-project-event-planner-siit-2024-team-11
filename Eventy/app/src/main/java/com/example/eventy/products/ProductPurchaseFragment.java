@@ -19,6 +19,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.eventy.R;
+import com.example.eventy.custom.CreateReviewDialog;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.custom.ValidOkDialog;
 import com.example.eventy.databinding.FragmentProductPurchaseBinding;
@@ -28,7 +29,9 @@ import com.example.eventy.events.model.EventCard;
 import com.example.eventy.events.model.EventFilters;
 import com.example.eventy.home.events.filters.EventFilterBottomSheetFragment;
 import com.example.eventy.products.model.Purchase;
+import com.example.eventy.reviews.model.CreateReview;
 import com.example.eventy.solutions.model.SolutionCard;
+import com.example.eventy.users.services.LoggedInHelperService;
 import com.example.eventy.utils.ClientUtils;
 
 import java.time.format.DateTimeFormatter;
@@ -44,7 +47,6 @@ public class ProductPurchaseFragment extends Fragment implements EventFilterBott
     private FragmentProductPurchaseBinding binding;
     private SelectEventFragment selectEventFragment;
     private EventFilters eventFilters;
-    private SolutionCard selectedServiceCard;
     private ArrayList<String> eventTypesEvents = new ArrayList<>();
     private ArrayList<String> locationsEvents = new ArrayList<>();
     private boolean isEventFilterOpened = false;
@@ -96,9 +98,7 @@ public class ProductPurchaseFragment extends Fragment implements EventFilterBott
                                                 ValidOkDialog validOkDialog = new ValidOkDialog(getActivity(), "Purchase Successful", "Your purchase was successful!");
                                                 validOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                                                 validOkDialog.setOnDismissListener(dialog -> {
-                                                    NavController navController = Navigation.findNavController(getView());
-                                                    navController.popBackStack();
-                                                    navController.navigate(R.id.nav_home);
+                                                    handleReviewService(container);
                                                 });
                                                 validOkDialog.show();
                                             } else {
@@ -306,5 +306,47 @@ public class ProductPurchaseFragment extends Fragment implements EventFilterBott
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void handleReviewService(ViewGroup container) {
+        Call<Boolean> call = ClientUtils.reviewService.isSolutionReviewedByUser(LoggedInHelperService.getId(), productId);
+        call.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful() && response.body() != null && getActivity() != null) {
+                    if (isAdded() && getActivity() != null) {
+                        Boolean isReviewed = response.body();
+
+                        if (!isReviewed) {
+                            CreateReview createReview = new CreateReview(
+                                    LoggedInHelperService.getId(),
+                                    productId,
+                                    null,
+                                    null,
+                                    null
+                            );
+
+                            CreateReviewDialog createReviewDialog = new CreateReviewDialog(getActivity(), "\"" + productName + "\"", "Please rate the product you purchased!", createReview);
+                            createReviewDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            createReviewDialog.setCanceledOnTouchOutside(false);
+                            createReviewDialog.setOnDismissListener(dialog -> {
+                                NavController navController = Navigation.findNavController(container);
+                                navController.popBackStack();
+                                navController.navigate(R.id.nav_home);
+                            });
+                            createReviewDialog.show();
+
+                        } else {
+                            NavController navController = Navigation.findNavController(container);
+                            navController.popBackStack();
+                            navController.navigate(R.id.nav_home);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {}
+        });
     }
 }
