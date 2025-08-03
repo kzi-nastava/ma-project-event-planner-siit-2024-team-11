@@ -48,4 +48,7 @@ public interface SolutionCategoryService {
     @DELETE(prefix + "/{categoryId}")
     Call<Void> deleteCategory(@Path("categoryId") Long categoryId);
 
+    @GET(prefix + "/remaining/{eventId}")
+    Call<List<CategoryWithID>> getAllRemaining(@Path("eventId") Long eventId);
+
 }
