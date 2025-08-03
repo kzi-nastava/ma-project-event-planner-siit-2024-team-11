@@ -43,7 +43,7 @@ public class ReviewDetailsDialog extends Dialog implements View.OnClickListener 
         fromTextView.setText(review.getSenderEmail());
 
         TextView forTextView = findViewById(R.id.for_email);
-        forTextView.setText("\"" + review.getTitle() + "\"");
+        forTextView.setText(review.getRecipientEmail());
 
         int grade = review.getGrade();
 
