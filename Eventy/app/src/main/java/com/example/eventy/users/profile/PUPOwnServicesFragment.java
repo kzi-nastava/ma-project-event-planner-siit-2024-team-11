@@ -70,7 +70,7 @@ public class PUPOwnServicesFragment extends Fragment {
 
         binding.searchSolutionsButton.setOnClickListener(v -> {
             page = 0;
-            solutionCards = new ArrayList<>();
+            solutionCards.clear();
             loadCards(binding.searchInput.getQuery().toString(), page);
         });
 
