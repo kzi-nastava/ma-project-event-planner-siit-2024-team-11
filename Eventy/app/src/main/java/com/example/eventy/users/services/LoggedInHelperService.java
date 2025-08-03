@@ -56,7 +56,6 @@ public class LoggedInHelperService {
         menu.findItem(R.id.nav_register).setVisible(false);
         menu.findItem(R.id.nav_manipulate_service).setVisible(false);
         menu.findItem(R.id.nav_event_organization).setVisible(false);
-        menu.findItem(R.id.nav_own_services_test).setVisible(false);
         menu.findItem(R.id.nav_event_types).setVisible(false);
         menu.findItem(R.id.nav_category_home).setVisible(false);
         menu.findItem(R.id.nav_event_stats).setVisible(false);
@@ -76,11 +75,8 @@ public class LoggedInHelperService {
             menu.findItem(R.id.nav_event_stats).setVisible(true);
         } else if ("ROLE_Provider".equals(role)) {
             menu.findItem(R.id.nav_manipulate_service).setVisible(true);
-            menu.findItem(R.id.nav_own_services_test).setVisible(true);
             menu.findItem(R.id.nav_product_creation).setVisible(true);
             menu.findItem(R.id.nav_pricelist).setVisible(true);
-        } else if ("ROLE_AuthenticatedUser".equals(role)) {
-            menu.findItem(R.id.upgrade_profile).setVisible(true);
         } else if (role == null) {
             menu.findItem(R.id.nav_login).setVisible(true);
             menu.findItem(R.id.nav_register).setVisible(true);

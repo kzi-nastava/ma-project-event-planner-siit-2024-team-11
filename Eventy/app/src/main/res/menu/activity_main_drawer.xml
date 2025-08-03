@@ -25,10 +25,6 @@
             android:icon="@drawable/icon_organize_event"
             android:title="@string/organize_event" />
         <item
-            android:id="@+id/nav_own_services_test"
-            android:icon="@drawable/service_add_icon"
-            android:title="My services"/>
-        <item
             android:id="@+id/nav_event_types"
             android:icon="@drawable/icon_types"
             android:title="Event Types"/>
