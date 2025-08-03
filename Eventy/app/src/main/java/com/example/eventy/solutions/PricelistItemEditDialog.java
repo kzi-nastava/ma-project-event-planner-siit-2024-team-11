@@ -106,5 +106,9 @@ public class PricelistItemEditDialog extends Dialog {
             }
 
         });
+
+        cancelButton.setOnClickListener(v -> {
+            dismiss();
+        });
     }
 }
