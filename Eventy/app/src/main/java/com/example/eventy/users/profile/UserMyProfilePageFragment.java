@@ -142,7 +142,7 @@ public class UserMyProfilePageFragment extends Fragment {
                     callDeactivate.enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
-                            if (response.isSuccessful() && response.body() != null) {
+                            if (response.isSuccessful()) {
                                 new AlertDialog.Builder(getContext())
                                         .setTitle(" Successful deactivation")
                                         .setMessage("User is now deactivated.")
@@ -163,13 +163,13 @@ public class UserMyProfilePageFragment extends Fragment {
                                             }})
                                         .show();
                             } else {
-                                showErrorDialog("Error while deactivating account!");
+                                showErrorDialog("Error while deactivating account! You are not permitted do deactivate this account while you still have " + (user.getUserType() == UserType.ORGANIZER ? "organized events" : "reserved solutions") + ".");
                             }
                         }
 
                         @Override
                         public void onFailure(Call<Void> call, Throwable t) {
-                            showErrorDialog("Error while deactivating account!");
+                            showErrorDialog("Error while deactivating account! You are not permitted do deactivate this account while you still have " + (user.getUserType() == UserType.ORGANIZER ? "organized events" : "reserved solutions") + ".");
                         }
                     });
                 });
