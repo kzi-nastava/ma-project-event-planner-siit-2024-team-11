@@ -75,12 +75,12 @@ public class UserMyProfilePageFragment extends Fragment {
 
                 tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_info));
                 tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_organize_event));
+                tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_favorite).setText("Events"));
+                tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_favorite).setText("Solutions"));
                 if(user.getUserType() == UserType.ORGANIZER || user.getUserType() == UserType.PROVIDER) {
                     tabLayout.addTab(tabLayout.newTab().setText("My")
                             .setIcon(user.getUserType() == UserType.ORGANIZER ? R.drawable.icon_event_seat : R.drawable.icon_service));
                 }
-                tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_favorite).setText("Events"));
-                tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_favorite).setText("Solutions"));
 
                 // Default fragment
                 getParentFragmentManager()
@@ -97,11 +97,11 @@ public class UserMyProfilePageFragment extends Fragment {
                         } else if (tab.getPosition() == 1) {
                             selectedFragment = new UserCalendarFragment();
                         } else if (tab.getPosition() == 2) {
-                            selectedFragment = new MyCardsFragment(user);
-                        } else if (tab.getPosition() == 3) {
                             selectedFragment = new OrganizerEventsFragment(user.getId(), false);
-                        } else {
+                        } else if (tab.getPosition() == 3) {
                             selectedFragment = new PUPOwnServicesFragment(user.getId(), false);
+                        } else {
+                            selectedFragment = new MyCardsFragment(user);
                         }
 
                         getParentFragmentManager()
@@ -117,18 +117,12 @@ public class UserMyProfilePageFragment extends Fragment {
                     public void onTabReselected(TabLayout.Tab tab) {}
                 });
 
-                if(user.getUserType() != UserType.ORGANIZER && user.getUserType() != UserType.PROVIDER) {
-                    tabLayout.setVisibility(View.GONE);
-                }
-
-                if (user.getUserType() == UserType.PROVIDER) {
-                    binding.nameText.setText(user.getName());
-                    binding.nameText.setVisibility(View.VISIBLE);
-                } else if (user.getUserType() == UserType.AUTHENTICATED) {
-                    binding.nameText.setVisibility(View.GONE);
-                } else {
+                if (user.getUserType() == UserType.ORGANIZER) {
                     binding.nameText.setText(user.getFirstName() + " " + user.getLastName());
-                    binding.nameText.setVisibility(View.VISIBLE);
+                } else if (user.getUserType() == UserType.PROVIDER) {
+                    binding.nameText.setText(user.getName());
+                } else {
+                    binding.nameText.setText(user.getEmail());
                 }
 
                 binding.editButton.setOnClickListener(v -> {
