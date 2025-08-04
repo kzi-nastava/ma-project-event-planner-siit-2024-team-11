@@ -70,6 +70,11 @@ public class EventTypeDetailsFragment extends Fragment {
             navController.navigate(R.id.nav_edit_event_type, args);
         });
 
+        if (typeId == 0) {
+            binding.toggleActivityButton.setVisibility(View.GONE);
+            binding.editButton.setVisibility(View.GONE);
+        }
+
         recyclerView = binding.categoriesContainer;
         categoriesList = new ArrayList<>();
         adapter = new CategoryCardAdapter(categoriesList);
