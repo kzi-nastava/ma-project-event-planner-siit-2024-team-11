@@ -1,5 +1,18 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
+}
+
+fun getIpAddress(): String? {
+    val properties = Properties()
+    val localPropertiesFile = File("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { inputStream ->
+            properties.load(inputStream)
+        }
+    }
+    return properties.getProperty("ip_addr")
 }
 
 android {
@@ -12,8 +25,10 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+        buildConfigField("String", "IP_ADDR", "\""+getIpAddress()+"\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled = true
     }
 
     buildTypes {
@@ -31,11 +46,11 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -46,4 +61,19 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation("org.osmdroid:osmdroid-android:6.1.10")
+    implementation("com.github.prolificinteractive:material-calendarview:2.0.0")
+    implementation("com.squareup.retrofit2:retrofit:2.3.0")
+    implementation("com.squareup.retrofit2:converter-jackson:2.3.0")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.15.0")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:3.12.1")
+    implementation("com.auth0:java-jwt:4.4.0")
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation("org.java-websocket:Java-WebSocket:1.5.2")
+    implementation("com.github.NaikSoftware:StompProtocolAndroid:1.6.6")
+    implementation("io.reactivex.rxjava2:rxjava:2.2.21")
+    implementation("io.reactivex.rxjava2:rxandroid:2.1.1")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.15.0")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.0")
 }

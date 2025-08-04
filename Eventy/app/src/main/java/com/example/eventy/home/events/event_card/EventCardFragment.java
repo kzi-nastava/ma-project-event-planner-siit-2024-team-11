@@ -6,6 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
+import com.example.eventy.R;
 import com.example.eventy.databinding.FragmentEventCardBinding;
 
 public class EventCardFragment extends Fragment {
@@ -16,8 +20,6 @@ public class EventCardFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentEventCardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-        // custom code
 
         return root;
     }

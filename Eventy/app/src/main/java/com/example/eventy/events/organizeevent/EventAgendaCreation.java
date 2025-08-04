@@ -1,0 +1,107 @@
+package com.example.eventy.events.organizeevent;
+
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.example.eventy.R;
+import com.example.eventy.databinding.FragmentEventAgendaCreationBinding;
+import com.example.eventy.events.model.CreateActivity;
+import com.google.android.material.tabs.TabLayout;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+public class EventAgendaCreation extends Fragment {
+
+    private FragmentEventAgendaCreationBinding binding;
+    private ArrayList<CreateActivity> agenda;
+    private LocalDateTime eventDate;
+
+    public EventAgendaCreation() {
+
+    }
+
+    public EventAgendaCreation(ArrayList<CreateActivity> agenda, LocalDateTime eventDate) {
+        this.agenda = agenda;
+        this.eventDate = eventDate;
+    }
+
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+
+        this.agenda = new ArrayList<>();
+
+        binding = FragmentEventAgendaCreationBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
+
+        TabLayout tabLayout = binding.tabLayout;
+
+        tabLayout.addTab(tabLayout.newTab().setText("Basic info"));
+        tabLayout.addTab(tabLayout.newTab().setText("See Agenda"));
+
+        // Default fragment
+        getParentFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, new AddActivityFragment(this.agenda, eventDate))
+                .commit();
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                Fragment selectedFragment;
+                if (tab.getPosition() == 0) {
+                    selectedFragment = new AddActivityFragment(agenda, eventDate);
+                } else {
+                    selectedFragment = new SeeAgendaFragment(agenda);
+                }
+
+                getParentFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragmentContainer, selectedFragment)
+                        .commit();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        return root;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
+    public List<CreateActivity> getAgenda() {
+        return this.agenda;
+    }
+
+    public boolean isValid() {
+        return !this.agenda.isEmpty();
+    }
+
+    public void setEventDate(LocalDateTime eventDate) {
+        this.eventDate = eventDate;
+    }
+
+    public LocalDateTime getEventDate() {
+        return this.eventDate;
+    }
+}

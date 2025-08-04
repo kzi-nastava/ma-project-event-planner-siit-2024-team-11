@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:weightSum="7">
+
+        <TextView
+            android:id="@+id/view_holder_budget_item_solution_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:textAlignment="center"/>
+
+        <TextView
+            android:id="@+id/view_holder_budget_item_solution_provider_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:textAlignment="center"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <FrameLayout
+                android:id="@+id/discount_container"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="16dp">
+
+                    <LinearLayout
+                        android:id="@+id/price_before_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="1.5dp"
+                        android:layout_marginEnd="5dp"
+                        android:orientation="horizontal">
+
+                        <!-- price before discount -->
+                        <TextView
+                            android:id="@+id/before_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/albert_sans"
+                            android:maxLines="1"
+                            android:paddingStart="2dp"
+                            android:textFontWeight="900"
+                            android:text="@string/solution_price_before_discount"
+                            android:textColor="@color/home_solution_card_before_price"
+                            android:textSize="12sp" />
+
+                        <!-- euro symbol -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="1dp"
+                            android:fontFamily="@font/albert_sans"
+                            android:maxLines="1"
+                            android:textFontWeight="900"
+                            android:text="@string/euro_symbol"
+                            android:textColor="@color/home_solution_card_before_price"
+                            android:textSize="9sp"
+                            tools:ignore="SmallSp" />
+                    </LinearLayout>
+
+                    <!-- crossed out price before discount container -->
+                    <LinearLayout
+                        android:id="@+id/crossed_out_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="1.5dp"
+                        android:layout_marginEnd="5dp"
+                        android:background="@drawable/solution_card_price_crossed_out"
+                        android:orientation="horizontal">
+
+                        <!-- crossed out price before discount -->
+                        <TextView
+                            android:id="@+id/crossed_out_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/albert_sans"
+                            android:maxLines="1"
+                            android:textFontWeight="900"
+                            android:text="@string/solution_price_before_discount"
+                            android:textColor="@color/home_solution_card_before_price_crossed_out"
+                            android:textSize="12sp" />
+
+                        <!-- crossed out euro symbol -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="1dp"
+                            android:fontFamily="@font/albert_sans"
+                            android:maxLines="1"
+                            android:textFontWeight="900"
+                            android:text="@string/euro_symbol"
+                            android:textColor="@color/home_solution_card_before_price_crossed_out"
+                            android:textSize="9sp"
+                            tools:ignore="SmallSp" />
+                    </LinearLayout>
+                </RelativeLayout>
+            </FrameLayout>
+
+            <!-- price before discount container -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <!-- price before discount -->
+                <TextView
+                    android:id="@+id/current_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/albert_sans"
+                    android:maxLines="1"
+                    android:text="@string/solution_current_price"
+                    android:textColor="@color/home_event_card_text"
+                    android:textFontWeight="900"
+                    android:textSize="14sp" />
+
+                <!-- euro symbol -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="1dp"
+                    android:fontFamily="@font/albert_sans"
+                    android:maxLines="1"
+                    android:text="@string/euro_symbol"
+                    android:textColor="@color/home_event_card_text"
+                    android:textFontWeight="900"
+                    android:textSize="11sp"
+                    tools:ignore="SmallSp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/view_holder_budget_item_solution_get_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:padding="0dp"
+            android:layout_weight="1"
+            android:text="GET"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

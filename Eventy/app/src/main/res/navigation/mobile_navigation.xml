@@ -13,31 +13,181 @@
 
     <fragment
         android:id="@+id/nav_login"
-        android:name="com.example.eventy.login.LoginFragment"
+        android:name="com.example.eventy.users.login.LoginFragment"
         android:label="Login"
         tools:layout="@layout/fragment_login" />
 
     <fragment
         android:id="@+id/nav_register"
-        android:name="com.example.eventy.register.RegisterFragment"
+        android:name="com.example.eventy.users.register.RegisterFragment"
         android:label="Register"
         tools:layout="@layout/fragment_register" />
 
     <fragment
-        android:id="@+id/nav_add_service"
-        android:name="com.example.eventy.services.ServiceCreationFragment"
+        android:id="@+id/nav_manipulate_service"
+        android:name="com.example.eventy.services.ServiceManipulationFragment"
         android:label="Add service"
-        tools:layout="@layout/fragment_service_creation"/>
+        tools:layout="@layout/fragment_service_manipulation"/>
 
     <fragment
-        android:id="@+id/nav_edit_service"
-        android:name="com.example.eventy.services.ServiceEditingFragment"
-        android:label="Edit service"
-        tools:layout="@layout/fragment_service_editing"/>
+        android:id="@+id/nav_event_organization"
+        android:name="com.example.eventy.events.organizeevent.EventOrganizationFragment"
+        android:label="Organize Event"
+        tools:layout="@layout/fragment_event_organization"/>
 
     <fragment
         android:id="@+id/nav_own_services_test"
-        android:name="com.example.eventy.users.pup.PUPOwnServicesFragment"
+        android:name="com.example.eventy.users.profile.PUPOwnServicesFragment"
         android:label="test"
         tools:layout="@layout/fragment_pup_own_services"/>
+
+    <fragment
+        android:id="@+id/nav_event_types"
+        android:name="com.example.eventy.events.eventtypes.EventTypesFragment"
+        android:label="Event Types"
+        tools:layout="@layout/fragment_event_types"/>
+
+    <fragment
+        android:id="@+id/nav_add_event_type"
+        android:name="com.example.eventy.events.eventtypes.AddEventTypeFragment"
+        android:label="Add Event Type"
+        tools:layout="@layout/fragment_add_event_type"/>
+
+    <fragment
+        android:id="@+id/nav_edit_event_type"
+        android:name="com.example.eventy.events.eventtypes.EditEventTypeFragment"
+        android:label="Edit Event Type"
+        tools:layout="@layout/fragment_edit_event_type"/>
+
+    <fragment
+        android:id="@+id/nav_event_type_details"
+        android:name="com.example.eventy.events.eventtypes.EventTypeDetailsFragment"
+        android:label="Event Type Details"
+        tools:layout="@layout/fragment_event_type_details"/>
+  
+    <fragment
+        android:id="@+id/nav_other_user_profile_page"
+        android:name="com.example.eventy.users.profile.OtherUserProfilePageFragment"
+        android:label="Other User Profile Page"
+        tools:layout="@layout/fragment_other_user_profile_page"/>
+
+    <fragment
+        android:id="@+id/nav_edit_user"
+        android:name="com.example.eventy.users.edit.UserEditFragment"
+        android:label="Edit User"
+        tools:layout="@layout/fragment_user_edit"/>
+
+    <fragment
+        android:id="@+id/nav_my_profile"
+        android:name="com.example.eventy.users.profile.UserMyProfilePageFragment"
+        android:label="My Profile"
+        tools:layout="@layout/fragment_user_my_profile_page"/>
+    <fragment
+        android:id="@+id/service_reservation"
+        android:name="com.example.eventy.services.ReservationSelectEventFragment"
+        android:label="Service Reservation"
+        tools:layout="@layout/fragment_service_reservation_select_event"/>
+
+    <fragment
+        android:id="@+id/nav_category_home"
+        android:name="com.example.eventy.solutions.solutionCategories.CategoryHomeFragment"
+        android:label="Category management"
+        tools:layout="@layout/fragment_category_home"/>
+
+    <fragment
+        android:id="@+id/fast_registration"
+        android:name="com.example.eventy.users.fast_registration.FastRegistrationFragment"
+        android:label="Fast Registration"
+        tools:layout="@layout/fragment_user_fast_registration"/>
+
+    <fragment
+        android:id="@+id/upgrade_profile"
+        android:name="com.example.eventy.users.upgrade_profile.UpgradeAccountFragment"
+        android:label="Upgrade Profile"
+        tools:layout="@layout/fragment_user_fast_registration_upgrade_account"/>
+
+    <fragment
+        android:id="@+id/nav_event_details"
+        android:name="com.example.eventy.events.eventdetails.EventDetailsFragment"
+        android:label="Event Details"
+        tools:layout="@layout/fragment_event_details"/>
+
+    <fragment
+        android:id="@+id/nav_event_stats"
+        android:name="com.example.eventy.events.eventstats.EventsStatsFragment"
+        android:label="Event Stats"
+        tools:layout="@layout/fragment_events_stats"/>
+  
+    <fragment
+        android:id="@+id/nav_solution_details"
+        android:name="com.example.eventy.solutions.SolutionDetailsFragment"
+        android:label="Solution Details"
+        tools:layout="@layout/fragment_solution_details"/>
+
+    <fragment
+        android:id="@+id/nav_product_creation"
+        android:name="com.example.eventy.products.ProductCreationFragment"
+        android:label="Product Creation"
+        tools:layout="@layout/fragment_product_creation"/>
+
+    <fragment
+        android:id="@+id/nav_product_update"
+        android:name="com.example.eventy.products.ProductUpdateFragment"
+        android:label="Product Update"
+        tools:layout="@layout/fragment_product_update"/>
+
+    <fragment
+        android:id="@+id/nav_notifications"
+        android:name="com.example.eventy.interactions.notifications.NotificationsFragment"
+        android:label="Notifications"
+        tools:layout="@layout/fragment_notifications"/>
+  
+    <fragment
+        android:id="@+id/nav_pending_reviews"
+        android:name="com.example.eventy.reviews.PendingReviewsFragment"
+        android:label="Pending Reviews"
+        tools:layout="@layout/fragment_pending_reviews"/>
+
+    <fragment
+        android:id="@+id/nav_pending_reports"
+        android:name="com.example.eventy.users.reports.PendingReportsFragment"
+        android:label="Pending Reports"
+        tools:layout="@layout/fragment_pending_reports"/>
+  
+    <fragment
+        android:id="@+id/nav_purchase"
+        android:name="com.example.eventy.products.ProductPurchaseFragment"
+        android:label="Purchase"
+        tools:layout="@layout/fragment_product_purchase"/>
+
+    <fragment
+        android:id="@+id/nav_event_edit"
+        android:name="com.example.eventy.events.eventedit.EventEditFragment"
+        android:label="Event Edit"
+        tools:layout="@layout/fragment_event_edit"/>
+
+  <fragment
+        android:id="@+id/nav_all_chats"
+        android:name="com.example.eventy.chat.AllChatsFragment"
+        android:label="All chats"
+        tools:layout="@layout/fragment_all_chats" />
+
+    <fragment
+        android:id="@+id/nav_single_chat"
+        android:name="com.example.eventy.chat.SingleChatFragment"
+        android:label="Chat"
+        tools:layout="@layout/fragment_single_chat" />
+
+    <fragment
+        android:id="@+id/nav_pricelist"
+        android:name="com.example.eventy.solutions.PricelistFragment"
+        android:label="Pricelist"
+        tools:layout="@layout/fragment_pricelist"/>
+
+    <fragment
+        android:id="@+id/nav_budget"
+        android:name="com.example.eventy.events.budget.BudgetFragment"
+        android:label="Budget"
+        tools:layout="@layout/fragment_pricelist"/>
+
 </navigation>

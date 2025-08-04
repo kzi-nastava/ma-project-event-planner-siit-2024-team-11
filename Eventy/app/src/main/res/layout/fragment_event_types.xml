@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+android:gravity="center"
+android:padding="40dp"
+android:background="@color/background_color"
+tools:context=".events.eventtypes.EventTypesFragment">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Event Types"
+        android:textColor="@color/title_color"
+        android:textSize="34sp"
+        android:fontFamily="@font/albert_sans" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/add_event_type_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/icon_add"
+        android:text="Add"
+        app:backgroundTint="@color/button_color"
+        style="@style/Widget.MaterialComponents.Button"
+        app:cornerRadius="7dp"
+        android:fontFamily="@font/roboto"
+        android:textStyle="bold"
+        android:layout_marginBottom="32dp"
+        android:textSize="16sp"
+        android:padding="8dp" />
+
+    <LinearLayout
+        android:id="@+id/search_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="1.5dp"
+        android:padding="2.5dp"
+        android:background="@drawable/search_input_background">
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/search_input_background"
+            app:queryHint="Search.." />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/search_event_types_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/filter_button_background"
+            android:text="Search"
+            android:fontFamily="@font/albert_sans"
+            android:textFontWeight="900"
+            android:textColor="@color/white"
+            android:letterSpacing="0.03"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/event_types_cards_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp" />
+
+</LinearLayout>

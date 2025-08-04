@@ -6,12 +6,10 @@
         android:id="@+id/carouselImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:layout_margin="8dp"
-        android:backgroundTint="?attr/colorPrimary"
         android:clipToOutline="true"
+        android:scaleType="centerCrop"
+        android:backgroundTint="?attr/colorPrimary"
         android:contentDescription="Image in carousel"
-        android:elevation="4dp"
         android:background="@color/eventy_color" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
