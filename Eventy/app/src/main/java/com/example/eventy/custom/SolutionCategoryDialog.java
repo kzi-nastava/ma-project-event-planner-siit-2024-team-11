@@ -14,14 +14,18 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.example.eventy.R;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 public class SolutionCategoryDialog extends Dialog implements android.view.View.OnClickListener{
 
     private Long id;
     private String name;
     private String description;
-    private EditText editTextName;
-    private EditText editTextDescription;
+    private TextInputLayout nameLayout;
+    private TextInputLayout descriptionLayout;
+    private TextInputEditText editTextName;
+    private TextInputEditText editTextDescription;
     private MaterialButton confirmButton;
     private MaterialButton cancelButton;
 
@@ -48,6 +52,8 @@ public class SolutionCategoryDialog extends Dialog implements android.view.View.
         int width = (int) (getContext().getResources().getDisplayMetrics().widthPixels * 0.9);
         getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
 
+        nameLayout = findViewById(R.id.nameLayout);
+        descriptionLayout = findViewById(R.id.descriptionLayout);
         editTextName = findViewById(R.id.nameTextBox);
         editTextDescription = findViewById(R.id.descriptionTextBox);
         confirmButton = findViewById(R.id.confirmButton);
@@ -63,30 +69,56 @@ public class SolutionCategoryDialog extends Dialog implements android.view.View.
         }
 
         confirmButton.setOnClickListener(v -> {
-            Long idValue = this.id;
-            String nameValue = editTextName.getText().toString();
-            String descriptionValue = editTextDescription.getText().toString();
-
-            if (!nameValue.isEmpty() && !descriptionValue.isEmpty()) {
+            if (isValid()) {
+                Long idValue = this.id;
+                String nameValue = editTextName.getText().toString();
+                String descriptionValue = editTextDescription.getText().toString();
                 if (callback != null) {
                     callback.onCategoryDataReceived(idValue, nameValue, descriptionValue);
                 }
                 dismiss();
             } else {
-                if (getContext() instanceof Activity) {
-                    new AlertDialog.Builder(getContext())
-                            .setMessage("Both name and description must be written!")
-                            .setCancelable(true)
-                            .setPositiveButton("OK", (dialog, id) -> dialog.dismiss())
-                            .show();
-                }
+                new AlertDialog.Builder(getContext())
+                        .setMessage("Not all fields are valid!")
+                        .setCancelable(true)
+                        .setPositiveButton("OK", (dialog, id) -> dialog.dismiss())
+                        .show();
             }
-
-
         });
 
         cancelButton.setOnClickListener(this);
 
+        setupValidation();
+    }
+
+    private boolean validate(TextInputLayout layout, TextInputEditText editText) {
+        if (String.valueOf(editText.getText()).isEmpty()) {
+            layout.setError("Name is required");
+            layout.setErrorEnabled(true);
+            return false;
+        } else {
+            layout.setError(null);
+            layout.setErrorEnabled(false);
+            return true;
+        }
+    }
+
+    private void setupValidation() {
+        editTextName.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                validate(nameLayout, editTextName);
+            }
+        });
+
+        editTextDescription.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                validate(descriptionLayout, editTextDescription);
+            }
+        });
+    }
+
+    private boolean isValid() {
+        return validate(nameLayout, editTextName) && validate(descriptionLayout, editTextDescription);
     }
 
     @Override
