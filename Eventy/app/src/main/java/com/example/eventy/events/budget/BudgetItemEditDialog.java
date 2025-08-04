@@ -78,8 +78,16 @@ public class BudgetItemEditDialog extends Dialog implements View.OnClickListener
                         .show();
             }
         });
-
+        setupValidation();
         cancelButton.setOnClickListener(this);
+    }
+
+    private void setupValidation() {
+        inputAllocatedFunds.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                validateAllocatedFunds();
+            }
+        });
     }
 
     private boolean validateAllocatedFunds() {
