@@ -228,7 +228,7 @@ public class ProductCreationFragment extends Fragment {
         binding.productPriceInput.setText(binding.productPriceInput.getText());
         binding.productDiscountInput.setText(binding.productDiscountInput.getText());
 
-        if (selectedCategoryId == -1337L) {
+        if (selectedCategoryId != null && selectedCategoryId == -1337L) {
             binding.productNewCategoryNameInput.setText(binding.productNewCategoryNameInput.getText());
             binding.productNewCategoryDescriptionInput.setText(binding.productNewCategoryDescriptionInput.getText());
         }

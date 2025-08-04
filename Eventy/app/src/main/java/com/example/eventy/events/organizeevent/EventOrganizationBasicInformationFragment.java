@@ -9,7 +9,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
@@ -378,6 +377,11 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
     }
 
     public boolean isValid() {
+        binding.nameInput.setText(binding.nameInput.getText());
+        binding.descriptionInput.setText(binding.descriptionInput.getText());
+        binding.maxParticipantsInput.setText(binding.maxParticipantsInput.getText());
+        binding.dateInput.setText(binding.dateInput.getText());
+
         return this.binding.nameInputLayout.getError() == null &&
                 this.binding.descriptionInputLayout.getError() == null &&
                 this.binding.maxParticipantsInputLayout.getError() == null &&

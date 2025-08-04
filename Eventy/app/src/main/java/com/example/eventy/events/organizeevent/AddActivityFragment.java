@@ -1,5 +1,8 @@
 package com.example.eventy.events.organizeevent;
 
+import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.text.Editable;
@@ -11,6 +14,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentAddActivityBinding;
 import com.example.eventy.events.model.CreateActivity;
 import com.google.android.material.datepicker.CalendarConstraints;
@@ -53,23 +57,37 @@ public class AddActivityFragment extends Fragment {
         binding.activityTimeRangeInput.setOnClickListener(v -> showTimeRangePicker());
 
         binding.addActivityButton.setOnClickListener(v -> {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-            String[] dateTimeRange = binding.activityTimeRangeInput.getText().toString().split(" - ");
-            LocalDateTime start = LocalDateTime.parse(dateTimeRange[0], formatter);
-            LocalDateTime end = LocalDateTime.parse(dateTimeRange[1], formatter);
+            binding.nameInput.setText(binding.nameInput.getText());
+            binding.descriptionInput.setText(binding.descriptionInput.getText());
+            binding.locationInput.setText(binding.locationInput.getText());
+
+            if (binding.nameInputLayout.getError() == null &&
+            binding.descriptionInputLayout.getError() == null &&
+            binding.locationInputLayout.getError() == null &&
+            binding.activityTimeRangeInputLayout.getError() == null &&
+            !binding.activityTimeRangeInput.getText().toString().isEmpty()) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+                String[] timeRange = binding.activityTimeRangeInput.getText().toString().split(" - ");
+                LocalDateTime start = LocalDateTime.parse(timeRange[0], formatter);
+                LocalDateTime end = LocalDateTime.parse(timeRange[1], formatter);
 
 
-            agenda.add(new CreateActivity(binding.nameInput.getText().toString(), binding.descriptionInput.getText().toString(),
-                    binding.locationInput.getText().toString(), start, end));
+                agenda.add(new CreateActivity(binding.nameInput.getText().toString(), binding.descriptionInput.getText().toString(),
+                        binding.locationInput.getText().toString(), start, end));
 
-            binding.nameInput.setText("");
-            binding.nameInputLayout.setError(null);
-            binding.descriptionInput.setText("");
-            binding.descriptionInputLayout.setError(null);
-            binding.locationInput.setText("");
-            binding.locationInputLayout.setError(null);
-            binding.activityTimeRangeInput.setText("");
-            binding.activityTimeRangeInputLayout.setError(null);
+                binding.nameInput.setText("");
+                binding.nameInputLayout.setError(null);
+                binding.descriptionInput.setText("");
+                binding.descriptionInputLayout.setError(null);
+                binding.locationInput.setText("");
+                binding.locationInputLayout.setError(null);
+                binding.activityTimeRangeInput.setText("");
+                binding.activityTimeRangeInputLayout.setError(null);
+            } else {
+                ErrorOkDialog errorOkDialog = new ErrorOkDialog((Activity) requireContext(), "Error", "Validation failed!");
+                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                errorOkDialog.show();
+            }
         });
         return root;
     }
