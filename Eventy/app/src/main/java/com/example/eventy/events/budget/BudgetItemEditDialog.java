@@ -38,6 +38,7 @@ public class BudgetItemEditDialog extends Dialog implements View.OnClickListener
     private Button cancelButton;
     private Button confirmButton;
     private TextInputEditText inputAllocatedFunds;
+    private TextInputLayout allocatedFundsLayout;
 
     public BudgetItemEditDialog(@NonNull Context context, Double currentAllocated, BudgetItemEditDataListener callback) {
         super(context);
@@ -54,6 +55,7 @@ public class BudgetItemEditDialog extends Dialog implements View.OnClickListener
         int width = (int) (getContext().getResources().getDisplayMetrics().widthPixels * 0.9);
         getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
 
+        allocatedFundsLayout = findViewById(R.id.dialog_budget_item_edit_allocated_funds_layout);
         confirmButton = findViewById(R.id.dialog_budget_item_edit_confirm_button);
         cancelButton = findViewById(R.id.dialog_budget_item_edit_cancel_button);
         inputAllocatedFunds = findViewById(R.id.dialog_budget_item_edit_allocated_funds);
@@ -62,38 +64,59 @@ public class BudgetItemEditDialog extends Dialog implements View.OnClickListener
 
         confirmButton.findViewById(R.id.dialog_budget_item_confirm_button);
         confirmButton.setOnClickListener(v -> {
-            if (inputAllocatedFunds.getText().toString().isEmpty()) {
+            if (isValid()) {
+                Double allocatedFunds = Double.parseDouble(inputAllocatedFunds.getText().toString());
+                if (callback != null) {
+                    callback.onDataReceived(allocatedFunds);
+                }
+                dismiss();
+            } else {
                 new AlertDialog.Builder(getContext())
-                        .setMessage("Allocated funds are required!")
+                        .setMessage("Not all fields are valid!")
                         .setCancelable(true)
                         .setPositiveButton("OK", (dialog, id) -> dialog.dismiss())
                         .show();
-            } else {
-                try {
-                    Double allocatedFunds = Double.parseDouble(inputAllocatedFunds.getText().toString());
-                    if (allocatedFunds <= 0) {
-                        new AlertDialog.Builder(getContext())
-                                .setMessage("Allocated funds must be greater than 0!")
-                                .setCancelable(true)
-                                .setPositiveButton("OK", (dialog, id) -> dialog.dismiss())
-                                .show();
-                    } else {
-                        if (callback != null) {
-                            callback.onDataReceived(allocatedFunds);
-                        }
-                        dismiss();
-                    }
-                } catch (Exception e) {
-                    new AlertDialog.Builder(getContext())
-                            .setMessage("Allocated funds must be a number!")
-                            .setCancelable(true)
-                            .setPositiveButton("OK", (dialog, id) -> dialog.dismiss())
-                            .show();
-                }
             }
         });
-
+        setupValidation();
         cancelButton.setOnClickListener(this);
+    }
+
+    private void setupValidation() {
+        inputAllocatedFunds.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                validateAllocatedFunds();
+            }
+        });
+    }
+
+    private boolean validateAllocatedFunds() {
+        if (String.valueOf(inputAllocatedFunds.getText()).isEmpty()) {
+            allocatedFundsLayout.setError("Allocated funds is required");
+            allocatedFundsLayout.setErrorEnabled(true);
+            return false;
+        }
+
+        try {
+            Double priceValue = Double.parseDouble(inputAllocatedFunds.getText().toString());
+            if (priceValue <= 0) {
+                allocatedFundsLayout.setError("Allocated funds must be greater than 0");
+                allocatedFundsLayout.setErrorEnabled(true);
+                return false;
+            } else {
+                allocatedFundsLayout.setError(null);
+                allocatedFundsLayout.setErrorEnabled(false);
+                return true;
+            }
+        } catch (Exception e) {
+            allocatedFundsLayout.setError("Allocated funds must be a number");
+            allocatedFundsLayout.setErrorEnabled(true);
+            return false;
+        }
+    }
+
+    private boolean isValid() {
+        return validateAllocatedFunds();
     }
 
     @Override

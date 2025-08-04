@@ -12,12 +12,14 @@ import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +43,8 @@ import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -247,6 +251,7 @@ public class ServiceManipulationFragment extends Fragment {
             });
         }
 
+        setupValidation();
         return binding.getRoot();
     }
 
@@ -307,102 +312,161 @@ public class ServiceManipulationFragment extends Fragment {
     }
 
     private void submit() {
-        if (service == null) {
-            if (selectedCategoryId == -1337L) {
-                Category newCategory = new Category(binding.serviceNewCategoryNameInput.getText().toString(), binding.serviceNewCategoryDescriptionInput.getText().toString(), Status.PENDING);
-                Call<CategoryWithID> call = ClientUtils.categoryService.createCategory(newCategory);
-                call.enqueue(new Callback<CategoryWithID>() {
-                    @Override
-                    public void onResponse(Call<CategoryWithID> call, Response<CategoryWithID> response) {
-                        if (response.isSuccessful()) {
-                            CreateService newService = new CreateService();
+        if (isValid()) {
+            if (service == null) {
+                if (selectedCategoryId == -1337L) {
+                    Category newCategory = new Category(binding.serviceNewCategoryNameInput.getText().toString(), binding.serviceNewCategoryDescriptionInput.getText().toString(), Status.PENDING);
+                    Call<CategoryWithID> call = ClientUtils.categoryService.createCategory(newCategory);
+                    call.enqueue(new Callback<CategoryWithID>() {
+                        @Override
+                        public void onResponse(Call<CategoryWithID> call, Response<CategoryWithID> response) {
+                            if (response.isSuccessful()) {
+                                CreateService newService = new CreateService();
 
-                            newService.setName(binding.serviceNameInput.getText().toString());
-                            newService.setDescription(binding.serviceDescriptionInput.getText().toString());
-                            newService.setSpecifics(binding.serviceSpecificsInput.getText().toString());
-                            newService.setCategoryId(response.body().getId());
-                            newService.setProviderId(LoggedInHelperService.getId());
-                            newService.setAutomaticReservationAcceptance(binding.checkbox.isChecked());
-                            newService.setPrice(Double.parseDouble(binding.servicePriceInput.getText().toString()));
-                            newService.setDiscount(Double.parseDouble(binding.serviceDiscountInput.getText().toString()));
-                            newService.setReservationDeadline(Integer.parseInt(binding.serviceDaysNoticeReservationInput.getText().toString()));
-                            newService.setCancellationDeadline(Integer.parseInt(binding.serviceDaysNoticeCancellationInput.getText().toString()));
-                            if (binding.fixedDurationRadioButton.isChecked()) {
-                                newService.setMinReservationTime(Integer.parseInt(binding.fixedDurationInput.getText().toString()));
-                                newService.setMaxReservationTime(Integer.parseInt(binding.fixedDurationInput.getText().toString()));
-                            } else {
-                                newService.setMinReservationTime(Integer.parseInt(binding.minimumDurationInput.getText().toString()));
-                                newService.setMaxReservationTime(Integer.parseInt(binding.maximumDurationInput.getText().toString()));
-                            }
-
-                            List<Long> selectedEventTypeIds = new ArrayList<>();
-                            for (int i = 0; i < binding.chipGroup.getChildCount(); i++) {
-                                Chip chip = (Chip) binding.chipGroup.getChildAt(i);
-                                if (chip.isChecked()) {
-                                    selectedEventTypeIds.add((Long) chip.getTag());
+                                newService.setName(binding.serviceNameInput.getText().toString());
+                                newService.setDescription(binding.serviceDescriptionInput.getText().toString());
+                                newService.setSpecifics(binding.serviceSpecificsInput.getText().toString());
+                                newService.setCategoryId(response.body().getId());
+                                newService.setProviderId(LoggedInHelperService.getId());
+                                newService.setAutomaticReservationAcceptance(binding.checkbox.isChecked());
+                                newService.setPrice(Double.parseDouble(binding.servicePriceInput.getText().toString()));
+                                newService.setDiscount(Double.parseDouble(binding.serviceDiscountInput.getText().toString()));
+                                newService.setReservationDeadline(Integer.parseInt(binding.serviceDaysNoticeReservationInput.getText().toString()));
+                                newService.setCancellationDeadline(Integer.parseInt(binding.serviceDaysNoticeCancellationInput.getText().toString()));
+                                if (binding.fixedDurationRadioButton.isChecked()) {
+                                    newService.setMinReservationTime(Integer.parseInt(binding.fixedDurationInput.getText().toString()));
+                                    newService.setMaxReservationTime(Integer.parseInt(binding.fixedDurationInput.getText().toString()));
+                                } else {
+                                    newService.setMinReservationTime(Integer.parseInt(binding.minimumDurationInput.getText().toString()));
+                                    newService.setMaxReservationTime(Integer.parseInt(binding.maximumDurationInput.getText().toString()));
                                 }
-                            }
-                            newService.setRelatedEventTypeIds(selectedEventTypeIds);
-                            newService.setImageUrls(images);
 
-                            Call<Service> call2 = ClientUtils.serviceService.createService(newService);
-                            call2.enqueue(new Callback<Service>() {
-                                @Override
-                                public void onResponse(Call<Service> call, Response<Service> response) {
-                                    if (response.isSuccessful()) {
-                                        Bundle args = new Bundle();
-                                        args.putLong("solutionId", response.body().getId());
+                                List<Long> selectedEventTypeIds = new ArrayList<>();
+                                for (int i = 0; i < binding.chipGroup.getChildCount(); i++) {
+                                    Chip chip = (Chip) binding.chipGroup.getChildAt(i);
+                                    if (chip.isChecked()) {
+                                        selectedEventTypeIds.add((Long) chip.getTag());
+                                    }
+                                }
+                                newService.setRelatedEventTypeIds(selectedEventTypeIds);
+                                newService.setImageUrls(images);
 
-                                        NavController navController = Navigation.findNavController(getView());
-                                        navController.popBackStack();
-                                        navController.navigate(R.id.nav_solution_details, args);
-                                    } else {
-                                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Could not create the service!");
+                                Call<Service> call2 = ClientUtils.serviceService.createService(newService);
+                                call2.enqueue(new Callback<Service>() {
+                                    @Override
+                                    public void onResponse(Call<Service> call, Response<Service> response) {
+                                        if (response.isSuccessful()) {
+                                            Bundle args = new Bundle();
+                                            args.putLong("solutionId", response.body().getId());
+
+                                            NavController navController = Navigation.findNavController(getView());
+                                            navController.popBackStack();
+                                            navController.navigate(R.id.nav_solution_details, args);
+                                        } else {
+                                            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Could not create the service!");
+                                            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                            errorOkDialog.show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Service> call, Throwable t) {
+                                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Network error!");
                                         errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                                         errorOkDialog.show();
                                     }
-                                }
+                                });
+                            } else {
+                                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error creating a new category!");
+                                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                errorOkDialog.show();
+                            }
+                        }
 
-                                @Override
-                                public void onFailure(Call<Service> call, Throwable t) {
-                                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Network error!");
-                                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                                    errorOkDialog.show();
-                                }
-                            });
-                        } else {
-                            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error creating a new category!");
+                        @Override
+                        public void onFailure(Call<CategoryWithID> call, Throwable t) {
+                            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Network error!");
                             errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                             errorOkDialog.show();
                         }
-                    }
-
-                    @Override
-                    public void onFailure(Call<CategoryWithID> call, Throwable t) {
-                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Network error!");
-                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                        errorOkDialog.show();
-                    }
-                });
-            } else {
-                CreateService newService = new CreateService();
-
-                newService.setName(binding.serviceNameInput.getText().toString());
-                newService.setDescription(binding.serviceDescriptionInput.getText().toString());
-                newService.setSpecifics(binding.serviceSpecificsInput.getText().toString());
-                newService.setCategoryId(selectedCategoryId);
-                newService.setProviderId(LoggedInHelperService.getId());
-                newService.setAutomaticReservationAcceptance(binding.checkbox.isChecked());
-                newService.setPrice(Double.parseDouble(binding.servicePriceInput.getText().toString()));
-                newService.setDiscount(Double.parseDouble(binding.serviceDiscountInput.getText().toString()));
-                newService.setReservationDeadline(Integer.parseInt(binding.serviceDaysNoticeReservationInput.getText().toString()));
-                newService.setCancellationDeadline(Integer.parseInt(binding.serviceDaysNoticeCancellationInput.getText().toString()));
-                if (binding.fixedDurationRadioButton.isChecked()) {
-                    newService.setMinReservationTime(Integer.parseInt(binding.fixedDurationInput.getText().toString()));
-                    newService.setMaxReservationTime(Integer.parseInt(binding.fixedDurationInput.getText().toString()));
+                    });
                 } else {
-                    newService.setMinReservationTime(Integer.parseInt(binding.minimumDurationInput.getText().toString()));
-                    newService.setMaxReservationTime(Integer.parseInt(binding.maximumDurationInput.getText().toString()));
+                    CreateService newService = new CreateService();
+
+                    newService.setName(binding.serviceNameInput.getText().toString());
+                    newService.setDescription(binding.serviceDescriptionInput.getText().toString());
+                    newService.setSpecifics(binding.serviceSpecificsInput.getText().toString());
+                    newService.setCategoryId(selectedCategoryId);
+                    newService.setProviderId(LoggedInHelperService.getId());
+                    newService.setAutomaticReservationAcceptance(binding.checkbox.isChecked());
+                    newService.setPrice(Double.parseDouble(binding.servicePriceInput.getText().toString()));
+                    newService.setDiscount(Double.parseDouble(binding.serviceDiscountInput.getText().toString()));
+                    newService.setReservationDeadline(Integer.parseInt(binding.serviceDaysNoticeReservationInput.getText().toString()));
+                    newService.setCancellationDeadline(Integer.parseInt(binding.serviceDaysNoticeCancellationInput.getText().toString()));
+                    if (binding.fixedDurationRadioButton.isChecked()) {
+                        newService.setMinReservationTime(Integer.parseInt(binding.fixedDurationInput.getText().toString()));
+                        newService.setMaxReservationTime(Integer.parseInt(binding.fixedDurationInput.getText().toString()));
+                    } else {
+                        newService.setMinReservationTime(Integer.parseInt(binding.minimumDurationInput.getText().toString()));
+                        newService.setMaxReservationTime(Integer.parseInt(binding.maximumDurationInput.getText().toString()));
+                    }
+
+                    List<Long> selectedEventTypeIds = new ArrayList<>();
+                    for (int i = 0; i < binding.chipGroup.getChildCount(); i++) {
+                        Chip chip = (Chip) binding.chipGroup.getChildAt(i);
+                        if (chip.isChecked()) {
+                            selectedEventTypeIds.add((Long) chip.getTag());
+                        }
+                    }
+                    newService.setRelatedEventTypeIds(selectedEventTypeIds);
+                    newService.setImageUrls(images);
+
+                    Call<Service> call = ClientUtils.serviceService.createService(newService);
+                    call.enqueue(new Callback<Service>() {
+                        @Override
+                        public void onResponse(Call<Service> call, Response<Service> response) {
+                            if (response.isSuccessful()) {
+                                Bundle args = new Bundle();
+                                args.putLong("solutionId", response.body().getId());
+
+                                NavController navController = Navigation.findNavController(getView());
+                                navController.popBackStack();
+                                navController.navigate(R.id.nav_solution_details, args);
+                            } else {
+                                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Could not create the service!");
+                                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                errorOkDialog.show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Service> call, Throwable t) {
+                            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Network error!");
+                            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            errorOkDialog.show();
+                        }
+                    });
+                }
+            } else {
+                UpdateService updateService = new UpdateService();
+
+                updateService.setId(service.getId());
+                updateService.setName(binding.serviceNameInput.getText().toString());
+                updateService.setDescription(binding.serviceDescriptionInput.getText().toString());
+                updateService.setSpecifics(binding.serviceSpecificsInput.getText().toString());
+                updateService.setVisible(service.getVisible());
+                updateService.setAvailable(service.getAvailable());
+                updateService.setAutomaticReservationAcceptance(binding.checkbox.isChecked());
+                updateService.setPrice(Double.parseDouble(binding.servicePriceInput.getText().toString()));
+                updateService.setDiscount(Integer.parseInt(binding.serviceDiscountInput.getText().toString()));
+                updateService.setReservationDeadline(Integer.parseInt(binding.serviceDaysNoticeReservationInput.getText().toString()));
+                updateService.setCancellationDeadline(Integer.parseInt(binding.serviceDaysNoticeCancellationInput.getText().toString()));
+                if (binding.fixedDurationRadioButton.isChecked()) {
+                    updateService.setMinReservationTime(Integer.parseInt(binding.fixedDurationInput.getText().toString()));
+                    updateService.setMaxReservationTime(Integer.parseInt(binding.fixedDurationInput.getText().toString()));
+                } else {
+                    updateService.setMinReservationTime(Integer.parseInt(binding.minimumDurationInput.getText().toString()));
+                    updateService.setMaxReservationTime(Integer.parseInt(binding.maximumDurationInput.getText().toString()));
                 }
 
                 List<Long> selectedEventTypeIds = new ArrayList<>();
@@ -412,10 +476,10 @@ public class ServiceManipulationFragment extends Fragment {
                         selectedEventTypeIds.add((Long) chip.getTag());
                     }
                 }
-                newService.setRelatedEventTypeIds(selectedEventTypeIds);
-                newService.setImageUrls(images);
+                updateService.setRelatedEventTypeIds(selectedEventTypeIds);
+                updateService.setImageUrls(images);
 
-                Call<Service> call = ClientUtils.serviceService.createService(newService);
+                Call<Service> call = ClientUtils.serviceService.updateService(updateService);
                 call.enqueue(new Callback<Service>() {
                     @Override
                     public void onResponse(Call<Service> call, Response<Service> response) {
@@ -442,62 +506,200 @@ public class ServiceManipulationFragment extends Fragment {
                 });
             }
         } else {
-            UpdateService updateService = new UpdateService();
-
-            updateService.setId(service.getId());
-            updateService.setName(binding.serviceNameInput.getText().toString());
-            updateService.setDescription(binding.serviceDescriptionInput.getText().toString());
-            updateService.setSpecifics(binding.serviceSpecificsInput.getText().toString());
-            updateService.setVisible(service.getVisible());
-            updateService.setAvailable(service.getAvailable());
-            updateService.setAutomaticReservationAcceptance(binding.checkbox.isChecked());
-            updateService.setPrice(Double.parseDouble(binding.servicePriceInput.getText().toString()));
-            updateService.setDiscount(Integer.parseInt(binding.serviceDiscountInput.getText().toString()));
-            updateService.setReservationDeadline(Integer.parseInt(binding.serviceDaysNoticeReservationInput.getText().toString()));
-            updateService.setCancellationDeadline(Integer.parseInt(binding.serviceDaysNoticeCancellationInput.getText().toString()));
-            if (binding.fixedDurationRadioButton.isChecked()) {
-                updateService.setMinReservationTime(Integer.parseInt(binding.fixedDurationInput.getText().toString()));
-                updateService.setMaxReservationTime(Integer.parseInt(binding.fixedDurationInput.getText().toString()));
-            } else {
-                updateService.setMinReservationTime(Integer.parseInt(binding.minimumDurationInput.getText().toString()));
-                updateService.setMaxReservationTime(Integer.parseInt(binding.maximumDurationInput.getText().toString()));
-            }
-
-            List<Long> selectedEventTypeIds = new ArrayList<>();
-            for (int i = 0; i < binding.chipGroup.getChildCount(); i++) {
-                Chip chip = (Chip) binding.chipGroup.getChildAt(i);
-                if (chip.isChecked()) {
-                    selectedEventTypeIds.add((Long) chip.getTag());
-                }
-            }
-            updateService.setRelatedEventTypeIds(selectedEventTypeIds);
-            updateService.setImageUrls(images);
-
-            Call<Service> call = ClientUtils.serviceService.updateService(updateService);
-            call.enqueue(new Callback<Service>() {
-                @Override
-                public void onResponse(Call<Service> call, Response<Service> response) {
-                    if (response.isSuccessful()) {
-                        Bundle args = new Bundle();
-                        args.putLong("solutionId", response.body().getId());
-
-                        NavController navController = Navigation.findNavController(getView());
-                        navController.popBackStack();
-                        navController.navigate(R.id.nav_solution_details, args);
-                    } else {
-                        ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Could not create the service!");
-                        errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                        errorOkDialog.show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Service> call, Throwable t) {
-                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Network error!");
-                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    errorOkDialog.show();
-                }
-            });
+            new AlertDialog.Builder(getContext())
+                    .setMessage("Not all fields are valid!")
+                    .setCancelable(true)
+                    .setPositiveButton("OK", (dialog, id) -> dialog.dismiss())
+                    .show();
         }
+    }
+
+    private void setupValidation() {
+        binding.serviceNameInput.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                isTextValid(binding.serviceNameInputLayout, binding.serviceNameInput, "Name");
+            }
+        });
+        binding.serviceDescriptionInput.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                isTextValid(binding.serviceDescriptionInputLayout, binding.serviceDescriptionInput, "Description");
+            }
+        });
+        binding.serviceSpecificsInput.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                isTextValid(binding.serviceSpecificsInputLayout, binding.serviceSpecificsInput, "Specifics");
+            }
+        });
+        binding.serviceNewCategoryNameInput.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                isTextValid(binding.serviceNewCategoryNameInputLayout, binding.serviceNewCategoryNameInput, "Category name");
+            }
+        });
+        binding.serviceNewCategoryDescriptionInput.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                isTextValid(binding.serviceNewCategoryDescriptionInputLayout, binding.serviceNewCategoryDescriptionInput, "Category description");
+            }
+        });
+        binding.fixedDurationInput.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                isNumberValid(binding.fixedDurationInputLayout, binding.fixedDurationInput, "Fixed duration", 0, null);
+            }
+        });
+        binding.minimumDurationInput.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                isNumberValid(binding.minimumDurationInputLayout, binding.minimumDurationInput, "Minimum duration", 0, null);
+            }
+        });
+        binding.maximumDurationInput.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                isNumberValid(binding.maximumDurationInputLayout, binding.maximumDurationInput, "Maximum duration", 0, null);
+            }
+        });
+        binding.categoryAutoCompleteTextView.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                isCategoryValid();
+            }
+        });
+        binding.serviceDaysNoticeReservationInput.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                isNumberValid(binding.serviceDaysNoticeReservationInputLayout, binding.serviceDaysNoticeReservationInput, "Reservation deadline", 0, null);
+            }
+        });
+        binding.serviceDaysNoticeCancellationInput.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                isNumberValid(binding.serviceDaysNoticeCancellationInputLayout, binding.serviceDaysNoticeCancellationInput, "Cancellation deadline", 0, null);
+            }
+        });
+        binding.servicePriceInput.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                isNumberValid(binding.servicePriceInputLayout, binding.servicePriceInput, "Price", 0, null);
+            }
+        });
+        binding.serviceDiscountInput.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                isNumberValid(binding.serviceDiscountInputLayout, binding.serviceDiscountInput, "Discount", 0, 100);
+            }
+        });
+    }
+
+    private boolean isValid() {
+        boolean valid = isTextValid(binding.serviceNameInputLayout, binding.serviceNameInput, "Name");
+        valid = isTextValid(binding.serviceDescriptionInputLayout, binding.serviceDescriptionInput, "Description") && valid;
+        valid = isTextValid(binding.serviceSpecificsInputLayout, binding.serviceSpecificsInput, "Specifics") && valid;
+        if (service == null) {
+            valid = isCategoryValid() && valid;
+            if (selectedCategoryId != null && selectedCategoryId == -1337L) {
+                valid = isTextValid(binding.serviceNewCategoryNameInputLayout, binding.serviceNewCategoryNameInput, "Category name") && valid;
+                valid = isTextValid(binding.serviceNewCategoryDescriptionInputLayout, binding.serviceNewCategoryDescriptionInput, "Category description") && valid;
+            }
+        }
+        if (binding.fixedDurationRadioButton.isChecked()) {
+            isNumberValid(binding.fixedDurationInputLayout, binding.fixedDurationInput, "Fixed duration", 0, null);
+        } else if (binding.variableDurationRadioButton.isChecked()) {
+            boolean minValid = isNumberValid(binding.minimumDurationInputLayout, binding.minimumDurationInput, "Minimum duration", 0, null);
+            boolean maxValid = isNumberValid(binding.maximumDurationInputLayout, binding.maximumDurationInput, "Maximum duration", 0, null);
+            valid = minValid && valid;
+            valid = maxValid && valid;
+            if (minValid && maxValid) {
+                valid = isDurationValid() && valid;
+            }
+        } else {
+            valid = false;
+        }
+        valid = isEventTypesValid() && valid;
+        valid = isNumberValid(binding.serviceDaysNoticeReservationInputLayout, binding.serviceDaysNoticeReservationInput, "Reservation deadline", 0, null) && valid;
+        valid = isNumberValid(binding.serviceDaysNoticeCancellationInputLayout, binding.serviceDaysNoticeCancellationInput, "Cancellation deadline", 0, null) && valid;
+        valid = isNumberValid(binding.servicePriceInputLayout, binding.servicePriceInput, "Price", 0, null) && valid;
+        valid = isNumberValid(binding.serviceDiscountInputLayout, binding.serviceDiscountInput, "Discount", 0, 100) && valid;
+        valid = isPhotoValid() && valid;
+
+        return valid;
+    }
+
+    private boolean isTextValid(TextInputLayout layout, TextInputEditText editText, String field) {
+        if (String.valueOf(editText.getText()).isEmpty()) {
+            layout.setError(field + " is required");
+            layout.setErrorEnabled(true);
+            return false;
+        } else {
+            layout.setError(null);
+            layout.setErrorEnabled(false);
+            return true;
+        }
+    }
+
+    private boolean isNumberValid(TextInputLayout layout, TextInputEditText editText, String field, Integer lowerLimit, Integer upperLimit) {
+        if (String.valueOf(editText.getText()).isEmpty()) {
+            layout.setError(field + " is required");
+            layout.setErrorEnabled(true);
+            return false;
+        }
+
+        try {
+            Double numberValue = Double.parseDouble(editText.getText().toString());
+            if (lowerLimit != null && numberValue <= lowerLimit) {
+                layout.setError(field + " must be greater than " + lowerLimit);
+                layout.setErrorEnabled(true);
+                return false;
+            } else if (upperLimit != null && numberValue > upperLimit) {
+                layout.setError(field + " must not be greater than " + upperLimit);
+                layout.setErrorEnabled(true);
+                return false;
+            }
+            else {
+                layout.setError(null);
+                layout.setErrorEnabled(false);
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            layout.setError(field + " must be a number");
+            layout.setErrorEnabled(true);
+            return false;
+        }
+    }
+
+    private boolean isEventTypesValid() {
+        for (int i = 0; i < binding.chipGroup.getChildCount(); i++) {
+            Chip chip = (Chip) binding.chipGroup.getChildAt(i);
+            if (chip.isChecked()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isCategoryValid() {
+        if (selectedCategoryId == null) {
+            binding.serviceCategoryInputLayout.setError("Category is required");
+            binding.serviceCategoryInputLayout.setErrorEnabled(true);
+            return false;
+        } else {
+            binding.serviceCategoryInputLayout.setError(null);
+            binding.serviceCategoryInputLayout.setErrorEnabled(false);
+            return true;
+        }
+    }
+
+    private boolean isDurationValid() {
+        int minValue = Integer.parseInt(binding.minimumDurationInput.getText().toString());
+        int maxValue = Integer.parseInt(binding.maximumDurationInput.getText().toString());
+        if (maxValue >= minValue) {
+            binding.minimumDurationInputLayout.setError(null);
+            binding.minimumDurationInputLayout.setErrorEnabled(false);
+            binding.maximumDurationInputLayout.setError(null);
+            binding.maximumDurationInputLayout.setErrorEnabled(false);
+            return true;
+        } else {
+            binding.minimumDurationInputLayout.setError("Minimum duration be smaller than maximum duration");
+            binding.minimumDurationInputLayout.setErrorEnabled(true);
+            binding.maximumDurationInputLayout.setError("Maximum duration must be bigger than minimum duration");
+            binding.maximumDurationInputLayout.setErrorEnabled(true);
+            return false;
+        }
+    }
+
+    private boolean isPhotoValid() {
+        return !images.isEmpty();
     }
 }
