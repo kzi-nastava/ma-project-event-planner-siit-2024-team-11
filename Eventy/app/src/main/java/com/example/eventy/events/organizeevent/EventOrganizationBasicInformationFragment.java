@@ -42,6 +42,7 @@ import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 
 import java.io.IOException;
+import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -52,6 +53,11 @@ import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.BiConsumer;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -124,6 +130,24 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
             }
         });
 
+        TrustManager[] trustAllCerts = new TrustManager[] {
+                new X509TrustManager() {
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return new X509Certificate[0];
+                    }
+                    public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+                    public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+                }
+        };
+
+        try {
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         OnlineTileSourceBase cartoTileSource = new OnlineTileSourceBase(
                 "CartoDB",
                 0,
@@ -151,9 +175,8 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
         };
 
         binding.mapview.setTileSource(cartoTileSource);
-        binding.mapview.invalidate(); // Refresh the map to load tiles
+        binding.mapview.postInvalidate(); // Use postInvalidate() to refresh the map
         binding.mapview.setMultiTouchControls(true);
-
 
         IMapController mapController = binding.mapview.getController();
         mapController.setCenter(new GeoPoint(45.2445, 19.8484));  // Default location: FTN
