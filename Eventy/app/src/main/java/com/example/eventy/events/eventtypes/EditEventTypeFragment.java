@@ -59,7 +59,7 @@ public class EditEventTypeFragment extends Fragment {
             // Problem with back button so we clear the backstack
             navController.popBackStack();
 
-            navController.navigate(R.id.nav_event_type_details);
+            navController.navigate(R.id.nav_event_type_details, args);
         });
 
         Call<EventTypeWithActivity> call = ClientUtils.eventTypeService.get(typeId);
