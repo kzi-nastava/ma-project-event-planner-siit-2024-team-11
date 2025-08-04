@@ -30,6 +30,7 @@ import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentUserOrganizerEditBinding;
 import com.example.eventy.users.model.UpdateUser;
 import com.example.eventy.users.model.User;
+import com.example.eventy.users.model.UserType;
 import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -64,11 +65,13 @@ public class UserOrganizerEditFragment extends Fragment {
         View root = binding.getRoot();
 
         if(this.user.getProfilePictures() != null && !this.user.getProfilePictures().isEmpty()) {
-            binding.profilePicture.setImageURI(Uri.parse(this.user.getProfilePictures().get(0)));
+            binding.profilePicture.setImageBitmap(PictureHelperService.getPicture(this.user.getProfilePictures().get(0)));
         }
         binding.emailInput.setText(this.user.getEmail());
-        binding.firstNameInput.setText(this.user.getFirstName());
-        binding.lastNameInput.setText(this.user.getLastName());
+        if (user.getUserType() == UserType.ORGANIZER) {
+            binding.firstNameInput.setText(this.user.getFirstName());
+            binding.lastNameInput.setText(this.user.getLastName());
+        }
         binding.addressInput.setText(this.user.getAddress());
         binding.phoneNumberInput.setText(this.user.getPhoneNumber());
 
@@ -100,11 +103,19 @@ public class UserOrganizerEditFragment extends Fragment {
         addValidation(binding.passwordInputLayout, binding.passwordInput, this::validateRequired);
         addValidation(binding.oldPasswordInputLayout, binding.oldPasswordInput, this::validateRequired);
         addValidation(binding.confirmPasswordInputLayout, binding.confirmPasswordInput, this::validateConfirmPassword);
-        addValidation(binding.firstNameInputLayout, binding.firstNameInput, this::validateRequired);
-        addValidation(binding.lastNameInputLayout, binding.lastNameInput, this::validateRequired);
+        if (user.getUserType() == UserType.ORGANIZER) {
+            addValidation(binding.firstNameInputLayout, binding.firstNameInput, this::validateRequired);
+            addValidation(binding.lastNameInputLayout, binding.lastNameInput, this::validateRequired);
+        }
         addValidation(binding.addressInputLayout, binding.addressInput, this::validateRequired);
         addValidation(binding.phoneNumberInputLayout, binding.phoneNumberInput, this::validatePhoneNumber);
 
+        if (user.getUserType() != UserType.ORGANIZER) {
+            binding.firstNameInputLayout.setVisibility(View.GONE);
+            binding.firstNameInput.setVisibility(View.GONE);
+            binding.lastNameInputLayout.setVisibility(View.GONE);
+            binding.lastNameInput.setVisibility(View.GONE);
+        }
         return root;
     }
 
@@ -180,8 +191,10 @@ public class UserOrganizerEditFragment extends Fragment {
         binding.oldPasswordInput.setText(binding.oldPasswordInput.getText());
         binding.passwordInput.setText(binding.passwordInput.getText());
         binding.confirmPasswordInput.setText(binding.confirmPasswordInput.getText());
-        binding.firstNameInput.setText(binding.firstNameInput.getText());
-        binding.lastNameInput.setText(binding.lastNameInput.getText());
+        if (user.getUserType() == UserType.ORGANIZER) {
+            binding.firstNameInput.setText(binding.firstNameInput.getText());
+            binding.lastNameInput.setText(binding.lastNameInput.getText());
+        }
         binding.addressInput.setText(binding.addressInput.getText());
         binding.phoneNumberInput.setText(binding.phoneNumberInput.getText());
 
@@ -189,8 +202,8 @@ public class UserOrganizerEditFragment extends Fragment {
                 binding.oldPasswordInput.getError() == null &&
                 binding.passwordInputLayout.getError() == null &&
                 binding.confirmPasswordInputLayout.getError() == null &&
-                binding.firstNameInputLayout.getError() == null &&
-                binding.lastNameInputLayout.getError() == null &&
+                (binding.firstNameInputLayout.getError() == null || user.getUserType() != UserType.ORGANIZER) &&
+                (binding.lastNameInputLayout.getError() == null || user.getUserType() != UserType.ORGANIZER) &&
                 binding.addressInputLayout.getError() == null &&
                 binding.phoneNumberInputLayout.getError() == null) {
 
@@ -201,8 +214,8 @@ public class UserOrganizerEditFragment extends Fragment {
                     binding.oldPasswordInput.getText().toString(),
                     binding.passwordInput.getText().toString(),
                     binding.confirmPasswordInput.getText().toString(),
-                    binding.firstNameInput.getText().toString(),
-                    binding.lastNameInput.getText().toString(),
+                    user.getUserType() == UserType.ORGANIZER ? binding.firstNameInput.getText().toString() : null,
+                    user.getUserType() == UserType.ORGANIZER ? binding.lastNameInput.getText().toString() : null,
                     null,
                     null,
                     binding.addressInput.getText().toString(),
