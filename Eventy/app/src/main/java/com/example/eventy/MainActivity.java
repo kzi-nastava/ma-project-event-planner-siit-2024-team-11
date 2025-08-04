@@ -292,14 +292,7 @@ public class MainActivity extends AppCompatActivity {
                 openedNotifications = false;
             }
 
-            AllChatsFragment allChatsFragmentNew = (AllChatsFragment) getSupportFragmentManager()
-                    .findFragmentByTag(AllChatsFragment.class.getSimpleName());
-            if (allChatsFragmentNew == null) {
-                allChatsFragmentNew = new AllChatsFragment(this);
-            }
-            this.allChatsFragment = allChatsFragmentNew;
-
-            FragmentTransition.to(allChatsFragmentNew, this, true, R.id.nav_host_fragment_content_main);
+            openChat();
             return true;
 
         } else if (id == R.id.action_notifications) {
@@ -336,6 +329,17 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    public void openChat() {
+        AllChatsFragment allChatsFragmentNew = (AllChatsFragment) getSupportFragmentManager()
+                .findFragmentByTag(AllChatsFragment.class.getSimpleName());
+        if (allChatsFragmentNew == null) {
+            allChatsFragmentNew = new AllChatsFragment(this);
+        }
+        this.allChatsFragment = allChatsFragmentNew;
+
+        FragmentTransition.to(allChatsFragmentNew, this, true, R.id.nav_host_fragment_content_main);
     }
 
 

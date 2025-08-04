@@ -125,6 +125,7 @@ public class PricelistFragment extends Fragment {
 
                     totalPages = pagedResponse.getTotalPages();
                     updatePaginationControls();
+                    isLoading = false;
                 } else {
                     if (getActivity() != null) {
                         ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while loading pricelist! Try again.");

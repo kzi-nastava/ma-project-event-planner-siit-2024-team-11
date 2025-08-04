@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
 
@@ -42,6 +43,9 @@ public class PricelistItemEditDialog extends Dialog {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_pricelist_item_edit);
+
+        int width = (int) (getContext().getResources().getDisplayMetrics().widthPixels * 0.9);
+        getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         newPriceTextbox = findViewById(R.id.pricelist_item_price_textbox);
         newDiscountTextbox = findViewById(R.id.pricelist_item_discount_textbox);
@@ -101,6 +105,10 @@ public class PricelistItemEditDialog extends Dialog {
                 }
             }
 
+        });
+
+        cancelButton.setOnClickListener(v -> {
+            dismiss();
         });
     }
 }

@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
 
@@ -43,6 +44,9 @@ public class SolutionCategoryDialog extends Dialog implements android.view.View.
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_solution_category);
+
+        int width = (int) (getContext().getResources().getDisplayMetrics().widthPixels * 0.9);
+        getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         editTextName = findViewById(R.id.nameTextBox);
         editTextDescription = findViewById(R.id.descriptionTextBox);

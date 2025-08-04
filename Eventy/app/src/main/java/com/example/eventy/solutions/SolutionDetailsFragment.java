@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.eventy.MainActivity;
 import com.example.eventy.R;
 import com.example.eventy.adapters.reviews.SolutionDetailsReviewsAdapter;
 import com.example.eventy.common.PictureHelperService;
@@ -160,6 +161,8 @@ public class SolutionDetailsFragment extends Fragment {
             setUpAvailabilityButton();
             setUpVisibilityButton();
         }
+        
+        setUpChatButton();
 
 
 
@@ -371,6 +374,27 @@ public class SolutionDetailsFragment extends Fragment {
     private void setUpAvailabilityButton() {
         binding.toggleAvailabilityButton.setText(solution.getAvailable() ? "Make unavailable" : "Make available");
         binding.toggleAvailabilityButton.setBackgroundTintList(solution.getAvailable() ? ContextCompat.getColorStateList(getContext(), R.color.red_255_button) : ContextCompat.getColorStateList(getContext(), R.color.green_button));
+    }
+
+    private void setUpChatButton() {
+        binding.chatButton.setOnClickListener(v -> {
+            Call<Void> chatCall = ClientUtils.chatService.createChat(solution.getProviderId());
+            chatCall.enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        MainActivity activity = (MainActivity) requireActivity();
+                        activity.openChat();
+                    } else {
+                    }
+                }
+
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                }
+            });
+        });
     }
 
     private void handleDelete() {

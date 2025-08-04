@@ -91,6 +91,8 @@ public class SolutionCategoryAdapter extends RecyclerView.Adapter<SolutionCatego
                                 public void onResponse(Call<Void> call, Response<Void> response) {
                                     if (response.isSuccessful()) {
                                         Toast.makeText(holder.itemView.getContext(), "Category deleted successfully", Toast.LENGTH_SHORT).show();
+                                        categories.remove(category);
+                                        notifyDataSetChanged();
                                     } else {
                                         Toast.makeText(holder.itemView.getContext(), "Failed to delete category", Toast.LENGTH_SHORT).show();
                                     }
