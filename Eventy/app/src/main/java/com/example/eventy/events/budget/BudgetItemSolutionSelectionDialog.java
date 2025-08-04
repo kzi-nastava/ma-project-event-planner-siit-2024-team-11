@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
@@ -36,6 +37,7 @@ public class BudgetItemSolutionSelectionDialog extends Dialog implements View.On
     private MaterialButton servicesButton;
     private LinearLayout stageOneLayout;
     private LinearLayout stageTwoLayout;
+    private TextView noContentMessage;
     private RecyclerView recycler;
     private NavController navController;
 
@@ -60,6 +62,7 @@ public class BudgetItemSolutionSelectionDialog extends Dialog implements View.On
         productsButton = findViewById(R.id.dialog_budget_item_selection_products_button);
         servicesButton = findViewById(R.id.dialog_budget_item_selection_services_button);
         recycler = findViewById(R.id.dialog_budget_item_selection_recycler);
+        noContentMessage = findViewById(R.id.dialog_budget_item_selection_no_content);
 
         productsButton.setOnClickListener(v -> {
             setStageTwo("Product");
@@ -85,6 +88,10 @@ public class BudgetItemSolutionSelectionDialog extends Dialog implements View.On
                 if (response.isSuccessful() && response.body() != null) {
                     solutionCardList.addAll(response.body().getContent());
                     adapter.notifyDataSetChanged();
+                    if (solutionCardList.isEmpty()) {
+                        noContentMessage.setVisibility(View.VISIBLE);
+                        noContentMessage.setText("There are no " + selection + "s of the " + categoryName + " type available at the moment.");
+                    }
                 }
             }
 
