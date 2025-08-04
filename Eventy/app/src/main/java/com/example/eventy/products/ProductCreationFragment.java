@@ -235,12 +235,18 @@ public class ProductCreationFragment extends Fragment {
 
         if(binding.productNameInputLayout.getError() != null || binding.productDescriptionInputLayout.getError() != null ||
         binding.productPriceInputLayout.getError() != null || binding.productDiscountInputLayout.getError() != null ||
-                selectedCategoryId == null || images == null || images.isEmpty() ||
+                selectedCategoryId == null ||
                 (selectedCategoryId == -1337L && (binding.productNewCategoryNameInputLayout.getError() != null || binding.productNewCategoryDescriptionInputLayout.getError() != null))) {
             ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Validation failed! Check your input fields again!");
             errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             errorOkDialog.show();
 
+            return;
+        }
+        else if(images == null || images.isEmpty()) {
+            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "You didn't add any images!");
+            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            errorOkDialog.show();
             return;
         }
 
