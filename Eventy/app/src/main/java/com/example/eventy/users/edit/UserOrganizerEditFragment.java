@@ -100,7 +100,6 @@ public class UserOrganizerEditFragment extends Fragment {
         binding.profilePicture.setOnClickListener(v -> openGalleryPicker());
 
         addValidation(binding.emailInputLayout, binding.emailInput, this::validateEmail);
-        addValidation(binding.passwordInputLayout, binding.passwordInput, this::validateRequired);
         addValidation(binding.oldPasswordInputLayout, binding.oldPasswordInput, this::validateRequired);
         addValidation(binding.confirmPasswordInputLayout, binding.confirmPasswordInput, this::validateConfirmPassword);
         if (user.getUserType() == UserType.ORGANIZER) {
@@ -177,9 +176,11 @@ public class UserOrganizerEditFragment extends Fragment {
     }
 
     private void validateConfirmPassword(String inputText, TextInputLayout textInputLayout) {
-        if (inputText.trim().isEmpty()) {
-            textInputLayout.setError("This field is required");
-        } else if (!binding.passwordInput.getText().toString().equals(binding.confirmPasswordInput.getText().toString())) {
+        if (!binding.passwordInput.getText().toString().equals(binding.confirmPasswordInput.getText().toString())) {
+            if (binding.passwordInput.getText().toString().isEmpty()) {
+                textInputLayout.setError(null);
+                return;
+            }
             textInputLayout.setError("Passwords don't match!");
         } else {
             textInputLayout.setError(null);
@@ -214,10 +215,10 @@ public class UserOrganizerEditFragment extends Fragment {
                     binding.oldPasswordInput.getText().toString(),
                     binding.passwordInput.getText().toString(),
                     binding.confirmPasswordInput.getText().toString(),
-                    user.getUserType() == UserType.ORGANIZER ? binding.firstNameInput.getText().toString() : null,
-                    user.getUserType() == UserType.ORGANIZER ? binding.lastNameInput.getText().toString() : null,
-                    null,
-                    null,
+                    user.getUserType() == UserType.ORGANIZER ? binding.firstNameInput.getText().toString() : "",
+                    user.getUserType() == UserType.ORGANIZER ? binding.lastNameInput.getText().toString() : "",
+                    "",
+                    "",
                     binding.addressInput.getText().toString(),
                     binding.phoneNumberInput.getText().toString()
             ));
@@ -226,7 +227,7 @@ public class UserOrganizerEditFragment extends Fragment {
                 public void onResponse(Call<User> call, Response<User> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         new AlertDialog.Builder(getContext())
-                                .setTitle(" Successful edit")
+                                .setTitle("Successful edit")
                                 .setMessage("User is now edited successfully.")
                                 .setIcon(R.drawable.icon_success_png)
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
