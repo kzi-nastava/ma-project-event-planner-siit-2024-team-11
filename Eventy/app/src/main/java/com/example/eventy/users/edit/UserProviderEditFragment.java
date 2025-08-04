@@ -80,7 +80,6 @@ public class UserProviderEditFragment extends Fragment {
 
         addValidation(binding.emailInputLayout, binding.emailInput, this::validateEmail);
         addValidation(binding.oldPasswordInputLayout, binding.oldPasswordInput, this::validateRequired);
-        addValidation(binding.passwordInputLayout, binding.passwordInput, this::validateRequired);
         addValidation(binding.confirmPasswordInputLayout, binding.confirmPasswordInput, this::validateConfirmPassword);
         addValidation(binding.nameInputLayout, binding.nameInput, this::validateRequired);
         addValidation(binding.descriptionInputLayout, binding.descriptionInput, this::validateRequired);
@@ -207,9 +206,12 @@ public class UserProviderEditFragment extends Fragment {
     }
 
     private void validateConfirmPassword(String inputText, TextInputLayout textInputLayout) {
-        if (inputText.trim().isEmpty()) {
-            textInputLayout.setError("This field is required");
-        } else if (!binding.passwordInput.getText().toString().equals(binding.confirmPasswordInput.getText().toString())) {
+        if (!binding.passwordInput.getText().toString().equals(binding.confirmPasswordInput.getText().toString())) {
+            if (binding.passwordInput.getText().toString().isEmpty()) {
+                textInputLayout.setError(null);
+                return;
+            }
+
             textInputLayout.setError("Passwords don't match!");
         } else {
             textInputLayout.setError(null);
@@ -241,8 +243,8 @@ public class UserProviderEditFragment extends Fragment {
                     binding.oldPasswordInput.getText().toString(),
                     binding.passwordInput.getText().toString(),
                     binding.confirmPasswordInput.getText().toString(),
-                    null,
-                    null,
+                    "",
+                    "",
                     binding.nameInput.getText().toString(),
                     binding.descriptionInput.getText().toString(),
                     binding.addressInput.getText().toString(),

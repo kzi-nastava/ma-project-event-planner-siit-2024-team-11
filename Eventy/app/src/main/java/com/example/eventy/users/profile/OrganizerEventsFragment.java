@@ -68,7 +68,7 @@ public class OrganizerEventsFragment extends Fragment {
 
         binding.searchEventsButton.setOnClickListener(v -> {
             page = 0;
-            eventCards = new ArrayList<>();
+            eventCards.clear();
             loadCards(binding.searchInput.getQuery().toString(), page);
         });
 

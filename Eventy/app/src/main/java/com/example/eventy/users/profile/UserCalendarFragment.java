@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentUserCalendarBinding;
@@ -23,6 +24,7 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import retrofit2.Call;
@@ -32,9 +34,12 @@ import retrofit2.Response;
 public class UserCalendarFragment extends Fragment {
 
     private FragmentUserCalendarBinding binding;
-    private HashSet<CalendarDay> eventDates;
-    private HashSet<CalendarDay> productDates;
-    private HashSet<CalendarDay> serviceDates;
+    private HashMap<CalendarDay, String> eventDates;
+    private HashMap<CalendarDay, String> productDates;
+    private HashMap<CalendarDay, String> serviceDates;
+    private HashSet<CalendarDay> eventDateKeys;
+    private HashSet<CalendarDay> productDateKeys;
+    private HashSet<CalendarDay> serviceDateKeys;
 
     public UserCalendarFragment() {
         // Required empty public constructor
@@ -55,20 +60,60 @@ public class UserCalendarFragment extends Fragment {
         };
 
         // Mark some dates with events
-        eventDates = new HashSet<>();
-        productDates = new HashSet<>();
-        serviceDates = new HashSet<>();
+        eventDates = new HashMap<>();
+        productDates = new HashMap<>();
+        serviceDates = new HashMap<>();
         addEventsForCurrentMonth(calendarView.getCurrentDate());
+        eventDateKeys = new HashSet<>(eventDates.keySet());
+        productDateKeys = new HashSet<>(productDates.keySet());
+        serviceDateKeys = new HashSet<>(serviceDates.keySet());
 
         // Add a decorators to the calendar
-        calendarView.addDecorators(new EventDecorator(colors[0], eventDates), new EventDecorator(colors[1], productDates), new EventDecorator(colors[2], serviceDates));
+        calendarView.addDecorators(new EventDecorator(colors[0], eventDateKeys),
+                new EventDecorator(colors[1], productDateKeys),
+                new EventDecorator(colors[2], serviceDateKeys));
 
         calendarView.setOnMonthChangedListener((widget, date) -> {
             eventDates.clear();
+            eventDateKeys.clear();
             productDates.clear();
+            productDateKeys.clear();
             serviceDates.clear();
+            serviceDateKeys.clear();
             addEventsForCurrentMonth(date);
         });
+
+        binding.calendarView.setOnDateLongClickListener((widget, date) -> {
+            StringBuilder message = new StringBuilder();
+
+            for (CalendarDay day : eventDates.keySet()) {
+                if (date.equals(day)) {
+                    message.append("Event: ").append(eventDates.get(day)).append("\n");
+                }
+            }
+
+            for (CalendarDay day : productDates.keySet()) {
+                if (date.equals(day)) {
+                    message.append("Product: ").append(productDates.get(day)).append("\n");
+                }
+            }
+
+            for (CalendarDay day : serviceDates.keySet()) {
+                if (date.equals(day)) {
+                    message.append("Service: ").append(serviceDates.get(day)).append("\n");
+                }
+            }
+
+            if (message.length() == 0) {
+                message = new StringBuilder("There is nothing important on this day!");
+            }
+            else {
+                message = new StringBuilder(message.substring(0, message.length() - 1));
+            }
+
+            Toast.makeText(getContext(), message.toString(), Toast.LENGTH_SHORT).show();
+        });
+
         return root;
     }
 
@@ -121,7 +166,9 @@ public class UserCalendarFragment extends Fragment {
                             LocalDate iterDate = occupancy.getOccupationStartDate();
 
                             while (!iterDate.isAfter(occupancy.getOccupationEndDate())) {
-                                eventDates.add(CalendarDay.from(iterDate.getYear(), iterDate.getMonthValue(), iterDate.getDayOfMonth()));
+                                eventDates.put(CalendarDay.from(iterDate.getYear(), iterDate.getMonthValue(), iterDate.getDayOfMonth()),
+                                        occupancy.getTitle());
+                                eventDateKeys.add(CalendarDay.from(iterDate.getYear(), iterDate.getMonthValue(), iterDate.getDayOfMonth()));
                                 iterDate = iterDate.plusDays(1);
                             }
                         }
@@ -129,7 +176,9 @@ public class UserCalendarFragment extends Fragment {
                             LocalDate iterDate = occupancy.getOccupationStartDate();
 
                             while (!iterDate.isAfter(occupancy.getOccupationEndDate())) {
-                                productDates.add(CalendarDay.from(iterDate.getYear(), iterDate.getMonthValue(), iterDate.getDayOfMonth()));
+                                productDates.put(CalendarDay.from(iterDate.getYear(), iterDate.getMonthValue(), iterDate.getDayOfMonth()),
+                                        occupancy.getTitle());
+                                productDateKeys.add(CalendarDay.from(iterDate.getYear(), iterDate.getMonthValue(), iterDate.getDayOfMonth()));
                                 iterDate = iterDate.plusDays(1);
                             }
                         }
@@ -137,7 +186,9 @@ public class UserCalendarFragment extends Fragment {
                             LocalDate iterDate = occupancy.getOccupationStartDate();
 
                             while (!iterDate.isAfter(occupancy.getOccupationEndDate())) {
-                                serviceDates.add(CalendarDay.from(iterDate.getYear(), iterDate.getMonthValue(), iterDate.getDayOfMonth()));
+                                serviceDates.put(CalendarDay.from(iterDate.getYear(), iterDate.getMonthValue(), iterDate.getDayOfMonth()),
+                                        occupancy.getTitle());
+                                serviceDateKeys.add(CalendarDay.from(iterDate.getYear(), iterDate.getMonthValue(), iterDate.getDayOfMonth()));
                                 iterDate = iterDate.plusDays(1);
                             }
                         }
