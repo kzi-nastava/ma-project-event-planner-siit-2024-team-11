@@ -137,18 +137,18 @@
         android:textAlignment="center"/>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/date_range_input_layout"
+        android:id="@+id/date_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:hint="Select Date Range">
+        android:hint="Select Date">
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/date_range_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="none"
-        android:focusable="false"
-        android:background="@color/input_color"/>
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/date_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:focusable="false"
+            android:background="@color/input_color" />
     </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>

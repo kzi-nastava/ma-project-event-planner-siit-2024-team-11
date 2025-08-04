@@ -2,6 +2,7 @@ package com.example.eventy.events.organizeevent;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.icu.util.Calendar;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -82,7 +83,7 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
         addValidation(binding.nameInputLayout, binding.nameInput, this::validateRequired);
         addValidation(binding.descriptionInputLayout, binding.descriptionInput, this::validateRequired);
         addValidation(binding.maxParticipantsInputLayout, binding.maxParticipantsInput, this::validateNumber);
-        addValidation(binding.dateRangeInputLayout, binding.dateRangeInput, this::validateRequired);
+        addValidation(binding.dateInputLayout, binding.dateInput, this::validateRequired);
 
         binding.radioPublic.setOnClickListener(v -> {
             binding.radioPrivate.setChecked(false);
@@ -222,7 +223,7 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(mapEventsReceiver);
         binding.mapview.getOverlays().add(mapEventsOverlay);
 
-        binding.dateRangeInput.setOnClickListener(v -> showDateRangePicker());
+        binding.dateInput.setOnClickListener(v -> showDatePicker());
 
         return root;
     }
@@ -275,42 +276,37 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
         }
     }
 
-    public void showDateRangePicker() {
+    public void showDatePicker() {
+        Calendar calendar = Calendar.getInstance();
+        long todayInMillis = calendar.getTimeInMillis();
         CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder()
-                .setValidator(DateValidatorPointForward.now());
+                .setValidator(DateValidatorPointForward.from(todayInMillis));
 
-        MaterialDatePicker.Builder<androidx.core.util.Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
-        builder.setTitleText("Select Date Range");
+        MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
+        builder.setTitleText("Select Date");
         builder.setCalendarConstraints(constraintsBuilder.build());
 
-        final MaterialDatePicker<Pair<Long, Long>> dateRangePicker = builder.build();
+        final MaterialDatePicker<Long> datePicker = builder.build();
 
-        dateRangePicker.show(getParentFragmentManager(), "date_range_picker");
+        datePicker.show(getParentFragmentManager(), "date_picker");
 
-        dateRangePicker.addOnNegativeButtonClickListener(selection -> {
-            if(!binding.dateRangeInput.getText().toString().contains("-")) {
-                binding.dateRangeInputLayout.setError("You have to enter full range!");
+        // Handle confirm
+        datePicker.addOnPositiveButtonClickListener(selection -> {
+            if (selection != null) {
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                String formattedDate = formatter.format(new Date(selection));
+
+                binding.dateInput.setText(formattedDate);
+                binding.dateInputLayout.setError(null);
+
+                selectedDate = Instant.ofEpochMilli(selection).atZone(ZoneId.systemDefault()).toLocalDateTime();
             }
         });
 
-        dateRangePicker.addOnPositiveButtonClickListener(selection -> {
-            Long startDate = selection.first;
-            Long endDate = selection.second;
-
-            if (startDate != null && endDate != null) {
-                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                String formattedStart = formatter.format(new Date(startDate));
-                String formattedEnd = formatter.format(new Date(endDate));
-
-                binding.dateRangeInput.setText(formattedStart + " - " + formattedEnd);
-                binding.dateRangeInputLayout.setError(null);
-
-                selectedDate = Instant.ofEpochMilli(startDate).atZone(ZoneId.systemDefault()).toLocalDateTime();
-            }
-            else {
-                if(!binding.dateRangeInput.getText().toString().contains("-")) {
-                    binding.dateRangeInputLayout.setError("You have to enter full range!");
-                }
+        // Optional: Handle cancel
+        datePicker.addOnNegativeButtonClickListener(selection -> {
+            if (binding.dateInput.getText().toString().isEmpty()) {
+                binding.dateInputLayout.setError("You have to select a date!");
             }
         });
     }
@@ -374,7 +370,7 @@ public class EventOrganizationBasicInformationFragment extends Fragment {
     }
 
     public LocalDateTime getDate() {
-        if(this.binding.dateRangeInputLayout.getError() == null) {
+        if(this.binding.dateInputLayout.getError() == null) {
             return this.selectedDate;
         }
 
