@@ -91,9 +91,9 @@ public class SolutionCategoryDialog extends Dialog implements android.view.View.
         setupValidation();
     }
 
-    private boolean validate(TextInputLayout layout, TextInputEditText editText) {
+    private boolean validate(TextInputLayout layout, TextInputEditText editText, String field) {
         if (String.valueOf(editText.getText()).isEmpty()) {
-            layout.setError("Name is required");
+            layout.setError(field + " is required");
             layout.setErrorEnabled(true);
             return false;
         } else {
@@ -106,19 +106,21 @@ public class SolutionCategoryDialog extends Dialog implements android.view.View.
     private void setupValidation() {
         editTextName.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
-                validate(nameLayout, editTextName);
+                validate(nameLayout, editTextName, "Name");
             }
         });
 
         editTextDescription.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
-                validate(descriptionLayout, editTextDescription);
+                validate(descriptionLayout, editTextDescription, "Description");
             }
         });
     }
 
     private boolean isValid() {
-        return validate(nameLayout, editTextName) && validate(descriptionLayout, editTextDescription);
+        boolean valid = validate(nameLayout, editTextName, "Name");
+        valid = validate(descriptionLayout, editTextDescription, "Description") && valid;
+        return valid;
     }
 
     @Override

@@ -155,6 +155,8 @@ public class PricelistItemEditDialog extends Dialog {
     }
 
     private boolean isValid() {
-        return validatePrice() && validateDiscount();
+        boolean valid = validatePrice();
+        valid = validateDiscount() && valid;
+        return valid;
     }
 }
