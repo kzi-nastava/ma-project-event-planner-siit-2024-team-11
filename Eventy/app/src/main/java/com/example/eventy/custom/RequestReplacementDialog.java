@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -46,6 +47,9 @@ public class RequestReplacementDialog extends Dialog implements View.OnClickList
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_request_replacement);
+
+        int width = (int) (getContext().getResources().getDisplayMetrics().widthPixels * 0.9);
+        getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         Spinner replacementSpinner = findViewById(R.id.replacement_category_spinner);
 
