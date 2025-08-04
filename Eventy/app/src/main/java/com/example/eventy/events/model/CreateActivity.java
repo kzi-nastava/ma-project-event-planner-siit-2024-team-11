@@ -9,6 +9,9 @@ public class CreateActivity {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
+    public CreateActivity() {
+
+    }
     public CreateActivity(String name, String description, String location, LocalDateTime startTime, LocalDateTime endTime) {
         this.name = name;
         this.description = description;

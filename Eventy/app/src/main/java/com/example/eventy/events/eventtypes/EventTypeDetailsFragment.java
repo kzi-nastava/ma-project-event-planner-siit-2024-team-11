@@ -21,11 +21,14 @@ import com.example.eventy.R;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentEventTypeDetailsBinding;
 import com.example.eventy.events.model.EventTypeWithActivity;
+import com.example.eventy.solutions.model.CategoryWithID;
 import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -67,6 +70,11 @@ public class EventTypeDetailsFragment extends Fragment {
             navController.navigate(R.id.nav_edit_event_type, args);
         });
 
+        if (typeId == 0) {
+            binding.toggleActivityButton.setVisibility(View.GONE);
+            binding.editButton.setVisibility(View.GONE);
+        }
+
         recyclerView = binding.categoriesContainer;
         categoriesList = new ArrayList<>();
         adapter = new CategoryCardAdapter(categoriesList);
@@ -84,7 +92,8 @@ public class EventTypeDetailsFragment extends Fragment {
                     binding.eventTypeDescription.setText(response.body().getDescription());
                     setToggleActivityButton(!response.body().getIsActive());
                     // category adapter setting
-                    loadCategories();
+                    categoriesList.addAll(response.body().getRecommendedSolutionCategories().stream().map(CategoryWithID::getName).collect(Collectors.toList()));
+                    adapter.notifyDataSetChanged();
                 } else {
                     ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while loading!");
                     errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -130,16 +139,6 @@ public class EventTypeDetailsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-    }
-
-    private void loadCategories() {
-        // Simulate fetching data (you can replace this with an API call or database query)
-        recyclerView.postDelayed(() -> {
-            for (int i = 0; i < 10; i++) {
-                categoriesList.add("Name " + (i + 1));
-            }
-            adapter.notifyDataSetChanged();
-        }, 50); // Simulate a network delay
     }
 
     private void setToggleActivityButton(boolean isActivate) {

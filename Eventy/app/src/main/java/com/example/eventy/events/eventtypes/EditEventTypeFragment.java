@@ -27,6 +27,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -38,6 +39,8 @@ import retrofit2.Response;
 
 public class EditEventTypeFragment extends Fragment {
     private FragmentEditEventTypeBinding binding;
+    private List<CategoryWithID> categories = new ArrayList<>();
+    private boolean[] selectedOptions = new boolean[0];
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -56,7 +59,7 @@ public class EditEventTypeFragment extends Fragment {
             // Problem with back button so we clear the backstack
             navController.popBackStack();
 
-            navController.navigate(R.id.nav_event_type_details);
+            navController.navigate(R.id.nav_event_type_details, args);
         });
 
         Call<EventTypeWithActivity> call = ClientUtils.eventTypeService.get(typeId);
@@ -64,47 +67,83 @@ public class EditEventTypeFragment extends Fragment {
             @Override
             public void onResponse(Call<EventTypeWithActivity> call, Response<EventTypeWithActivity> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    Call<List<CategoryWithID>> call2 = ClientUtils.categoryService.getActiveCategories();
+                    call2.enqueue(new Callback<List<CategoryWithID>>() {
+                        @Override
+                        public void onResponse(Call<List<CategoryWithID>> call2, Response<List<CategoryWithID>> response2) {
+                            if (response.isSuccessful() && response.body() != null) {
+                                TextInputEditText multiSelectEditText = binding.selectCategoriesInput;
+                                categories = response2.body();
+                                String[] categoryNames = categories.stream()
+                                        .map(CategoryWithID::getName)
+                                        .toArray(String[]::new);
+                                selectedOptions = new boolean[categories.size()];
+
+                                List<CategoryWithID> recommendedSolutionCategories = response.body().getRecommendedSolutionCategories();
+                                for(int i = 0;i < categoryNames.length;i++) {
+                                    for(int j = 0;j < recommendedSolutionCategories.size();j++) {
+                                        if(categoryNames[i].equals(recommendedSolutionCategories.get(j).getName())) {
+                                            selectedOptions[i] = true;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                StringBuilder usedCategories = new StringBuilder();
+                                for (int i = 0; i < categoryNames.length; i++) {
+                                    if (selectedOptions[i]) {
+                                        if (usedCategories.length() > 0) {
+                                            usedCategories.append(", ");
+                                        }
+                                        usedCategories.append(categoryNames[i]);
+                                    }
+                                }
+                                // Display selected options
+                                multiSelectEditText.setText(usedCategories.toString());
+
+                                multiSelectEditText.setOnClickListener(v -> {
+                                    new MaterialAlertDialogBuilder(requireContext())
+                                            .setTitle("Select Recommended Categories")
+                                            .setMultiChoiceItems(categoryNames, selectedOptions, (dialog, which, isChecked) -> {
+                                                selectedOptions[which] = isChecked; // Update selected options
+                                            })
+                                            .setPositiveButton("OK", (dialog, which) -> {
+                                                // Collect selected options
+                                                StringBuilder selected = new StringBuilder();
+                                                for (int i = 0; i < categoryNames.length; i++) {
+                                                    if (selectedOptions[i]) {
+                                                        if (selected.length() > 0) {
+                                                            selected.append(", ");
+                                                        }
+                                                        selected.append(categoryNames[i]);
+                                                    }
+                                                }
+                                                // Display selected options
+                                                multiSelectEditText.setText(selected.toString());
+                                            })
+                                            .setNegativeButton("Cancel", null)
+                                            .show();
+                                });
+                            }
+                            else {
+                                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Failed to load solution categories!");
+                                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                errorOkDialog.show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<CategoryWithID>> call, Throwable t) {
+                            ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Failed to load solution categories!");
+                            errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            errorOkDialog.show();
+                        }
+                    });
                     // prefill with data, what about the multiple select
                     binding.nameInput.setText(response.body().getName());
                     binding.descriptionInput.setText(response.body().getDescription());
 
-                    TextInputEditText multiSelectEditText = binding.selectCategoriesInput;
-                    String[] options = {"Option 1", "Option 2", "Option 3", "Option 4"};
-                    boolean[] selectedOptions = new boolean[options.length];
 
-                    List<CategoryWithID> recommendedSolutionCategories = response.body().getRecommendedSolutionCategories();
-                    for(int i = 0;i < options.length;i++) {
-                        for(int j = 0;j < recommendedSolutionCategories.size();j++) {
-                            if(options[i].equals(recommendedSolutionCategories.get(j).getName())) {
-                                selectedOptions[i] = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    multiSelectEditText.setOnClickListener(v -> {
-                        new MaterialAlertDialogBuilder(requireContext())
-                                .setTitle("Select Recommended Categories")
-                                .setMultiChoiceItems(options, selectedOptions, (dialog, which, isChecked) -> {
-                                    selectedOptions[which] = isChecked; // Update selected options
-                                })
-                                .setPositiveButton("OK", (dialog, which) -> {
-                                    // Collect selected options
-                                    StringBuilder selected = new StringBuilder();
-                                    for (int i = 0; i < options.length; i++) {
-                                        if (selectedOptions[i]) {
-                                            if (selected.length() > 0) {
-                                                selected.append(", ");
-                                            }
-                                            selected.append(options[i]);
-                                        }
-                                    }
-                                    // Display selected options
-                                    multiSelectEditText.setText(selected.toString());
-                                })
-                                .setNegativeButton("Cancel", null)
-                                .show();
-                    });
                 } else {
                     ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Error while loading!");
                     errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -129,15 +168,17 @@ public class EditEventTypeFragment extends Fragment {
 
             if(binding.nameInputLayout.getError() == null && binding.descriptionInputLayout.getError() == null &&
                     binding.selectCategoriesInputLayout.getError() == null) {
+                List<Long> recommendedCategoriesIds = new ArrayList<>();
+                for (int i = 0;i < selectedOptions.length;i++) {
+                    if (selectedOptions[i]) {
+                        recommendedCategoriesIds.add(categories.get(i).getId());
+                    }
+                }
                 Call<EventType> callEdit = ClientUtils.eventTypeService.update(new UpdateEventType(
                         typeId,
                         binding.nameInput.getText().toString(),
                         binding.descriptionInput.getText().toString(),
-                        Arrays.stream(binding.selectCategoriesInput.getText().toString().trim().split(","))
-                                .map(String::trim) // Remove any extra spaces around the numbers
-                                .filter(s -> !s.isEmpty())
-                                .map(Long::parseLong) // Convert to Long
-                                .collect(Collectors.toList())
+                        recommendedCategoriesIds
                 ));
                 callEdit.enqueue(new Callback<EventType>() {
                     @Override

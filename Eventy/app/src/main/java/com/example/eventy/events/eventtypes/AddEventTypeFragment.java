@@ -20,12 +20,15 @@ import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentAddEventTypeBinding;
 import com.example.eventy.events.model.CreatedEventType;
 import com.example.eventy.events.model.EventType;
+import com.example.eventy.solutions.model.CategoryWithID;
 import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
@@ -36,6 +39,8 @@ import retrofit2.Response;
 public class AddEventTypeFragment extends Fragment {
 
     private FragmentAddEventTypeBinding binding;
+    private List<CategoryWithID> categories = new ArrayList<>();
+    private boolean[] selectedOptions = new boolean[0];
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -52,32 +57,55 @@ public class AddEventTypeFragment extends Fragment {
             navController.navigate(R.id.nav_event_types);
         });
 
-        TextInputEditText multiSelectEditText = binding.selectCategoriesInput;
-        String[] options = {"Option 1", "Option 2", "Option 3", "Option 4"};
-        boolean[] selectedOptions = new boolean[options.length];
+        Call<List<CategoryWithID>> call = ClientUtils.categoryService.getActiveCategories();
+        call.enqueue(new Callback<List<CategoryWithID>>() {
+            @Override
+            public void onResponse(Call<List<CategoryWithID>> call, Response<List<CategoryWithID>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    TextInputEditText multiSelectEditText = binding.selectCategoriesInput;
+                    categories = response.body();
+                    String[] categoryNames = categories.stream()
+                            .map(CategoryWithID::getName)
+                            .toArray(String[]::new);
+                    selectedOptions = new boolean[categories.size()];
 
-        multiSelectEditText.setOnClickListener(v -> {
-            new MaterialAlertDialogBuilder(requireContext())
-                    .setTitle("Select Recommended Categories")
-                    .setMultiChoiceItems(options, selectedOptions, (dialog, which, isChecked) -> {
-                        selectedOptions[which] = isChecked; // Update selected options
-                    })
-                    .setPositiveButton("OK", (dialog, which) -> {
-                        // Collect selected options
-                        StringBuilder selected = new StringBuilder();
-                        for (int i = 0; i < options.length; i++) {
-                            if (selectedOptions[i]) {
-                                if (selected.length() > 0) {
-                                    selected.append(", ");
-                                }
-                                selected.append(options[i]);
-                            }
-                        }
-                        // Display selected options
-                        multiSelectEditText.setText(selected.toString());
-                    })
-                    .setNegativeButton("Cancel", null)
-                    .show();
+                    multiSelectEditText.setOnClickListener(v -> {
+                        new MaterialAlertDialogBuilder(requireContext())
+                                .setTitle("Select Recommended Categories")
+                                .setMultiChoiceItems(categoryNames, selectedOptions, (dialog, which, isChecked) -> {
+                                    selectedOptions[which] = isChecked; // Update selected options
+                                })
+                                .setPositiveButton("OK", (dialog, which) -> {
+                                    // Collect selected options
+                                    StringBuilder selected = new StringBuilder();
+                                    for (int i = 0; i < categoryNames.length; i++) {
+                                        if (selectedOptions[i]) {
+                                            if (selected.length() > 0) {
+                                                selected.append(", ");
+                                            }
+                                            selected.append(categoryNames[i]);
+                                        }
+                                    }
+                                    // Display selected options
+                                    multiSelectEditText.setText(selected.toString());
+                                })
+                                .setNegativeButton("Cancel", null)
+                                .show();
+                    });
+                }
+                else {
+                    ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Failed to load solution categories!");
+                    errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    errorOkDialog.show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<CategoryWithID>> call, Throwable t) {
+                ErrorOkDialog errorOkDialog = new ErrorOkDialog(getActivity(), "Error", "Failed to load solution categories!");
+                errorOkDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                errorOkDialog.show();
+            }
         });
 
         addValidation(binding.nameInputLayout, binding.nameInput, this::validateRequired);
@@ -89,16 +117,19 @@ public class AddEventTypeFragment extends Fragment {
 
             if(binding.nameInputLayout.getError() == null && binding.descriptionInputLayout.getError() == null &&
                     binding.selectCategoriesInputLayout.getError() == null) {
-                Call<EventType> call = ClientUtils.eventTypeService.add(new CreatedEventType(
+                List<Long> recommendedCategoriesIds = new ArrayList<>();
+                for (int i = 0;i < selectedOptions.length;i++) {
+                    if (selectedOptions[i]) {
+                        recommendedCategoriesIds.add(categories.get(i).getId());
+                    }
+                }
+
+                Call<EventType> call2 = ClientUtils.eventTypeService.add(new CreatedEventType(
                         binding.nameInput.getText().toString(),
                         binding.descriptionInput.getText().toString(),
-                        Arrays.stream(binding.selectCategoriesInput.getText().toString().trim().split(","))
-                                .map(String::trim) // Remove any extra spaces around the numbers
-                                .filter(s -> !s.isEmpty())
-                                .map(Long::parseLong) // Convert to Long
-                                .collect(Collectors.toList())
+                        recommendedCategoriesIds
                 ));
-                call.enqueue(new Callback<EventType>() {
+                call2.enqueue(new Callback<EventType>() {
                     @Override
                     public void onResponse(Call<EventType> call, Response<EventType> response) {
                         if (response.isSuccessful() && response.body() != null) {

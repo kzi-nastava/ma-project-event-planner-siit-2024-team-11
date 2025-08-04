@@ -19,7 +19,7 @@ public interface SolutionCategoryService {
     String prefix = "categories";
 
     @GET(prefix)
-    Call<List<CategoryWithID>> getActiveCategories();
+        Call<List<CategoryWithID>> getActiveCategories();
 
     @GET(prefix + "/paged")
     Call<PagedResponse<CategoryWithID>> getActiveCategoriesPaged(@Query("page") int pageIndex,

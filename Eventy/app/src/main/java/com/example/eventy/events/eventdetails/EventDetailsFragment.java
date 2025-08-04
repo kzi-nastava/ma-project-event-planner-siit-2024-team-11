@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.eventy.MainActivity;
@@ -90,7 +91,7 @@ public class EventDetailsFragment extends Fragment {
                     binding.eventNameText.setText(event.getName());
                     binding.eventDescriptionText.setText(event.getDescription());
                     binding.eventOrganizerText.setText("Organizer: " + event.getOrganizerName());
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy HH:mm:ss");
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy.");
                     binding.eventDateText.setText("Date: " + event.getDate().format(formatter));
                     binding.eventLocationText.setText("Location: " + event.getLocation().getAddress());
 

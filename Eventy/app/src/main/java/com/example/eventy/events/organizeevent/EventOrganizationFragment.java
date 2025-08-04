@@ -97,6 +97,7 @@ public class EventOrganizationFragment extends Fragment {
             if(eventOrganizationStage == EventOrganizationStage.BASIC_INFORMATION) {
                 if(eventOrganizationBasicInformationFragmentFragment.isValid()) {
                     eventOrganizationStage = EventOrganizationStage.AGENDA_CREATION;
+                    eventAgendaCreation.setEventDate(eventOrganizationBasicInformationFragmentFragment.getDate());
                     fragment = eventAgendaCreation;
                     title = "Add Agenda";
                     this.isEventPublic = eventOrganizationBasicInformationFragmentFragment.isPublic();

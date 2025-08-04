@@ -236,7 +236,7 @@ public class EventEditFragment extends Fragment {
                                 binding.dateInput.setText(selectedDateString);
                                 selectedDate = localDateTime;
 
-                                eventAgendaCreation = new EventAgendaCreation((ArrayList<CreateActivity>) response.body().getAgenda());
+                                eventAgendaCreation = new EventAgendaCreation((ArrayList<CreateActivity>) response.body().getAgenda(), response.body().getDate());
                                 getChildFragmentManager().beginTransaction()
                                         .replace(R.id.agenda_container, eventAgendaCreation)
                                         .commit();

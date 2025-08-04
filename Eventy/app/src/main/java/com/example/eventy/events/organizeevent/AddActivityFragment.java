@@ -33,10 +33,11 @@ public class AddActivityFragment extends Fragment {
     private FragmentAddActivityBinding binding;
     private ArrayList<CreateActivity> agenda;
 
-    private Date minDate;
+    private LocalDateTime eventDate;
 
-    public AddActivityFragment(ArrayList<CreateActivity> agenda) {
+    public AddActivityFragment(ArrayList<CreateActivity> agenda, LocalDateTime eventDate) {
         this.agenda = agenda;
+        this.eventDate = eventDate;
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -49,8 +50,7 @@ public class AddActivityFragment extends Fragment {
         addValidation(binding.descriptionInputLayout, binding.descriptionInput, this::validateRequired);
         addValidation(binding.locationInputLayout, binding.locationInput, this::validateRequired);
 
-        minDate = new Date();
-        binding.activityTimeRangeInput.setOnClickListener(v -> showDateRangePicker());
+        binding.activityTimeRangeInput.setOnClickListener(v -> showTimeRangePicker());
 
         binding.addActivityButton.setOnClickListener(v -> {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
@@ -111,61 +111,23 @@ public class AddActivityFragment extends Fragment {
         }
     }
 
-    private void showDateRangePicker() {
-        // Assume minDate is defined somewhere in your code
-        long minDate = System.currentTimeMillis(); // Example: current date and time as minimum date
+    private void showTimeRangePicker() {
+        showTimePicker("Select Start Time", (startHour, startMinute) -> {
+            showTimePicker("Select End Time", (endHour, endMinute) -> {
+                // Convert eventDate to LocalDate
+                LocalDateTime start = eventDate.withHour(startHour).withMinute(startMinute).withSecond(0);
+                LocalDateTime end = eventDate.withHour(endHour).withMinute(endMinute).withSecond(0);
 
-        // Create MaterialDatePicker for start date
-        MaterialDatePicker<Long> startDatePicker = createDatePicker("Select Start Date", minDate);
-
-        startDatePicker.addOnPositiveButtonClickListener(startDate -> {
-            // After selecting start date, show time picker
-            showTimePicker("Select Start Time", (startHour, startMinute) -> {
-                // Store selected start time
-                Calendar startCalendar = Calendar.getInstance();
-                startCalendar.setTimeInMillis(startDate);
-                startCalendar.set(Calendar.HOUR_OF_DAY, startHour);
-                startCalendar.set(Calendar.MINUTE, startMinute);
-
-                // Show end date picker
-                MaterialDatePicker<Long> endDatePicker = createDatePicker("Select End Date", startCalendar.getTimeInMillis());
-                endDatePicker.addOnPositiveButtonClickListener(endDate -> {
-                    // Show time picker for end time
-                    showTimePicker("Select End Time", (endHour, endMinute) -> {
-                        // Store selected end time
-                        Calendar endCalendar = Calendar.getInstance();
-                        endCalendar.setTimeInMillis(endDate);
-                        endCalendar.set(Calendar.HOUR_OF_DAY, endHour);
-                        endCalendar.set(Calendar.MINUTE, endMinute);
-
-                        // Check that start date-time is before end date-time
-                        if (startCalendar.before(endCalendar)) {
-                            // Display the selected date-time range
-                            SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
-                            String selectedRange = dateTimeFormat.format(startCalendar.getTime()) + " - " + dateTimeFormat.format(endCalendar.getTime());
-                            binding.activityTimeRangeInput.setText(selectedRange);
-                            binding.activityTimeRangeInputLayout.setError(null);
-                        } else {
-                            binding.activityTimeRangeInputLayout.setError("Start date-time must be earlier than end date-time.");
-                        }
-                    });
-                });
-
-                endDatePicker.show(getParentFragmentManager(), "EndDatePicker");
+                if (start.isBefore(end)) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+                    String formattedRange = formatter.format(start) + " - " + formatter.format(end);
+                    binding.activityTimeRangeInput.setText(formattedRange);
+                    binding.activityTimeRangeInputLayout.setError(null);
+                } else {
+                    binding.activityTimeRangeInputLayout.setError("Start time must be before end time.");
+                }
             });
         });
-
-        startDatePicker.show(getParentFragmentManager(), "StartDatePicker");
-    }
-
-    private MaterialDatePicker<Long> createDatePicker(String title, long minDate) {
-        CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
-        constraintsBuilder.setStart(minDate); // Set the minimum date
-
-        return MaterialDatePicker.Builder.datePicker()
-                .setTitleText(title)
-                .setCalendarConstraints(constraintsBuilder.build())
-                .build();
     }
 
     private void showTimePicker(String title, OnTimeSelectedListener listener) {
