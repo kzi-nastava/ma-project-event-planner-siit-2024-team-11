@@ -51,7 +51,7 @@ public interface UserService {
     Call<PagedResponse<EventCard>> getMyEvents(@Path("userId") Long userId, @Query("search") String search,
                                                @Query("page") int page, @Query("size") int size);
 
-    @GET(eventsPrefix + "/catalog/{userId}")
+    @GET(solutionsPrefix + "/catalog/{userId}")
     Call<PagedResponse<SolutionCard>> getMySolutions(@Path("userId") Long userId, @Query("search") String search,
                                                      @Query("page") int page, @Query("size") int size);
 

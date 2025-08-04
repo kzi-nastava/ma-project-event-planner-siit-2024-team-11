@@ -2,8 +2,10 @@ package com.example.eventy.users.edit;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -30,6 +32,8 @@ import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentUserOrganizerEditBinding;
 import com.example.eventy.users.model.UpdateUser;
 import com.example.eventy.users.model.User;
+import com.example.eventy.users.model.UserType;
+import com.example.eventy.users.services.LoggedInHelperService;
 import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -64,11 +68,13 @@ public class UserOrganizerEditFragment extends Fragment {
         View root = binding.getRoot();
 
         if(this.user.getProfilePictures() != null && !this.user.getProfilePictures().isEmpty()) {
-            binding.profilePicture.setImageURI(Uri.parse(this.user.getProfilePictures().get(0)));
+            binding.profilePicture.setImageBitmap(PictureHelperService.getPicture(this.user.getProfilePictures().get(0)));
         }
         binding.emailInput.setText(this.user.getEmail());
-        binding.firstNameInput.setText(this.user.getFirstName());
-        binding.lastNameInput.setText(this.user.getLastName());
+        if (user.getUserType() == UserType.ORGANIZER) {
+            binding.firstNameInput.setText(this.user.getFirstName());
+            binding.lastNameInput.setText(this.user.getLastName());
+        }
         binding.addressInput.setText(this.user.getAddress());
         binding.phoneNumberInput.setText(this.user.getPhoneNumber());
 
@@ -97,14 +103,21 @@ public class UserOrganizerEditFragment extends Fragment {
         binding.profilePicture.setOnClickListener(v -> openGalleryPicker());
 
         addValidation(binding.emailInputLayout, binding.emailInput, this::validateEmail);
-        addValidation(binding.passwordInputLayout, binding.passwordInput, this::validateRequired);
         addValidation(binding.oldPasswordInputLayout, binding.oldPasswordInput, this::validateRequired);
         addValidation(binding.confirmPasswordInputLayout, binding.confirmPasswordInput, this::validateConfirmPassword);
-        addValidation(binding.firstNameInputLayout, binding.firstNameInput, this::validateRequired);
-        addValidation(binding.lastNameInputLayout, binding.lastNameInput, this::validateRequired);
+        if (user.getUserType() == UserType.ORGANIZER) {
+            addValidation(binding.firstNameInputLayout, binding.firstNameInput, this::validateRequired);
+            addValidation(binding.lastNameInputLayout, binding.lastNameInput, this::validateRequired);
+        }
         addValidation(binding.addressInputLayout, binding.addressInput, this::validateRequired);
         addValidation(binding.phoneNumberInputLayout, binding.phoneNumberInput, this::validatePhoneNumber);
 
+        if (user.getUserType() != UserType.ORGANIZER) {
+            binding.firstNameInputLayout.setVisibility(View.GONE);
+            binding.firstNameInput.setVisibility(View.GONE);
+            binding.lastNameInputLayout.setVisibility(View.GONE);
+            binding.lastNameInput.setVisibility(View.GONE);
+        }
         return root;
     }
 
@@ -166,9 +179,11 @@ public class UserOrganizerEditFragment extends Fragment {
     }
 
     private void validateConfirmPassword(String inputText, TextInputLayout textInputLayout) {
-        if (inputText.trim().isEmpty()) {
-            textInputLayout.setError("This field is required");
-        } else if (!binding.passwordInput.getText().toString().equals(binding.confirmPasswordInput.getText().toString())) {
+        if (!binding.passwordInput.getText().toString().equals(binding.confirmPasswordInput.getText().toString())) {
+            if (binding.passwordInput.getText().toString().isEmpty()) {
+                textInputLayout.setError(null);
+                return;
+            }
             textInputLayout.setError("Passwords don't match!");
         } else {
             textInputLayout.setError(null);
@@ -180,8 +195,10 @@ public class UserOrganizerEditFragment extends Fragment {
         binding.oldPasswordInput.setText(binding.oldPasswordInput.getText());
         binding.passwordInput.setText(binding.passwordInput.getText());
         binding.confirmPasswordInput.setText(binding.confirmPasswordInput.getText());
-        binding.firstNameInput.setText(binding.firstNameInput.getText());
-        binding.lastNameInput.setText(binding.lastNameInput.getText());
+        if (user.getUserType() == UserType.ORGANIZER) {
+            binding.firstNameInput.setText(binding.firstNameInput.getText());
+            binding.lastNameInput.setText(binding.lastNameInput.getText());
+        }
         binding.addressInput.setText(binding.addressInput.getText());
         binding.phoneNumberInput.setText(binding.phoneNumberInput.getText());
 
@@ -189,8 +206,8 @@ public class UserOrganizerEditFragment extends Fragment {
                 binding.oldPasswordInput.getError() == null &&
                 binding.passwordInputLayout.getError() == null &&
                 binding.confirmPasswordInputLayout.getError() == null &&
-                binding.firstNameInputLayout.getError() == null &&
-                binding.lastNameInputLayout.getError() == null &&
+                (binding.firstNameInputLayout.getError() == null || user.getUserType() != UserType.ORGANIZER) &&
+                (binding.lastNameInputLayout.getError() == null || user.getUserType() != UserType.ORGANIZER) &&
                 binding.addressInputLayout.getError() == null &&
                 binding.phoneNumberInputLayout.getError() == null) {
 
@@ -201,10 +218,10 @@ public class UserOrganizerEditFragment extends Fragment {
                     binding.oldPasswordInput.getText().toString(),
                     binding.passwordInput.getText().toString(),
                     binding.confirmPasswordInput.getText().toString(),
-                    binding.firstNameInput.getText().toString(),
-                    binding.lastNameInput.getText().toString(),
-                    null,
-                    null,
+                    user.getUserType() == UserType.ORGANIZER ? binding.firstNameInput.getText().toString() : "",
+                    user.getUserType() == UserType.ORGANIZER ? binding.lastNameInput.getText().toString() : "",
+                    "",
+                    "",
                     binding.addressInput.getText().toString(),
                     binding.phoneNumberInput.getText().toString()
             ));
@@ -213,15 +230,27 @@ public class UserOrganizerEditFragment extends Fragment {
                 public void onResponse(Call<User> call, Response<User> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         new AlertDialog.Builder(getContext())
-                                .setTitle(" Successful edit")
+                                .setTitle("Successful edit")
                                 .setMessage("User is now edited successfully.")
                                 .setIcon(R.drawable.icon_success_png)
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
-                                        // this leads to home (for now), will lead to the event page or user profile
-                                        NavController navController = Navigation.findNavController(v);
-                                        navController.popBackStack();
-                                        navController.navigate(R.id.nav_my_profile);
+                                        if (binding.passwordInput.getText().toString().isEmpty()) {
+                                            NavController navController = Navigation.findNavController(v);
+                                            navController.popBackStack();
+                                            navController.navigate(R.id.nav_my_profile);
+                                        }
+                                        else {
+                                            SharedPreferences sharedPreferences = requireContext().getSharedPreferences("EventyPreferences", Context.MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                                            editor.remove("JWT_TOKEN");
+                                            editor.apply();
+                                            LoggedInHelperService.manageNavigationItems();
+
+                                            NavController navController = Navigation.findNavController(v);
+                                            navController.popBackStack();
+                                            navController.navigate(R.id.nav_login);
+                                        }
                                     }})
                                 .show();
                     } else {
