@@ -26,7 +26,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.eventy.MainActivity;
 import com.example.eventy.R;
+import com.example.eventy.chat.AllChatsFragment;
 import com.example.eventy.custom.ErrorOkDialog;
 import com.example.eventy.databinding.FragmentEventDetailsBinding;
 import com.example.eventy.events.model.CreateActivity;
@@ -34,6 +36,7 @@ import com.example.eventy.events.organizeevent.ActivityTableAdapter;
 import com.example.eventy.users.model.EventDetails;
 import com.example.eventy.users.services.LoggedInHelperService;
 import com.example.eventy.utils.ClientUtils;
+import com.example.eventy.utils.FragmentTransition;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -177,6 +180,24 @@ public class EventDetailsFragment extends Fragment {
                     binding.favoriteButton.setOnClickListener(v -> toggleFavButton());
                     binding.downloadEventDetailsButton.setOnClickListener(v -> downloadEventDetails());
                     binding.downloadGuestListButton.setOnClickListener(v -> downloadGuestList());
+                    binding.chatButton.setOnClickListener(v -> {
+                        Call<Void> chatCall = ClientUtils.chatService.createChat(event.getOrganizerId());
+                        chatCall.enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                if (response.isSuccessful()) {
+                                    MainActivity activity = (MainActivity) requireActivity();
+                                    activity.openChat();
+                                } else {
+                                }
+                            }
+
+
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+                            }
+                        });
+                    });
 
                     if (event.getOrganizerId() != LoggedInHelperService.getId()) {
                         binding.eventOrganizerText.setOnClickListener(v -> {
