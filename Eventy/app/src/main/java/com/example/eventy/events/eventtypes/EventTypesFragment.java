@@ -73,10 +73,17 @@ public class EventTypesFragment extends Fragment {
                 super.onScrolled(recyclerView, dx, dy);
                 LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
                 if (!isLoading && layoutManager != null && layoutManager.findLastCompletelyVisibleItemPosition() == namesList.size() - 1 && canGoFurther) {
-                    loadNames(binding.searchInput.getText().toString(), ++page);
+                    loadNames(binding.searchInput.getQuery().toString(), ++page);
                 }
             }
         });
+
+        binding.searchEventTypesButton.setOnClickListener(v -> {
+            page = 0;
+            namesList.clear();
+            loadNames(binding.searchInput.getQuery().toString(), page);
+        });
+
 
         return root;
     }

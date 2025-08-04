@@ -35,29 +35,42 @@ tools:context=".events.eventtypes.EventTypesFragment">
         android:textSize="16sp"
         android:padding="8dp" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/searchInputLayout"
+    <LinearLayout
+        android:id="@+id/search_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Search"
-        app:endIconMode="clear_text"
-        app:boxBackgroundMode="filled"
-        app:boxCornerRadiusTopStart="12dp"
-        app:boxCornerRadiusTopEnd="12dp"
-        app:boxCornerRadiusBottomStart="12dp"
-        app:boxCornerRadiusBottomEnd="12dp"
-        android:padding="8dp">
+        android:orientation="horizontal"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="1.5dp"
+        android:padding="2.5dp"
+        android:background="@drawable/search_input_background">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/searchInput"
-            android:layout_width="match_parent"
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search_input"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:imeOptions="actionSearch"
-            android:padding="20dp"
-            android:textColor="@android:color/black"
-            android:layout_marginBottom="16dp" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_weight="1"
+            android:background="@drawable/search_input_background"
+            app:queryHint="Search.." />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/search_event_types_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/filter_button_background"
+            android:text="Search"
+            android:fontFamily="@font/albert_sans"
+            android:textFontWeight="900"
+            android:textColor="@color/white"
+            android:letterSpacing="0.03"
+            android:textSize="15sp" />
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/event_types_cards_container"
