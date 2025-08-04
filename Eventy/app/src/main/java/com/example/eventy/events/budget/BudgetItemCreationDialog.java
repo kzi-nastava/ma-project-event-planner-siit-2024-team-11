@@ -45,6 +45,7 @@ public class BudgetItemCreationDialog extends Dialog implements View.OnClickList
     private TextView title;
     private TextView noContentMessage;
     private TextInputLayout inputLayout;
+    private TextInputLayout categoryLayout;
     private LinearLayout buttonLayout;
     private TextInputEditText inputAllocatedFunds;
 
@@ -63,6 +64,7 @@ public class BudgetItemCreationDialog extends Dialog implements View.OnClickList
         int width = (int) (getContext().getResources().getDisplayMetrics().widthPixels * 0.9);
         getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
 
+        categoryLayout = findViewById(R.id.dialog_budget_item_spinner_layout);
         categorySpinner = findViewById(R.id.dialog_budget_item_spinner);
         title = findViewById(R.id.dialog_budget_item_title);
         confirmButton = findViewById(R.id.dialog_budget_item_confirm_button);
@@ -115,37 +117,22 @@ public class BudgetItemCreationDialog extends Dialog implements View.OnClickList
         );
         confirmButton.findViewById(R.id.dialog_budget_item_confirm_button);
         confirmButton.setOnClickListener(v -> {
-            if (inputAllocatedFunds.getText().toString().isEmpty()) {
+            if (isValid()) {
+                Double allocatedFunds = Double.parseDouble(inputAllocatedFunds.getText().toString());
+                if (callback != null) {
+                    callback.onDataReceived(categoryId, allocatedFunds);
+                }
+                dismiss();
+            } else {
                 new AlertDialog.Builder(getContext())
-                        .setMessage("Allocated funds are required!")
+                        .setMessage("Not every field is valid!")
                         .setCancelable(true)
                         .setPositiveButton("OK", (dialog, id) -> dialog.dismiss())
                         .show();
-            } else {
-                try {
-                    Double allocatedFunds = Double.parseDouble(inputAllocatedFunds.getText().toString());
-                    if (allocatedFunds <= 0) {
-                        new AlertDialog.Builder(getContext())
-                                .setMessage("Allocated funds must be greater than 0!")
-                                .setCancelable(true)
-                                .setPositiveButton("OK", (dialog, id) -> dialog.dismiss())
-                                .show();
-                    } else {
-                        if (callback != null) {
-                            callback.onDataReceived(categoryId, allocatedFunds);
-                        }
-                        dismiss();
-                    }
-                } catch (Exception e) {
-                    new AlertDialog.Builder(getContext())
-                            .setMessage("Allocated funds must be a number!")
-                            .setCancelable(true)
-                            .setPositiveButton("OK", (dialog, id) -> dialog.dismiss())
-                            .show();
-                }
             }
         });
 
+        setupValidation();
         cancelButton.setOnClickListener(this);
     }
 
@@ -156,6 +143,64 @@ public class BudgetItemCreationDialog extends Dialog implements View.OnClickList
         inputLayout.setVisibility(View.GONE);
         noContentMessage.setVisibility(View.VISIBLE);
     }
+
+    private void setupValidation() {
+        inputAllocatedFunds.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                validateAllocatedFunds();
+            }
+        });
+
+        categorySpinner.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                validateCategory();
+            }
+        });
+    }
+
+    private boolean isValid() {
+        boolean valid = validateAllocatedFunds();
+        valid = validateCategory() && valid;
+        return valid;
+    }
+
+    private boolean validateAllocatedFunds() {
+        if (String.valueOf(inputAllocatedFunds.getText()).isEmpty()) {
+            inputLayout.setError("Allocated funds is required");
+            inputLayout.setErrorEnabled(true);
+            return false;
+        }
+
+        try {
+            Double priceValue = Double.parseDouble(inputAllocatedFunds.getText().toString());
+            if (priceValue <= 0) {
+                inputLayout.setError("Allocated funds must be greater than 0");
+                inputLayout.setErrorEnabled(true);
+                return false;
+            } else {
+                inputLayout.setError(null);
+                inputLayout.setErrorEnabled(false);
+                return true;
+            }
+        } catch (Exception e) {
+            inputLayout.setError("Allocated funds must be a number");
+            inputLayout.setErrorEnabled(true);
+            return false;
+        }
+    }
+
+    private boolean validateCategory() {
+        if (categoryId == null) {
+            categoryLayout.setError("Category is required");
+            categoryLayout.setErrorEnabled(true);
+            return false;
+        } else {
+            categoryLayout.setError(null);
+            categoryLayout.setErrorEnabled(false);
+            return true;
+        }
+    }
+
 
     @Override
     public void onClick(View v) {
