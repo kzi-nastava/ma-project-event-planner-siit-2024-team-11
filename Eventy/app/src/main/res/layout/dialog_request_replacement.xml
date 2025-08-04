@@ -7,10 +7,21 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-        <Spinner
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/replacement_category_spinner_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Replacement Category">
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/replacement_category_spinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:paddingTop="24dp"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="8dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

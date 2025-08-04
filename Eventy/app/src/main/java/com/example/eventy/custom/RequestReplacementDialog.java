@@ -16,6 +16,8 @@ import com.example.eventy.R;
 import com.example.eventy.solutions.model.CategoryWithID;
 import com.example.eventy.utils.ClientUtils;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,8 @@ public class RequestReplacementDialog extends Dialog implements View.OnClickList
     private List<CategoryWithID> categories;
     private MaterialButton confirmButton;
     private MaterialButton cancelButton;
+    private TextInputLayout replacementLayout;
+    private MaterialAutoCompleteTextView replacementSpinner;
     private CategoryWithID selectedCategory;
 
     public RequestReplacementDialog(@NonNull Context context, RequestReplacementDataListener callback) {
@@ -51,7 +55,8 @@ public class RequestReplacementDialog extends Dialog implements View.OnClickList
         int width = (int) (getContext().getResources().getDisplayMetrics().widthPixels * 0.9);
         getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        Spinner replacementSpinner = findViewById(R.id.replacement_category_spinner);
+        replacementSpinner = findViewById(R.id.replacement_category_spinner);
+        replacementLayout = findViewById(R.id.replacement_category_spinner_layout);
 
         Call<List<CategoryWithID>> call = ClientUtils.categoryService.getActiveCategories();
         call.enqueue(new Callback<List<CategoryWithID>>() {
@@ -63,6 +68,14 @@ public class RequestReplacementDialog extends Dialog implements View.OnClickList
 
                     ArrayAdapter<CategoryWithID> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, categories);
                     replacementSpinner.setAdapter(adapter);
+                    replacementSpinner.setOnItemClickListener((parent, view, position, id) -> {
+                        selectedCategory = (CategoryWithID) parent.getItemAtPosition(position);
+                    });
+                    replacementSpinner.setOnClickListener(v -> {
+                        if (!replacementSpinner.isPopupShowing()) {
+                            replacementSpinner.showDropDown();
+                        }
+                    });
                 }
                 else {
                     new AlertDialog.Builder(getContext())
@@ -85,13 +98,46 @@ public class RequestReplacementDialog extends Dialog implements View.OnClickList
 
         confirmButton = findViewById(R.id.confirmButton);
         confirmButton.setOnClickListener(v -> {
-            callback.onDataReceived(((CategoryWithID) replacementSpinner.getSelectedItem()).getId());
-            dismiss();
+            if (isValid()) {
+                callback.onDataReceived(selectedCategory.getId());
+                dismiss();
+            } else {
+                new AlertDialog.Builder(getContext())
+                        .setMessage("Not every field is valid!")
+                        .setCancelable(true)
+                        .setPositiveButton("OK", (dialog, id) -> dialog.dismiss())
+                        .show();
+            }
         });
 
+        setupValidation();
         cancelButton = findViewById(R.id.cancelButton);
         cancelButton.setOnClickListener(this);
 
+    }
+
+    private void setupValidation() {
+        replacementSpinner.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                validateCategory();
+            }
+        });
+    }
+
+    private boolean validateCategory() {
+        if (selectedCategory == null) {
+            replacementLayout.setError("Category is required");
+            replacementLayout.setErrorEnabled(true);
+            return false;
+        } else {
+            replacementLayout.setError(null);
+            replacementLayout.setErrorEnabled(false);
+            return true;
+        }
+    }
+
+    private boolean isValid() {
+        return validateCategory();
     }
 
     @Override
