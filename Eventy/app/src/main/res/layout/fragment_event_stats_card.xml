@@ -293,12 +293,33 @@
         android:layout_marginBottom="16dp">
 
         <!-- Number Chart -->
-        <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/numberChart"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
-            android:layout_weight="1"
-            android:background="@android:color/white" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/numberChart"
+                app:indicatorSize="150dp"
+                app:indicatorInset="15dp"
+                app:trackThickness="15dp"
+                app:trackColor="@color/disabled_button"
+                app:indicatorColor="@color/eventy_color"
+                android:layout_gravity="center"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_weight="1"
+                android:background="@android:color/white" />
+            <TextView
+                android:id="@+id/numberChartText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Average Grade"
+                android:textSize="14sp"
+                android:fontFamily="@font/albert_sans"
+                android:textColor="@android:color/black"/>
+        </LinearLayout>
 
         <!-- Bar Chart -->
         <com.github.mikephil.charting.charts.BarChart
@@ -318,12 +339,33 @@
         android:layout_marginBottom="16dp">
 
         <!-- Average Grade Chart -->
-        <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/averageGradeChart"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
-            android:layout_weight="1"
-            android:background="@android:color/white" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/averageGradeChart"
+                app:indicatorSize="150dp"
+                app:indicatorInset="15dp"
+                app:trackThickness="15dp"
+                app:trackColor="@color/disabled_button"
+                app:indicatorColor="@color/eventy_color"
+                android:layout_gravity="center"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_weight="1"
+                android:background="@android:color/white" />
+            <TextView
+                android:id="@+id/averageGradeChartText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Average Grade"
+                android:textSize="14sp"
+                android:fontFamily="@font/albert_sans"
+                android:textColor="@android:color/black"/>
+        </LinearLayout>
 
         <!-- Download Button -->
         <com.google.android.material.button.MaterialButton

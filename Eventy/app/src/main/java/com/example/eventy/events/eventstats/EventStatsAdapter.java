@@ -41,6 +41,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -149,8 +150,10 @@ public class EventStatsAdapter extends RecyclerView.Adapter<EventStatsAdapter.Ev
             });
 
             holder.setupBarChart(eventStats.getGradeDistribution());
-            holder.setupPieChart(eventStats.getVisitors(), eventCard.getMaxNumberParticipants(), "Visitors", holder.numberChart);
-            holder.setupPieChart((float) eventStats.getAverageGrade(), 5, "Average Grade", holder.averageGradeChart);
+            holder.numberChart.setProgressCompat(eventStats.getVisitors() / eventCard.getMaxNumberParticipants(), true);
+            holder.numberChartText.setText("Number of participants: " + eventStats.getVisitors() + "/" + eventCard.getMaxNumberParticipants());
+            holder.averageGradeChart.setProgressCompat((int) ((float) eventStats.getAverageGrade() / 5 * 100), true);
+            holder.averageGradeChartText.setText("Average grade: " + eventStats.getAverageGrade() + "/5");
 
             holder.itemView.findViewById(R.id.download_event_stats_button).setOnClickListener(v -> {
                 Call<ResponseBody> call = ClientUtils.eventService.triggerEventStatsPDFDownload(eventCard.getEventId());
@@ -191,10 +194,10 @@ public class EventStatsAdapter extends RecyclerView.Adapter<EventStatsAdapter.Ev
     }
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
-        TextView eventName, eventType, maxParticipants, eventDate, eventLocation, openOrFull, description;
+        TextView eventName, eventType, maxParticipants, eventDate, eventLocation, openOrFull, description, averageGradeChartText, numberChartText;
         private BarChart barChart;
-        private PieChart averageGradeChart;
-        private PieChart numberChart;
+        private CircularProgressIndicator averageGradeChart;
+        private CircularProgressIndicator numberChart;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -208,7 +211,9 @@ public class EventStatsAdapter extends RecyclerView.Adapter<EventStatsAdapter.Ev
             description = itemView.findViewById(R.id.description);
             barChart = itemView.findViewById(R.id.barChart);
             averageGradeChart = itemView.findViewById(R.id.averageGradeChart);
+            averageGradeChartText = itemView.findViewById(R.id.averageGradeChartText);
             numberChart = itemView.findViewById(R.id.numberChart);
+            numberChartText = itemView.findViewById(R.id.numberChartText);
         }
 
         public void setupBarChart(int[] gradeDistribution) {
