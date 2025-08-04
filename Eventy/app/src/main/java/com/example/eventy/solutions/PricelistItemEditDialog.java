@@ -90,55 +90,71 @@ public class PricelistItemEditDialog extends Dialog {
         });
     }
 
+    private boolean validatePrice() {
+        if (String.valueOf(newPriceTextbox.getText()).isEmpty()) {
+            newPriceLayout.setError("New price is required");
+            newPriceLayout.setErrorEnabled(true);
+            return false;
+        }
+
+        try {
+            Double priceValue = Double.parseDouble(newPriceTextbox.getText().toString());
+            if (priceValue <= 0) {
+                newPriceLayout.setError("New price must be greater than 0");
+                newPriceLayout.setErrorEnabled(true);
+                return false;
+            } else {
+                newPriceLayout.setError(null);
+                newPriceLayout.setErrorEnabled(false);
+                return true;
+            }
+        } catch (Exception e) {
+            newPriceLayout.setError("New price must be a number");
+            newPriceLayout.setErrorEnabled(true);
+            return false;
+        }
+    }
+
+    private boolean validateDiscount() {
+        if (String.valueOf(newDiscountTextbox.getText()).isEmpty()) {
+            newDiscountLayout.setError("New discount is required");
+            newDiscountLayout.setErrorEnabled(true);
+            return false;
+        }
+
+        try {
+            Double discountValue = Double.parseDouble(newDiscountTextbox.getText().toString());
+            if (!(discountValue >= 0 && discountValue <= 100)) {
+                newDiscountLayout.setError("New discount must be between 0 and 100");
+                newDiscountLayout.setErrorEnabled(true);
+                return false;
+            } else {
+                newDiscountLayout.setError(null);
+                newDiscountLayout.setErrorEnabled(false);
+                return true;
+            }
+        } catch (Exception e) {
+            newDiscountLayout.setError("New discount must be a number");
+            newDiscountLayout.setErrorEnabled(true);
+            return false;
+        }
+    }
+
     private void setupValidation() {
         newPriceTextbox.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
-                if (String.valueOf(newPriceTextbox.getText()).isEmpty()) {
-                    newPriceLayout.setError("New price is required");
-                    newPriceLayout.setErrorEnabled(true);
-                }
-
-                try {
-                    Double priceValue = Double.parseDouble(newPriceTextbox.getText().toString());
-                    if (priceValue <= 0) {
-                        newPriceLayout.setError("New price must be greater than 0");
-                        newPriceLayout.setErrorEnabled(true);
-                    } else {
-                        newPriceLayout.setError(null);
-                        newPriceLayout.setErrorEnabled(false);
-                    }
-                } catch (Exception e) {
-                    newPriceLayout.setError("New price must be a number");
-                    newPriceLayout.setErrorEnabled(true);
-                }
+                validatePrice();
             }
         });
 
         newDiscountTextbox.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
-                if (String.valueOf(newDiscountTextbox.getText()).isEmpty()) {
-                    newDiscountLayout.setError("New discount is required");
-                    newDiscountLayout.setErrorEnabled(true);
-                }
-
-                try {
-                    Double discountValue = Double.parseDouble(newDiscountTextbox.getText().toString());
-                    if (!(discountValue >= 0 && discountValue <= 100)) {
-                        newDiscountLayout.setError("New discount must be between 0 and 100");
-                        newDiscountLayout.setErrorEnabled(true);
-                    } else {
-                        newDiscountLayout.setError(null);
-                        newDiscountLayout.setErrorEnabled(false);
-                    }
-                } catch (Exception e) {
-                    newDiscountLayout.setError("New discount must be a number");
-                    newDiscountLayout.setErrorEnabled(true);
-                }
+                validateDiscount();
             }
         });
     }
 
     private boolean isValid() {
-        return newDiscountLayout.getError() == null && newPriceLayout.getError() == null;
+        return validatePrice() && validateDiscount();
     }
 }
